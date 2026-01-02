@@ -449,3 +449,196 @@ your 131072x1 screen size is bogus. expect trouble
 [32m[Nest] 12067  - [39m01/02/2026, 3:26:57 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +2ms[39m
 [32m[Nest] 12067  - [39m01/02/2026, 3:26:57 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +2ms[39m
 [32m[Nest] 12067  - [39m01/02/2026, 3:27:00 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +2504ms[39m
+Client connected: fXRaejMqj1tFyomiAAAB
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client connected: gHx6QBux4Z74fc64AAAE
+Client connected: U_cSoKuh5nPdQqRpAAAF
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Found 17 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 17 messages
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 17 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client connected: EX-jS7b4TLzH0wGXAAAH
+[ChatController] Found 17 messages
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: Avtenzb-u1V1P0JxAAAJ
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 17 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 17 messages
+[ChatController] Clearing history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Deleting chat: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client disconnected: U_cSoKuh5nPdQqRpAAAF
+Client disconnected: Avtenzb-u1V1P0JxAAAJ
+Client disconnected: EX-jS7b4TLzH0wGXAAAH
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client disconnected: gHx6QBux4Z74fc64AAAE
+Client disconnected: fXRaejMqj1tFyomiAAAB
+Client connected: mCtgMxU5EODfKcCHAAAN
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: Sm-Ie3mbUd9MAH8eAAAP
+Client connected: s-77glnxxMo3wl_PAAAQ
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: -pXYfqvcGZ1upv6NAAAR
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+Client disconnected: Sm-Ie3mbUd9MAH8eAAAP
+Client disconnected: s-77glnxxMo3wl_PAAAQ
+Client connected: ADs91zsvwJgE-OdkAAAU
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client disconnected: -pXYfqvcGZ1upv6NAAAR
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client connected: 4U_R02lj7mKOkmLqAAAV
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client disconnected: mCtgMxU5EODfKcCHAAAN
+Client connected: -s7pnUJb1g-4E6nRAAAX
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: 8U4_mw62kZg6rej-AAAZ
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+Client disconnected: 4U_R02lj7mKOkmLqAAAV
+Client disconnected: -s7pnUJb1g-4E6nRAAAX
+Client disconnected: 8U4_mw62kZg6rej-AAAZ
+Client disconnected: ADs91zsvwJgE-OdkAAAU
+Client connected: 5rPmb3e9K0wzrxhAAAAc
+Client connected: tNngIJbSiDERpawoAAAd
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client connected: CT-5Sfs0wcR9nY6PAAAg
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: B0UvNRez3xQtWpiBAAAh
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+Client disconnected: tNngIJbSiDERpawoAAAd
+Client disconnected: 5rPmb3e9K0wzrxhAAAAc
+Client disconnected: CT-5Sfs0wcR9nY6PAAAg
+Client disconnected: B0UvNRez3xQtWpiBAAAh
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+Client connected: qhIQ-mNdqh2vt-_JAAAk
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: d0Fuuw3nwp91xPa9AAAm
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client connected: qTOjRCAckdQD2yA3AAAo
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: DSpXt-ZzitQIB904AAAp
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: zjods5kyUXzJ72MeAAAr
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 0 messages
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Found 1 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 1 messages
+Client disconnected: qTOjRCAckdQD2yA3AAAo
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client disconnected: d0Fuuw3nwp91xPa9AAAm
+Client connected: y94kIQT80LK8jv6nAAAv
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: zdOQVieanuJWMqZwAAAw
+[ChatController] Found 0 messages
+Client connected: PSLXqBmYwNLe6VE9AAAx
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client disconnected: zjods5kyUXzJ72MeAAAr
+Client disconnected: qhIQ-mNdqh2vt-_JAAAk
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 2 messages
+[ChatController] Found 0 messages
+Client connected: kpkge_Lm7MKedKMPAAA0
+Client disconnected: DSpXt-ZzitQIB904AAAp
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+Client connected: Px1HpaiX_953MtXbAAA1
+[ChatController] Found 2 messages
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 2 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 2 messages
+Client connected: n9TZ_Gtse9CYyimsAAA3
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Clearing history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Deleting chat: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+Client disconnected: y94kIQT80LK8jv6nAAAv
+Client disconnected: Px1HpaiX_953MtXbAAA1
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+Client disconnected: n9TZ_Gtse9CYyimsAAA3
+Client connected: 53GmMqClrPPl11VFAAA6
+Client disconnected: zdOQVieanuJWMqZwAAAw
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: OPRuDx-TAxqDJjOcAAA7
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: ak4vHiZmTw4WwLxxAAA-
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: ZSFpgLcv1bZuMnAsAAA_
+Client disconnected: kpkge_Lm7MKedKMPAAA0
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client connected: druDgECduns2_SUaAABB
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client disconnected: PSLXqBmYwNLe6VE9AAAx
+Client connected: t02Sez6HUzRQo6RWAABD
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "0a8cbcd1-47a5-4fa1-8920-84d1c773bf74"
+[ChatController] Found 0 messages
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 0 messages
+Client disconnected: ZSFpgLcv1bZuMnAsAAA_
+Client disconnected: ak4vHiZmTw4WwLxxAAA-
+Client disconnected: OPRuDx-TAxqDJjOcAAA7
+Client disconnected: t02Sez6HUzRQo6RWAABD
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+Client disconnected: 53GmMqClrPPl11VFAAA6
+Client connected: hTAKG-7ejQbB6G5OAABH
+Client connected: 25sWvKq26R9rGvqWAABI
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client disconnected: druDgECduns2_SUaAABB
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: ucq31TIPwDVi9wkcAABJ
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: qPLOYCK6S2NJNSB9AABL
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "4579dd65-7a35-4a08-ba12-baadccead4ea"
+[ChatController] Found 0 messages
+[ChatController] Fetching history for chatId: "616d2016-f86d-4a66-b242-17b72b7bc4a7"
+[ChatController] Found 1 messages
+[ChatController] Fetching history for chatId: "616d2016-f86d-4a66-b242-17b72b7bc4a7"
+[ChatController] Found 1 messages
+Client disconnected: ucq31TIPwDVi9wkcAABJ
+Client disconnected: hTAKG-7ejQbB6G5OAABH
+Client disconnected: qPLOYCK6S2NJNSB9AABL
+Client disconnected: 25sWvKq26R9rGvqWAABI
+[ChatController] Clearing history for chatId: "test"
