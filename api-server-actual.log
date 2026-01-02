@@ -1,0 +1,38 @@
+nohup: ignoring input
+
+> api-server@0.0.1 start:dev
+> nest start --watch
+
+[2J[3J[H[[90m8:39:43 PM[0m] Starting compilation in watch mode...
+
+[[90m8:39:46 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +16ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +3ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +11ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +1ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:47 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 6100  - [39m12/31/2025, 8:39:49 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1821ms[39m
+Killed

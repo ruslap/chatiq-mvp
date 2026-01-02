@@ -1,0 +1,13 @@
+nohup: ignoring input
+
+> admin-panel@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://10.255.255.254:3001
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 1573ms
+ HEAD / 307 in 2.1s (compile: 1881ms, render: 218ms)
