@@ -8,6 +8,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Settings, Paperclip, Smile, Send, Trash2, Eraser, X, Pencil, Check } from "lucide-react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
+import dynamic from 'next/dynamic';
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
 interface Message {
     id: string;
@@ -60,9 +63,11 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
     const [showTemplates, setShowTemplates] = useState(false);
     const [templateFilter, setTemplateFilter] = useState("");
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(0);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const templateListRef = useRef<HTMLDivElement>(null);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
 
     // Configurable API URL for flexibility between local/prod
     const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
@@ -161,6 +166,23 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
             }
         }
     }, [messages]);
+
+    // Close emoji picker when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target as Node)) {
+                setShowEmojiPicker(false);
+            }
+        };
+
+        if (showEmojiPicker) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showEmojiPicker]);
 
     const handleFileSelect = (file: File) => {
         if (!file) return;
@@ -347,12 +369,12 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
 
         if (e.key === 'ArrowDown') {
             e.preventDefault();
-            setSelectedTemplateIndex(prev => 
+            setSelectedTemplateIndex(prev =>
                 prev < filteredTemplates.length - 1 ? prev + 1 : 0
             );
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
-            setSelectedTemplateIndex(prev => 
+            setSelectedTemplateIndex(prev =>
                 prev > 0 ? prev - 1 : filteredTemplates.length - 1
             );
         } else if (e.key === 'Enter' && !e.shiftKey) {
@@ -364,6 +386,12 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
             e.preventDefault();
             selectTemplate(filteredTemplates[selectedTemplateIndex]);
         }
+    };
+
+    // Handle emoji selection
+    const handleEmojiClick = (emojiData: any) => {
+        setInput(prev => prev + emojiData.emoji);
+        setShowEmojiPicker(false);
     };
 
     const safeMessages = Array.isArray(messages) ? messages : [];
@@ -630,6 +658,13 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                             }}
                         />
 
+                        {/* Emoji Picker */}
+                        {showEmojiPicker && (
+                            <div ref={emojiPickerRef} className="absolute bottom-16 left-3 z-50 animate-fade-in">
+                                <EmojiPicker onEmojiClick={handleEmojiClick} />
+                            </div>
+                        )}
+
                         {/* Bottom Actions */}
                         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
                             <div className="flex gap-0.5">
@@ -651,6 +686,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                                 <Button
                                     variant="ghost"
                                     size="sm"
+                                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                                     className="h-8 w-8 p-0 rounded-lg text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--foreground))] hover:bg-[rgb(var(--surface-muted))]"
                                 >
                                     <Smile className="w-4 h-4" />
