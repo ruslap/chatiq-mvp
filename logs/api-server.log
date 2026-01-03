@@ -2,77 +2,77 @@
 > api-server@0.0.1 start:dev
 > nest start --watch
 
-[2J[3J[H[[90m10:39:43 PM[0m] Starting compilation in watch mode...
+[2J[3J[H[[90m11:13:42 PM[0m] Starting compilation in watch mode...
 
-[[90m10:40:04 PM[0m] Found 0 errors. Watching for file changes.
+[[90m11:14:01 PM[0m] Found 0 errors. Watching for file changes.
 
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +85ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +8ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +5ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +6ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventEmitterModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUploadModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAutomationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +8ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOrganizationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +40ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:get_unread_count" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:mark_read" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +9ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +6ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mOrganizationController {/organization}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/my, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, PUT} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/add-user, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/rename, PATCH} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAutomationController {/automation}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, PATCH} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, DELETE} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId/active, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, POST} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, PATCH} route[39m[38;5;3m +5ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, DELETE} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, PATCH} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId/status, GET} route[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-reply/:siteId/:chatId, POST} route[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/seed/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUploadController {/upload}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/upload, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +206ms[39m
-[31m[Nest] 170036  - [39m01/03/2026, 10:40:07 PM [31m  ERROR[39m [38;5;3m[NestApplication] [39m[31mError: listen EADDRINUSE: address already in use :::3000[39m[38;5;3m +10ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +30ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventEmitterModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUploadModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAutomationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOrganizationModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +22ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:get_unread_count" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:mark_read" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mOrganizationController {/organization}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/my, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/add-user, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/rename, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAutomationController {/automation}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, DELETE} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId/active, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, PATCH} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, PATCH} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId/status, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-reply/:siteId/:chatId, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/seed/:siteId, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUploadController {/upload}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/upload, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +94ms[39m
+[31m[Nest] 182828  - [39m01/03/2026, 11:14:02 PM [31m  ERROR[39m [38;5;3m[NestApplication] [39m[31mError: listen EADDRINUSE: address already in use :::3000[39m[38;5;3m +3ms[39m
 node:net:1937
     const ex = new UVExceptionWithHostPort(err, 'listen', address, port);
                ^
@@ -94,881 +94,54 @@ Error: listen EADDRINUSE: address already in use :::3000
 }
 
 Node.js v22.14.0
-[2J[3J[H[[90m10:41:38 PM[0m] File change detected. Starting incremental compilation...
-
-[[90m10:41:39 PM[0m] Found 0 errors. Watching for file changes.
-
-node:internal/modules/cjs/loader:1228
-  throw err;
-  ^
-
-Error: Cannot find module '.prisma/client/default'
-Require stack:
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@prisma/client/default.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.service.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.module.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/app.module.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/main.js
-    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)
-    at Function._load (node:internal/modules/cjs/loader:1055:27)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)
-    at Module.require (node:internal/modules/cjs/loader:1311:12)
-    at require (node:internal/modules/helpers:136:16)
-    at Object.<anonymous> (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@prisma/client/default.js:2:6)
-    at Module._compile (node:internal/modules/cjs/loader:1554:14)
-    at Object..js (node:internal/modules/cjs/loader:1706:10)
-    at Module.load (node:internal/modules/cjs/loader:1289:32) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@prisma/client/default.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.service.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.module.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/app.module.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/main.js'
-  ]
-}
-
-Node.js v22.14.0
-[2J[3J[H[[90m10:43:09 PM[0m] File change detected. Starting incremental compilation...
-
-[[90m10:43:30 PM[0m] Found 0 errors. Watching for file changes.
-
-[2J[3J[H[[90m10:43:30 PM[0m] File change detected. Starting incremental compilation...
-
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:35 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +768ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +3ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +26ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventEmitterModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUploadModule dependencies initialized[39m[38;5;3m +13ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAutomationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +17ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOrganizationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +0ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +188ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:get_unread_count" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:mark_read" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +2ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +27ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +3ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +4ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +8ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mOrganizationController {/organization}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/my, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, PUT} route[39m[38;5;3m +11ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/add-user, POST} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 171551  - [39m01/03/2026, 10:43:36 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +1ms[39m
-[[90m10:43:36 PM[0m] Found 0 errors. Watching for file changes.
-
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +116ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +4ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +11ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +9ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +7ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventEmitterModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUploadModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAutomationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +13ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOrganizationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +12ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +95ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:get_unread_count" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:mark_read" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +15ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +13ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +7ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +4ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +9ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +3ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mOrganizationController {/organization}:[39m[38;5;3m +7ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/my, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, PUT} route[39m[38;5;3m +5ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/add-user, POST} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +4ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +15ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/rename, PATCH} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAutomationController {/automation}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, PATCH} route[39m[38;5;3m +10ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId/active, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, PATCH} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, PATCH} route[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId/status, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-reply/:siteId/:chatId, POST} route[39m[38;5;3m +11ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/seed/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUploadController {/upload}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:40 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/upload, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171637  - [39m01/03/2026, 10:43:41 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +630ms[39m
-[31m[Nest] 171637  - [39m01/03/2026, 10:43:41 PM [31m  ERROR[39m [38;5;3m[NestApplication] [39m[31mError: listen EADDRINUSE: address already in use :::3000[39m[38;5;3m +15ms[39m
-node:net:1937
-    const ex = new UVExceptionWithHostPort(err, 'listen', address, port);
-               ^
-
-Error: listen EADDRINUSE: address already in use :::3000
-    at Server.setupListenHandle [as _listen2] (node:net:1937:16)
-    at listenInCluster (node:net:1994:12)
-    at Server.listen (node:net:2099:7)
-    at ExpressAdapter.listen (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/platform-express/adapters/express-adapter.js:127:32)
-    at /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/core/nest-application.js:188:30
-    at new Promise (<anonymous>)
-    at NestApplication.listen (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/core/nest-application.js:178:16)
-    at async bootstrap (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/src/main.ts:30:3) {
-  code: 'EADDRINUSE',
-  errno: -98,
-  syscall: 'listen',
-  address: '::',
-  port: 3000
-}
-
-Node.js v22.14.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      [BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:39:55 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:39:55 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:40:55 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:40:55 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[2J[3J[H[[90m10:41:38 PM[0m] File change detected. Starting incremental compilation...
-
-[[90m10:41:39 PM[0m] Found 0 errors. Watching for file changes.
-
-node:internal/modules/cjs/loader:1228
-  throw err;
-  ^
-
-Error: Cannot find module '.prisma/client/default'
-Require stack:
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@prisma/client/default.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.service.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.module.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/app.module.js
-- /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/main.js
-    at Function._resolveFilename (node:internal/modules/cjs/loader:1225:15)
-    at Function._load (node:internal/modules/cjs/loader:1055:27)
-    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
-    at wrapModuleLoad (node:internal/modules/cjs/loader:220:24)
-    at Module.require (node:internal/modules/cjs/loader:1311:12)
-    at require (node:internal/modules/helpers:136:16)
-    at Object.<anonymous> (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@prisma/client/default.js:2:6)
-    at Module._compile (node:internal/modules/cjs/loader:1554:14)
-    at Object..js (node:internal/modules/cjs/loader:1706:10)
-    at Module.load (node:internal/modules/cjs/loader:1289:32) {
-  code: 'MODULE_NOT_FOUND',
-  requireStack: [
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@prisma/client/default.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.service.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/prisma/prisma.module.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/app.module.js',
-    '/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/dist/src/main.js'
-  ]
-}
-
-Node.js v22.14.0
-[2J[3J[H[[90m10:43:09 PM[0m] File change detected. Starting incremental compilation...
-
-[[90m10:43:27 PM[0m] Found 0 errors. Watching for file changes.
-
-[2J[3J[H[[90m10:43:28 PM[0m] File change detected. Starting incremental compilation...
-
-[32m[Nest] 171535  - [39m01/03/2026, 10:43:33 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
-[32m[Nest] 171535  - [39m01/03/2026, 10:43:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +351ms[39m
-[32m[Nest] 171535  - [39m01/03/2026, 10:43:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +14ms[39m
-[32m[Nest] 171535  - [39m01/03/2026, 10:43:34 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +2ms[39m
-[[90m10:43:34 PM[0m] Found 0 errors. Watching for file changes.
-
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +159ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +3ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mDiscoveryModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +14ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mEventEmitterModule dependencies initialized[39m[38;5;3m +5ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +4ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mUploadModule dependencies initialized[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAutomationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +5ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mOrganizationModule dependencies initialized[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +10ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +59ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:get_unread_count" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:mark_read" message[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +3ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +13ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +4ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +11ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mOrganizationController {/organization}:[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/my, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/settings, PUT} route[39m[38;5;3m +5ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/organization/add-user, POST} route[39m[38;5;3m +7ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/rename, PATCH} route[39m[38;5;3m +2ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAutomationController {/automation}:[39m[38;5;3m +3ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, PATCH} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-replies/:id, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId/active, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, PATCH} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/templates/:id, DELETE} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, GET} route[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId, PATCH} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/business-hours/:siteId/status, GET} route[39m[38;5;3m +10ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/auto-reply/:siteId/:chatId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/automation/seed/:siteId, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +0ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mUploadController {/upload}:[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/upload, POST} route[39m[38;5;3m +1ms[39m
-[32m[Nest] 171612  - [39m01/03/2026, 10:43:39 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +300ms[39m
-Client connected: gvj8CSzj81iVxsHOAAAB
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-Client connected: H2LcsgC2JNUHSP0yAAAD
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Client connected: -C6Hlo6qsocc7WREAAAB
+Visitor v_vpt11q8v4b9mjys5ao7 joined room chat:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a:v_vpt11q8v4b9mjys5ao7
+Client connected: N98Rxs48uvAZjvJoAAAD
 Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: H2LcsgC2JNUHSP0yAAAD
-Client connected: NmesgX2bGxcKnIhnAAAF
+Client connected: c9StrBoWSNBxZkx_AAAF
 Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:43:56 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:43:56 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: NmesgX2bGxcKnIhnAAAF
-Client connected: ll1l9CPEPoPbNwfCAAAH
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: idR0qwBm06tFSo8YAAAJ
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: ll1l9CPEPoPbNwfCAAAH
-Client disconnected: idR0qwBm06tFSo8YAAAJ
-Client connected: LfnNUs5iXg2Dx6HWAAAL
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: Q0TSb1d1p4Rp3Js7AAAN
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: LfnNUs5iXg2Dx6HWAAAL
-Client disconnected: Q0TSb1d1p4Rp3Js7AAAN
-Client connected: nP98dSFlVHlYWEflAAAP
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: iXP5-70zbwfw-XfUAAAR
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: nP98dSFlVHlYWEflAAAP
-Client disconnected: iXP5-70zbwfw-XfUAAAR
-Client connected: _EhZV-77JiCCsLPZAAAT
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:44:54 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:44:54 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: _EhZV-77JiCCsLPZAAAT
-Client connected: DzxhUoS6X4X4rZ0bAAAV
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: FrZSK00YUDyW5MeZAAAX
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: DzxhUoS6X4X4rZ0bAAAV
-Client disconnected: FrZSK00YUDyW5MeZAAAX
-Client connected: AQtmVP96K029QTSwAAAZ
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: AQtmVP96K029QTSwAAAZ
-Client connected: lSPPsNB8AlcQ5VekAAAb
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: dSv8rpumJoI0PBgsAAAd
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[31m[Nest] 171612  - [39m01/03/2026, 10:45:51 PM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39mPrismaClientKnownRequestError: 
-Invalid `this.prisma.autoReply.create()` invocation in
-/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/src/automation/automation.service.ts:193:35
-
-  190 ];
-  191 
-  192 for (const item of defaults) {
-→ 193   await this.prisma.autoReply.create(
-Foreign key constraint violated: `AutoReply_siteId_fkey (index)`
-    at $n.handleRequestError [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:121:7315[90m)[39m
-    at $n.handleAndLogRequestError [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:121:6623[90m)[39m
-    at $n.request [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:121:6307[90m)[39m
-    at async l [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:130:9633[90m)[39m
-    at async AutomationService.seedDefaultAutoReplies [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39msrc/automation/automation.service.ts:193:7[90m)[39m
-    at async AutomationController.seedDefaults [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39msrc/automation/automation.controller.ts:142:9[90m)[39m
-    at async [90m/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@nestjs[24m/core/router/router-execution-context.js:46:28
-    at async [90m/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@nestjs[24m/core/router/router-proxy.js:9:17 {
-  code: [32m'P2003'[39m,
-  clientVersion: [32m'5.22.0'[39m,
-  meta: {
-    modelName: [32m'AutoReply'[39m,
-    field_name: [32m'AutoReply_siteId_fkey (index)'[39m
-  }
-}
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:45:55 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:45:55 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: dSv8rpumJoI0PBgsAAAd
-Client disconnected: lSPPsNB8AlcQ5VekAAAb
-Client connected: YKGc74wEzs8YFdhEAAAf
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: h2pkOacfk0gFWGnTAAAh
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: YKGc74wEzs8YFdhEAAAf
-Client disconnected: h2pkOacfk0gFWGnTAAAh
-Client connected: zndL4n3eYFFyb0ttAAAj
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:46:57 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:46:57 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: zndL4n3eYFFyb0ttAAAj
-Client connected: aGoXa0gAg7d_QQqlAAAl
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: 0hwQtZrNkhWkQ_eIAAAn
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: aGoXa0gAg7d_QQqlAAAl
-Client disconnected: 0hwQtZrNkhWkQ_eIAAAn
-Client connected: 2IwO8EgQS2ZFKko3AAAp
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: 8YrXaj-jDjKh-yJyAAAr
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: 2IwO8EgQS2ZFKko3AAAp
-Client disconnected: 8YrXaj-jDjKh-yJyAAAr
-Client connected: yBIxOvoja3uJFFkjAAAt
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: juZuJDlcniup8NmJAAAv
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: gvj8CSzj81iVxsHOAAAB
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:47:40 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: rYmy5Yw8Nr3uipf7AAAx
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:47:40 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:47:41 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: juZuJDlcniup8NmJAAAv
-Client disconnected: yBIxOvoja3uJFFkjAAAt
-Client connected: Sz7DTUPoUlmbs9LUAAA0
-Client connected: ng0ImCCRPjgpFLvRAAA1
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: Sz7DTUPoUlmbs9LUAAA0
-Client disconnected: ng0ImCCRPjgpFLvRAAA1
-Client connected: nS0IUBd7Hi3_5cIjAAA3
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: IDyMCmafA2N6jyCeAAA5
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:48:41 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:48:41 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: nS0IUBd7Hi3_5cIjAAA3
-Client disconnected: IDyMCmafA2N6jyCeAAA5
-Client connected: LAIz4PwywCsN3hZzAAA7
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: 66ZPV-jZL9xoWn-5AAA9
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: 66ZPV-jZL9xoWn-5AAA9
-Client disconnected: LAIz4PwywCsN3hZzAAA7
-Client connected: O32p6gBD3wcyBiBDAAA_
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: O32p6gBD3wcyBiBDAAA_
-Client connected: KWccyVO1jnWdm4DBAABB
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: 47Dx8AsYdxKzq0URAABD
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[ChatController] Fetching history for chatId: "eaa02116-569c-415e-a2ff-6477176de4f6"
-[ChatController] Found 95 messages
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:49:41 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:49:41 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: KWccyVO1jnWdm4DBAABB
-Client disconnected: 47Dx8AsYdxKzq0URAABD
-[ChatController] Fetching history for chatId: "eaa02116-569c-415e-a2ff-6477176de4f6"
-[ChatController] Found 96 messages
-[ChatController] Fetching history for chatId: "eaa02116-569c-415e-a2ff-6477176de4f6"
-[ChatController] Found 96 messages
-Client connected: ekCAexoGNJObktyWAABG
-Client connected: nl7wIY_Ib_Mp1-DCAABH
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[ChatController] Fetching history for chatId: "d1b82d7b-c763-4a41-a35f-5f8b6146dff1"
-[ChatController] Found 4 messages
-Client disconnected: ekCAexoGNJObktyWAABG
-Client disconnected: nl7wIY_Ib_Mp1-DCAABH
-[ChatController] Fetching history for chatId: "d1b82d7b-c763-4a41-a35f-5f8b6146dff1"
-[ChatController] Found 5 messages
-[ChatController] Fetching history for chatId: "d1b82d7b-c763-4a41-a35f-5f8b6146dff1"
-[ChatController] Found 5 messages
-Client connected: EHaA7MciQfPM3-OuAABK
-Client connected: pT6aOAMLQeuypv5BAABL
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: pT6aOAMLQeuypv5BAABL
-Client disconnected: EHaA7MciQfPM3-OuAABK
-Client connected: WjfPXglhyKyW_WCsAABN
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: rYmy5Yw8Nr3uipf7AAAx
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:08 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:08 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: bAGm7VHCKSYE_F9lAABP
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-Client disconnected: bAGm7VHCKSYE_F9lAABP
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:09 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:09 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: c9y4MwxsN2Z93U6XAABR
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:10 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: WjfPXglhyKyW_WCsAABN
-Client connected: T4MAPu6A3sxpntWYAABT
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: T4MAPu6A3sxpntWYAABT
-Client connected: wcj7cHlMXVp_2hfrAABV
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: KJyK_6KqFzBLwvLxAABX
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[AutoReply] executeAutoReply called {
-  siteId: '8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b',
-  chatId: 'c4123863-cc82-4094-b3a7-fd848d87613c',
-  from: 'visitor'
-}
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:23 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[AutoReply] Business status: {
-  isOpen: false,
-  message: "Дякуємо за звернення! 🕐 Наразі ми не в мережі. Залиште свій email або телефон, і ми зв'яжемося з вами в робочий час."
-}
-[AutoReply] Message count: 1
-[AutoReply] OFFLINE - sending offline message
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:23 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Auto-reply delivered via WebSocket to room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-Auto-reply sent to chat c4123863-cc82-4094-b3a7-fd848d87613c: Зараз ми офлайн. Залиште своє повідомлення і ми відповімо, як тільки повернемось! 🕐
-Client disconnected: c9y4MwxsN2Z93U6XAABR
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:27 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:27 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: 3Bb9gXT7gBX7hO7bAABZ
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:30 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: wcj7cHlMXVp_2hfrAABV
-Client disconnected: KJyK_6KqFzBLwvLxAABX
-Client connected: 68Oo_YThfKef9s_YAABc
-Client connected: y7DvlSPuAWEnzrJmAABd
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: 68Oo_YThfKef9s_YAABc
-Client disconnected: y7DvlSPuAWEnzrJmAABd
-Client connected: 2XGCC4Ey90dC-EwTAABf
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: 3Bb9gXT7gBX7hO7bAABZ
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:58 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:58 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: 8IvRi6oLC4ZQ5gcNAABh
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-Client disconnected: 8IvRi6oLC4ZQ5gcNAABh
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:59 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:50:59 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: nETjJ7O_u1fdQ7REAABj
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:51:00 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: 2XGCC4Ey90dC-EwTAABf
-Client connected: z-6Oxtl2uH27VQfDAABl
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[AutoReply] executeAutoReply called {
-  siteId: '8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b',
-  chatId: 'c4123863-cc82-4094-b3a7-fd848d87613c',
-  from: 'visitor'
-}
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:51:35 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[AutoReply] Business status: {
-  isOpen: false,
-  message: "Дякуємо за звернення! 🕐 Наразі ми не в мережі. Залиште свій email або телефон, і ми зв'яжемося з вами в робочий час."
-}
-[AutoReply] Message count: 3
-Client disconnected: z-6Oxtl2uH27VQfDAABl
-Client connected: rMHUMuS1WnGqthmUAABn
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: rMHUMuS1WnGqthmUAABn
-Client connected: IbI7tAF3QivPNEWLAABp
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: V0y0JDth_UZdH_5AAABr
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: nETjJ7O_u1fdQ7REAABj
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:51:58 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:51:58 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: sD-enB3EyA0_n8nCAABt
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:00 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: sD-enB3EyA0_n8nCAABt
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:10 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:10 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: 4IF2UpzpoAlV_kIBAABv
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:13 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: IbI7tAF3QivPNEWLAABp
-Client disconnected: V0y0JDth_UZdH_5AAABr
-Client connected: toHd5qpinwfcqiYJAABy
-Client connected: ikStFmtroJdleehoAABz
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: ikStFmtroJdleehoAABz
-Client disconnected: toHd5qpinwfcqiYJAABy
-Client connected: kdYneB6J57OEPeclAAB1
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: 4IF2UpzpoAlV_kIBAABv
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:25 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:25 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: k72mrfTDy4T_3k5zAAB3
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:26 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: kdYneB6J57OEPeclAAB1
-Client connected: 9ZCYjQ4dJM_O2EWIAAB5
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: k72mrfTDy4T_3k5zAAB3
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:55 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:56 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: Z337ptqVGW68JY0qAAB7
-Visitor v_wlxhn4vgbsmjyqv1c8 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_wlxhn4vgbsmjyqv1c8
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:52:57 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: Z337ptqVGW68JY0qAAB7
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:11 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:11 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: puhdtNzQIHrVR5DVAAB9
-Visitor v_koyrbluwheimjys52ui joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_koyrbluwheimjys52ui
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:12 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: puhdtNzQIHrVR5DVAAB9
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:20 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:20 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: toaTiExr_PAFIy8YAAB_
-Visitor v_vpt11q8v4b9mjys5ao7 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_vpt11q8v4b9mjys5ao7
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:23 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:29 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: toaTiExr_PAFIy8YAAB_
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:43 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:43 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: 8wTVpw4a4iGsk2n1AACB
-Visitor v_vpt11q8v4b9mjys5ao7 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_vpt11q8v4b9mjys5ao7
-Client disconnected: 8wTVpw4a4iGsk2n1AACB
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:44 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:53:44 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: pWBl-aF6GPvJRC83AACD
-Visitor v_vpt11q8v4b9mjys5ao7 joined room chat:8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b:v_vpt11q8v4b9mjys5ao7
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:54:41 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:54:44 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8f2c71b0-4118-4e26-a8c4-8b3c8b3b8b8b
-[BusinessHours] Current time: 10:54:44 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: pWBl-aF6GPvJRC83AACD
 [BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:55:21 PM
+[BusinessHours] Current time: 11:13:44 PM
 [BusinessHours] Current day: saturday
 [BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
 [BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:55:21 PM
+[BusinessHours] Current time: 11:13:44 PM
 [BusinessHours] Current day: saturday
 [BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
-Client connected: sPXKZugBAYapUSVFAACF
+Client disconnected: -C6Hlo6qsocc7WREAAAB
+Client connected: azoNZMwLcx9Z59ZqAAAH
 Visitor v_vpt11q8v4b9mjys5ao7 joined room chat:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a:v_vpt11q8v4b9mjys5ao7
 [BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:55:22 PM
+[BusinessHours] Current time: 11:13:45 PM
+[BusinessHours] Current day: saturday
+[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
+[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
+[BusinessHours] Current time: 11:13:45 PM
+[BusinessHours] Current day: saturday
+[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
+[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
+[BusinessHours] Current time: 11:13:48 PM
 [BusinessHours] Current day: saturday
 [BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
 [AutoReply] executeAutoReply called {
   siteId: '8df94c53-1364-4bbd-99a4-f9a0ffb01f9a',
-  chatId: 'd4b91206-21b8-46d2-ae07-9b0d3c1ac238',
+  chatId: 'c9b065c8-c581-47d2-b04c-3244f593ef78',
   from: 'visitor'
 }
 [BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:55:25 PM
+[BusinessHours] Current time: 11:13:51 PM
 [BusinessHours] Current day: saturday
 [BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
 [AutoReply] Business status: { isOpen: true, message: undefined }
-[AutoReply] Message count: 1
-[AutoReply] ONLINE - sending welcome message
-Auto-reply delivered via WebSocket to room chat:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a:v_vpt11q8v4b9mjys5ao7
-Auto-reply sent to chat d4b91206-21b8-46d2-ae07-9b0d3c1ac238: Дякуємо за звернення! 👋 Ми відповімо вам найближчим часом.
-Client disconnected: 9ZCYjQ4dJM_O2EWIAAB5
-Client connected: viHpb0uLPNLmYGOsAACH
+[AutoReply] Message count: 3
+[ChatGateway] Updated visitor name to: Руслан Л (03.01 23:13)
+Client disconnected: c9StrBoWSNBxZkx_AAAF
+Client disconnected: N98Rxs48uvAZjvJoAAAD
+Client connected: kK8YR1CdSnj6vKkvAAAK
+Client connected: QFLkt7YRfKnbUq-3AAAL
 Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: sPXKZugBAYapUSVFAACF
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:55:40 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:55:40 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client connected: aspcgdlloNgLfSIxAACJ
-Visitor v_vpt11q8v4b9mjys5ao7 joined room chat:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a:v_vpt11q8v4b9mjys5ao7
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:55:41 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: false }
-Client disconnected: viHpb0uLPNLmYGOsAACH
-Client connected: a5BsyyI-ceOES6jGAACL
 Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: a5BsyyI-ceOES6jGAACL
-Client connected: VjevfL8B3LtIRArIAACN
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client connected: eXjs0vXA9HDYSzx2AACP
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[ChatController] Fetching history for chatId: "d4b91206-21b8-46d2-ae07-9b0d3c1ac238"
-[ChatController] Found 2 messages
-[ChatController] Fetching history for chatId: "d4b91206-21b8-46d2-ae07-9b0d3c1ac238"
-[ChatController] Found 2 messages
-Client disconnected: aspcgdlloNgLfSIxAACJ
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:56:06 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:56:06 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
-Client connected: FL1ouqBsO64-0wMXAACR
-Visitor v_vpt11q8v4b9mjys5ao7 joined room chat:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a:v_vpt11q8v4b9mjys5ao7
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:56:07 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
-Client disconnected: VjevfL8B3LtIRArIAACN
-Client disconnected: eXjs0vXA9HDYSzx2AACP
-[ChatController] Fetching history for chatId: "d4b91206-21b8-46d2-ae07-9b0d3c1ac238"
+[ChatController] Fetching history for chatId: "c9b065c8-c581-47d2-b04c-3244f593ef78"
 [ChatController] Found 3 messages
-[ChatController] Fetching history for chatId: "d4b91206-21b8-46d2-ae07-9b0d3c1ac238"
+[ChatController] Fetching history for chatId: "c9b065c8-c581-47d2-b04c-3244f593ef78"
 [ChatController] Found 3 messages
-Client connected: UHvU68bahyEbopT5AACU
-Client connected: i_zNfiBvhhS1YzfxAACV
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-Client disconnected: i_zNfiBvhhS1YzfxAACV
-Client disconnected: UHvU68bahyEbopT5AACU
-Client connected: 8832eWSCWJIjRnwbAACX
-Admin joined room admin:8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:57:07 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
-[BusinessHours] Checking for siteId: 8df94c53-1364-4bbd-99a4-f9a0ffb01f9a
-[BusinessHours] Current time: 10:57:07 PM
-[BusinessHours] Current day: saturday
-[BusinessHours] Schedule for saturday: { start: '09:00', end: '00:00', isOpen: true }
