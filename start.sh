@@ -82,7 +82,7 @@ start_service() {
 
 # Start all services
 start_service "api-server" "api-server" "npm run start:dev"
-start_service "admin-panel" "admin-panel" "npm run dev"
+start_service "admin-panel" "admin-panel" "npm run dev -- --port 3001"
 start_service "widget-cdn" "widget-cdn" "npm run dev"
 
 echo ""
