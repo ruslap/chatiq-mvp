@@ -1124,3 +1124,379 @@ your 131072x1 screen size is bogus. expect trouble
 [32m[Nest] 25659  - [39m01/02/2026, 5:06:22 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1481ms[39m
 Client connected: H_InWa9_-fwcGZikAAAB
 Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client disconnected: H_InWa9_-fwcGZikAAAB
+Client connected: GYp6uyl4b_dxAINnAAAD
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: 7IPF8wufsAoF3vDyAAAF
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+Client disconnected: 7IPF8wufsAoF3vDyAAAF
+Client connected: yW10z0ouN69NBoqGAAAH
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+Client disconnected: yW10z0ouN69NBoqGAAAH
+Client connected: eQL12IYJP2iuB_l5AAAJ
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+Client disconnected: eQL12IYJP2iuB_l5AAAJ
+Client connected: Fm_2WVlW9qQAvOwjAAAL
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+Client disconnected: Fm_2WVlW9qQAvOwjAAAL
+Client connected: J52BmxB64CT32NeEAAAN
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+Client disconnected: J52BmxB64CT32NeEAAAN
+Client disconnected: GYp6uyl4b_dxAINnAAAD
+Client connected: Co8jroEBfoMFbnLSAAAP
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+[ChatController] Fetching history for chatId: "f2b99869-3f7d-47db-9f6c-8ce12966f505"
+Client connected: -bpnYyA5yGNN-vhgAAAR
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+Client connected: CMsXRhhUBIyjliYYAAAT
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+Client connected: hIbZXRrc6RTZDjUwAAAV
+Admin joined room admin:a29845d0-473d-499c-9553-5abb096a0243
+[ChatController] Found 2 messages
+[ChatController] Fetching history for chatId: "f2b99869-3f7d-47db-9f6c-8ce12966f505"
+[ChatController] Found 2 messages
+[ChatController] Fetching history for chatId: "f2b99869-3f7d-47db-9f6c-8ce12966f505"
+[ChatController] Found 2 messages
+Client disconnected: Co8jroEBfoMFbnLSAAAP
+Client disconnected: hIbZXRrc6RTZDjUwAAAV
+Client disconnected: CMsXRhhUBIyjliYYAAAT
+Client disconnected: -bpnYyA5yGNN-vhgAAAR
+Client connected: 3DNQqMa13BlHWP3uAAAX
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+[ChatController] Fetching history for chatId: "616d2016-f86d-4a66-b242-17b72b7bc4a7"
+[ChatController] Found 10 messages
+[ChatController] Fetching history for chatId: "616d2016-f86d-4a66-b242-17b72b7bc4a7"
+[ChatController] Found 10 messages
+[ChatController] Deleting chat: "616d2016-f86d-4a66-b242-17b72b7bc4a7"
+[ChatController] Deleting chat: "616d2016-f86d-4a66-b242-17b72b7bc4a7"
+[31m[Nest] 25659  - [39m01/02/2026, 7:15:32 PM [31m  ERROR[39m [38;5;3m[ExceptionsHandler] [39mPrismaClientKnownRequestError: 
+Invalid `this.prisma.chat.delete()` invocation in
+/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/src/chat/chat.service.ts:106:39
+
+  103 await this.prisma.message.deleteMany({
+  104     where: { chatId }
+  105 });
+→ 106 return this.prisma.chat.delete(
+An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.
+    at $n.handleRequestError [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:121:7315[90m)[39m
+    at $n.handleAndLogRequestError [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:121:6623[90m)[39m
+    at $n.request [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:121:6307[90m)[39m
+    at async l [90m(/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@prisma[24m/client/runtime/library.js:130:9633[90m)[39m
+    at async [90m/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@nestjs[24m/core/router/router-execution-context.js:46:28
+    at async [90m/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/[39mnode_modules/[4m@nestjs[24m/core/router/router-proxy.js:9:17 {
+  code: [32m'P2025'[39m,
+  clientVersion: [32m'5.22.0'[39m,
+  meta: {
+    modelName: [32m'Chat'[39m,
+    cause: [32m'Record to delete does not exist.'[39m
+  }
+}
+Client disconnected: 3DNQqMa13BlHWP3uAAAX
+Client connected: K3eAYoM2qAHQyf_JAAAZ
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client disconnected: K3eAYoM2qAHQyf_JAAAZ
+[2J[3J[H[[90m7:25:42 PM[0m] File change detected. Starting incremental compilation...
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m9[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m9[0m         let settings = await this.prisma.widgetSettings.findUnique({
+[7m [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m15[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m15[0m             settings = await this.prisma.widgetSettings.create({
+[7m  [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m37[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m37[0m         return this.prisma.widgetSettings.upsert({
+[7m  [0m [91m                           ~~~~~~~~~~~~~~[0m
+
+[[90m7:25:43 PM[0m] Found 3 errors. Watching for file changes.
+
+[2J[3J[H[[90m7:25:46 PM[0m] File change detected. Starting incremental compilation...
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m9[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m9[0m         let settings = await this.prisma.widgetSettings.findUnique({
+[7m [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m15[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m15[0m             settings = await this.prisma.widgetSettings.create({
+[7m  [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m37[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m37[0m         return this.prisma.widgetSettings.upsert({
+[7m  [0m [91m                           ~~~~~~~~~~~~~~[0m
+
+[[90m7:25:46 PM[0m] Found 3 errors. Watching for file changes.
+
+[2J[3J[H[[90m7:25:48 PM[0m] File change detected. Starting incremental compilation...
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m9[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m9[0m         let settings = await this.prisma.widgetSettings.findUnique({
+[7m [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m15[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m15[0m             settings = await this.prisma.widgetSettings.create({
+[7m  [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m37[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m37[0m         return this.prisma.widgetSettings.upsert({
+[7m  [0m [91m                           ~~~~~~~~~~~~~~[0m
+
+[[90m7:25:48 PM[0m] Found 3 errors. Watching for file changes.
+
+[2J[3J[H[[90m7:26:10 PM[0m] File change detected. Starting incremental compilation...
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m9[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m9[0m         let settings = await this.prisma.widgetSettings.findUnique({
+[7m [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m15[0m:[93m42[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m15[0m             settings = await this.prisma.widgetSettings.create({
+[7m  [0m [91m                                         ~~~~~~~~~~~~~~[0m
+
+[96msrc/widget-settings/widget-settings.service.ts[0m:[93m37[0m:[93m28[0m - [91merror[0m[90m TS2339: [0mProperty 'widgetSettings' does not exist on type 'PrismaService'.
+
+[7m37[0m         return this.prisma.widgetSettings.upsert({
+[7m  [0m [91m                           ~~~~~~~~~~~~~~[0m
+
+[[90m7:26:10 PM[0m] Found 3 errors. Watching for file changes.
+
+[2J[3J[H[[90m7:27:12 PM[0m] File change detected. Starting incremental compilation...
+
+your 131072x1 screen size is bogus. expect trouble
+[[90m7:27:13 PM[0m] Found 0 errors. Watching for file changes.
+
+[2J[3J[H[[90m7:27:14 PM[0m] File change detected. Starting incremental compilation...
+
+your 131072x1 screen size is bogus. expect trouble
+[[90m7:27:14 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +63ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +3ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +30ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +2ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +4ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +4ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:15 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 39180  - [39m01/02/2026, 7:27:17 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1311ms[39m
+Client connected: YAajU3yLgKtM8rIJAAAB
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Killed
+[2J[3J[H[[90m7:51:49 PM[0m] File change detected. Starting incremental compilation...
+
+[[90m7:51:53 PM[0m] Found 0 errors. Watching for file changes.
+
+[2J[3J[H[[90m7:51:54 PM[0m] File change detected. Starting incremental compilation...
+
+your 131072x1 screen size is bogus. expect trouble
+[[90m7:51:55 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +125ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +9ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +48ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +10ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +50ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +2ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +6ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +8ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +7ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:56 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +4ms[39m
+[32m[Nest] 44416  - [39m01/02/2026, 7:51:58 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1556ms[39m
+[31m[Nest] 44416  - [39m01/02/2026, 7:51:58 PM [31m  ERROR[39m [38;5;3m[NestApplication] [39m[31mError: listen EADDRINUSE: address already in use :::3000[39m[38;5;3m +6ms[39m
+node:net:1937
+    const ex = new UVExceptionWithHostPort(err, 'listen', address, port);
+               ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1937:16)
+    at listenInCluster (node:net:1994:12)
+    at Server.listen (node:net:2099:7)
+    at ExpressAdapter.listen (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/platform-express/adapters/express-adapter.js:127:32)
+    at /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/core/nest-application.js:188:30
+    at new Promise (<anonymous>)
+    at NestApplication.listen (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/core/nest-application.js:178:16)
+    at async bootstrap (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/src/main.ts:10:3) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+Node.js v22.14.0
+[2J[3J[H[[90m7:52:03 PM[0m] File change detected. Starting incremental compilation...
+
+[[90m7:52:03 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +61ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +8ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:04 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +2ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +35ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +3ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +6ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +2ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +3ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:05 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44512  - [39m01/02/2026, 7:52:06 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1193ms[39m
+Client connected: U6polfhMxne1yScdAAAB
+Admin joined room admin:3e48c511-bf70-400f-a358-ff82f46ed5a4
+Client connected: qrBcfKqsWdL4sM00AAAD
+Visitor v_vyjs6kf5xxamjx05x0w joined room chat:3e48c511-bf70-400f-a358-ff82f46ed5a4:v_vyjs6kf5xxamjx05x0w
+Client disconnected: qrBcfKqsWdL4sM00AAAD
+Client connected: 4MlHb38tkgwzjOwPAAAF
+Visitor v_vyjs6kf5xxamjx05x0w joined room chat:3e48c511-bf70-400f-a358-ff82f46ed5a4:v_vyjs6kf5xxamjx05x0w
+Client disconnected: 4MlHb38tkgwzjOwPAAAF
+Client connected: ApHoeOZuFTxU2RMXAAAH
+Visitor v_vyjs6kf5xxamjx05x0w joined room chat:3e48c511-bf70-400f-a358-ff82f46ed5a4:v_vyjs6kf5xxamjx05x0w
+[2J[3J[H[[90m7:52:24 PM[0m] File change detected. Starting incremental compilation...
+
+your 131072x1 screen size is bogus. expect trouble
+[[90m7:52:25 PM[0m] Found 0 errors. Watching for file changes.
+
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[NestFactory] [39m[32mStarting Nest application...[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mPrismaModule dependencies initialized[39m[38;5;3m +34ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigHostModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAppModule dependencies initialized[39m[38;5;3m +5ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mConfigModule dependencies initialized[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mWidgetSettingsModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mJwtModule dependencies initialized[39m[38;5;3m +3ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mChatModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mSitesModule dependencies initialized[39m[38;5;3m +4ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[InstanceLoader] [39m[32mAuthModule dependencies initialized[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:join" message[39m[38;5;3m +20ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "visitor:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:join" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[WebSocketsController] [39m[32mChatGateway subscribed to the "admin:message" message[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAppController {/}:[39m[38;5;3m +2ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/, GET} route[39m[38;5;3m +11ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mAuthController {/auth}:[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/register, POST} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/login, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/google/callback, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/auth/profile, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mSitesController {/sites}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, POST} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/sites/invite, POST} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mChatController {/chats}:[39m[38;5;3m +2ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/site/:siteId, GET} route[39m[38;5;3m +2ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/history, GET} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId/clear, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/chats/:chatId, DELETE} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RoutesResolver] [39m[32mWidgetSettingsController {/widget-settings}:[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, GET} route[39m[38;5;3m +0ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:27 PM [32m    LOG[39m [38;5;3m[RouterExplorer] [39m[32mMapped {/widget-settings/:organizationId, PUT} route[39m[38;5;3m +1ms[39m
+[32m[Nest] 44740  - [39m01/02/2026, 7:52:28 PM [32m    LOG[39m [38;5;3m[NestApplication] [39m[32mNest application successfully started[39m[38;5;3m +1543ms[39m
+[31m[Nest] 44740  - [39m01/02/2026, 7:52:28 PM [31m  ERROR[39m [38;5;3m[NestApplication] [39m[31mError: listen EADDRINUSE: address already in use :::3000[39m[38;5;3m +13ms[39m
+node:net:1937
+    const ex = new UVExceptionWithHostPort(err, 'listen', address, port);
+               ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (node:net:1937:16)
+    at listenInCluster (node:net:1994:12)
+    at Server.listen (node:net:2099:7)
+    at ExpressAdapter.listen (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/platform-express/adapters/express-adapter.js:127:32)
+    at /home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/core/nest-application.js:188:30
+    at new Promise (<anonymous>)
+    at NestApplication.listen (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/node_modules/@nestjs/core/nest-application.js:178:16)
+    at async bootstrap (/home/ubuntuvm/Projects/ruslap/chatiq-mvp/api-server/src/main.ts:10:3) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+
+Node.js v22.14.0
