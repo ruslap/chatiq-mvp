@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <title>ChtQ Widget Demo</title>
+    <link rel="icon" type="image/x-icon" href="/assets/ico.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #111111;
+            --bg-card: #0a0a0a;
+            --border-color: #222222;
+            --border-hover: #333333;
+            --text-primary: #ededed;
+            --text-secondary: #888888;
+            --text-tertiary: #666666;
+            --accent: #ffffff;
+            --accent-dim: rgba(255, 255, 255, 0.1);
+            --gradient-start: #ffffff;
+            --gradient-end: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+        }
+
+        /* Top gradient glow */
+        .glow {
+            position: fixed;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+            width: 100%;
+            padding: 0 24px;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            transition: all 0.2s ease;
+        }
+
+        .badge:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Headline */
+        h1 {
+            font-size: clamp(48px, 8vw, 72px);
+            font-weight: 600;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Description */
+        .description {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            max-width: 540px;
+        }
+
+        .description strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 64px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+        }
+
+        /* Code Block */
+        .code-section {
+            width: 100%;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .code-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+        }
+
+        .code-filename {
+            font-family: 'Geist Mono', monospace;
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-tertiary);
+            font-family: inherit;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--border-hover);
+            color: var(--text-secondary);
+        }
+
+        .copy-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .code-block {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            padding: 20px 24px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            font-family: 'Geist Mono', 'SF Mono', Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .code-block .comment {
+            color: #444444;
+        }
+
+        .code-block .tag {
+            color: #ff7b72;
+        }
+
+        .code-block .attr {
+            color: #79c0ff;
+        }
+
+        .code-block .value {
+            color: #a5d6ff;
+        }
+
+        .code-block .string {
+            color: #a5d6ff;
+        }
+
+        /* Pointer */
+        .pointer {
+            position: fixed;
+            bottom: 50px;
+            right: 140px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .pointer-text {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+        }
+
+        .pointer-arrow {
+            width: 24px;
+            height: 24px;
+            color: var(--text-tertiary);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(8px);
+            }
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        .footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+
+        .footer a:hover {
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            body {
+                padding: 80px 0;
+                padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .container {
+                padding: 0 20px;
+                padding-left: calc(20px + env(safe-area-inset-left, 0px));
+                padding-right: calc(20px + env(safe-area-inset-right, 0px));
+            }
+
+            .cta-section {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 20px;
+                -webkit-tap-highlight-color: transparent;
+                touch-action: manipulation;
+            }
+
+            .pointer {
+                display: none;
+            }
+
+            .code-block pre {
+                font-size: 11px;
+            }
+
+            .footer {
+                position: relative;
+                margin-top: 40px;
+                padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+            }
+
+            h1 {
+                font-size: clamp(36px, 10vw, 48px);
+            }
+
+            .description {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow"></div>
+
+    <main class="container">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            Now in Public Beta
+        </div>
+
+        <h1>ChatIQ Віджет</h1>
+
+        <p class="description">Привіт Степан, ось презентація чату
+            Легкий, вбудований чат‑віджет для вашого сайту.
+            <strong>Реальне спілкування в режимі реального часу</strong>, красивий інтерфейс та безшовна інтеграція
+            лише за допомогою одного скрипту.
+        </p>
+        <p class="description">Вірю вам сподобається досвід викоритсання чату</p>
+
+        <div class="cta-section">
+            <button class="btn-primary">
+                Почати
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+            <button class="btn-secondary">
+                Переглянути документацію
+            </button>
+        </div>
+
+        <div class="code-section">
+            <div class="code-header">
+                <div class="code-header-left">
+                    <div class="window-controls">
+                        <span class="window-dot"></span>
+                        <span class="window-dot"></span>
+                        <span class="window-dot"></span>
+                    </div>
+                    <span class="code-filename">index.html</span>
+                </div>
+                <button class="copy-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                    </svg>
+                    Copy
+                </button>
+            </div>
+            <div class="code-block">
+                <pre><span class="comment">&lt;!-- Add this before &lt;/body&gt; --&gt;</span>
+<span class="comment">&lt;!-- &lt;script async src="https://widget-cdn-chatiq.vercel.app/widget.js"&gt;&lt;/script&gt; --&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">async src</span>=<span class="value">"http://localhost:3002/widget.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;script&gt;</span>
+  <span class="attr">window.chtq</span> = {
+    <span class="attr">organizationId</span>: <span class="string">"8df94c53-1364-4bbd-99a4-f9a0ffb01f9a"</span>,
+    <span class="attr">language</span>: <span class="string">"uk"</span>,
+    <span class="attr">color</span>: <span class="string">"#6366F1"</span>,
+    <span class="attr">position</span>: <span class="string">"right"</span>,
+    <span class="attr">size</span>: <span class="string">"standard"</span>
+  };
+<span class="tag">&lt;/script&gt;</span></pre>
+            </div>
+        </div>
+    </main>
+
+    <div class="pointer">
+        <span class="pointer-text">Try the widget</span>
+        <svg class="pointer-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+    </div>
+
+    <footer class="footer">
+        Built with
+        <a href="#">ChatIQ by Ruslan Lap</a>
+        ·
+        <a href="#">Docs</a>
+        ·
+        <a href="#">GitHub</a>
+    </footer>
+
+    <!-- Configure widget BEFORE loading the script -->
+    <script>
+        window.chtq = {
+            organizationId: "8df94c53-1364-4bbd-99a4-f9a0ffb01f9a",
+            language: "uk",
+            color: "#6366F1",
+            position: "right",
+            size: "standard"
+        };
+    </script>
+    <!-- <script async src="https://widget-cdn-chatiq.vercel.app/widget.js"></script> -->
+    <script src="http://localhost:3002/widget.js"></script>
+    <script>
+        document.querySelector('.copy-btn').addEventListener('click', function () {
+            // Використовуємо екранування \x3C (<) та \x3E (>), щоб уникнути помилок парсингу
+            const code = '\x3C!-- Add this before \x3C/body\x3E --\x3E\n' +
+                '// \x3Cscript async src="https://widget-cdn-chatiq.vercel.app/widget.js"\x3E\x3C/script\x3E\n' +
+                '\x3Cscript async src="http://localhost:3002/widget.js"\x3E\x3C/script\x3E\n' +
+                '\x3Cscript\x3E\n' +
+                '  window.chtq = {\n' +
+                '    organizationId: "8df94c53-1364-4bbd-99a4-f9a0ffb01f9a",\n' +
+                '    language: "uk",\n' +
+                '    color: "#6366F1",\n' +
+                '    position: "right",\n' +
+                '    size: "standard"\n' +
+                '  };\n' +
+                '\x3C/script\x3E';
+
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = this;
+                const originalContent = btn.innerHTML;
+
+                // Змінюємо тільки текст, зберігаючи іконку
+                if (btn.querySelector('span')) {
+                    btn.querySelector('span').textContent = 'Copied!';
+                } else {
+                    btn.innerHTML = btn.innerHTML.replace('Copy', 'Copied!');
+                }
+
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Copy failed: ', err);
+            });
+        });
+    </script>
+</body>
+
+</html>
