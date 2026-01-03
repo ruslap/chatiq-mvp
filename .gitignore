@@ -5,6 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 Claude.md
 CLAUDE.md
+.log*
 # Production builds
 dist/
 build/
