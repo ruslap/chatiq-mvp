@@ -502,7 +502,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
             </div>
 
             {/* Messages Area */}
-            <ScrollArea className="flex-1 px-6 py-6" ref={scrollRef}>
+            <ScrollArea className="flex-1 px-6 py-6 telegram-bg-grid" ref={scrollRef}>
                 <div className="flex flex-col gap-4 max-w-2xl mx-auto min-h-full">
                     {safeMessages.map((msg, idx) => {
                         const isPrevFromSame = idx > 0 && safeMessages[idx - 1].from === msg.from;
@@ -511,20 +511,20 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                         return (
                             <div
                                 key={msg.id}
-                                className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'} ${isPrevFromSame ? '-mt-2' : ''} animate-fade-in`}
+                                className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'} ${isPrevFromSame ? '-mt-1.5' : 'mt-1'} ${isAdmin ? 'animate-slide-in-left' : 'animate-slide-in-right'}`}
                             >
                                 {!isPrevFromSame && (
-                                    <div className="mb-1.5 px-1">
+                                    <div className="mb-2 px-1">
                                         {isAdmin ? (
-                                            <span className="text-[10px] font-medium text-[rgb(var(--foreground-secondary))] uppercase tracking-wider">{t.common.you}</span>
+                                            <span className="text-[10px] font-semibold text-[rgb(var(--foreground-secondary))] uppercase tracking-[0.08em] opacity-75">{t.common.you}</span>
                                         ) : (
-                                            <span className="text-sm font-bold text-[rgb(var(--primary))]">{chat.visitor}</span>
+                                            <span className="text-[13px] font-semibold text-[rgb(var(--primary))] tracking-tight">{chat.visitor}</span>
                                         )}
                                     </div>
                                 )}
-                                <div className={`relative px-4 py-3 rounded-2xl text-sm leading-relaxed max-w-[80%] transition-smooth ${isAdmin
-                                    ? 'bg-[rgb(var(--primary))] text-white rounded-br-md'
-                                    : 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground))] rounded-bl-md border border-[rgb(var(--border))]'
+                                <div className={`relative px-3 py-2 max-w-[82%] ${isAdmin
+                                    ? 'chat-admin-message'
+                                    : 'chat-visitor-message'
                                     }`}>
                                     {msg.attachment && (
                                         <div className="mb-2">
@@ -553,10 +553,21 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                                             )}
                                         </div>
                                     )}
-                                    {msg.text && <div>{msg.text}</div>}
-                                    <div className={`text-[10px] mt-1.5 tabular-nums ${isAdmin ? 'text-white/60 text-right' : 'text-[rgb(var(--foreground-secondary))] text-left'
-                                        }`}>
-                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    {msg.text && (
+                                        <div className="whitespace-pre-wrap break-words text-[14px] leading-[1.5] pr-12 mb-0.5">
+                                            {msg.text}
+                                        </div>
+                                    )}
+                                    <div className={`flex items-center justify-end gap-1 text-[11px] tabular-nums font-normal mt-1 ${
+                                        isAdmin ? 'text-green-800/60 dark:text-green-200/50' : 'text-gray-500/70 dark:text-gray-400/60'
+                                    }`}>
+                                        <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        {isAdmin && (
+                                            <svg width="16" height="11" viewBox="0 0 16 11" fill="none" className="opacity-60">
+                                                <path d="M5.5 9.5L1.5 5.5L2.91 4.09L5.5 6.67L5.5 6.67L13.59 -1.42L15 -0.01L5.5 9.5Z" fill="currentColor" transform="translate(0, 2)"/>
+                                                <path d="M10.5 9.5L6.5 5.5L7.91 4.09L10.5 6.67L10.5 6.67L18.59 -1.42L20 -0.01L10.5 9.5Z" fill="currentColor" transform="translate(0, 2)"/>
+                                            </svg>
+                                        )}
                                     </div>
                                 </div>
                             </div>
