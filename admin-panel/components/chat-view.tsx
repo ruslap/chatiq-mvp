@@ -196,7 +196,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
         // Check file type
         const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
         const allowedExtensions = ['.doc', '.docx', '.txt'];
-        
+
         if (!allowedTypes.includes(file.type) && !allowedExtensions.some(ext => file.name.endsWith(ext))) {
             alert(t.chatView.invalidFileType);
             return;
@@ -216,7 +216,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
         if ((!input.trim() && !attachedFile) || !socket) return;
 
         let attachment = null;
-        
+
         // Upload file if present
         if (attachedFile) {
             setIsUploading(true);
@@ -224,14 +224,14 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                 const formData = new FormData();
                 formData.append('file', attachedFile);
                 formData.append('siteId', siteId);
-                
+
                 const response = await fetch(`${apiUrl}/upload`, {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 if (!response.ok) throw new Error('Upload failed');
-                
+
                 attachment = await response.json();
             } catch (error) {
                 console.error('Upload error:', error);
@@ -344,7 +344,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
     // Handle input change with template detection
     const handleInputChange = (value: string) => {
         setInput(value);
-        
+
         // Check if input starts with /
         if (value.startsWith('/') && quickTemplates.length > 0) {
             setShowTemplates(true);
@@ -449,11 +449,10 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                             <div className="flex items-center gap-2 group">
                                 <div>
                                     <div className="font-semibold text-sm text-[rgb(var(--foreground))] leading-none">{chat.visitor}</div>
-                                    <div className={`text-[10px] font-medium uppercase tracking-wider mt-1 ${
-                                        chat.status === 'offline' 
-                                            ? 'text-[rgb(var(--foreground-secondary))]' 
+                                    <div className={`text-[10px] font-medium uppercase tracking-wider mt-1 ${chat.status === 'offline'
+                                            ? 'text-[rgb(var(--foreground-secondary))]'
                                             : 'text-[rgb(var(--success))]'
-                                    }`}>
+                                        }`}>
                                         {chat.status === 'offline' ? 'Офлайн' : t.chatView.activeNow}
                                     </div>
                                 </div>
@@ -529,25 +528,25 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                                     {msg.attachment && (
                                         <div className="mb-2">
                                             {msg.attachment.type === 'image' ? (
-                                                <img 
-                                                    src={msg.attachment.url} 
+                                                <img
+                                                    src={msg.attachment.url}
                                                     alt={msg.attachment.name}
                                                     className="rounded-lg max-w-sm cursor-pointer hover:opacity-90 transition-opacity"
-                                                    onClick={() => window.open(msg.attachment.url, '_blank')}
+                                                    onClick={() => window.open(msg.attachment?.url, '_blank')}
                                                 />
                                             ) : (
                                                 <div className="flex items-center gap-2 p-2 bg-[rgb(var(--muted))]/50 rounded-lg">
                                                     <Paperclip className="w-4 h-4" />
-                                                    <a 
-                                                        href={msg.attachment.url} 
-                                                        target="_blank" 
+                                                    <a
+                                                        href={msg.attachment?.url}
+                                                        target="_blank"
                                                         rel="noopener noreferrer"
                                                         className="text-sm hover:underline"
                                                     >
-                                                        {msg.attachment.name}
+                                                        {msg.attachment?.name}
                                                     </a>
                                                     <span className="text-xs text-[rgb(var(--foreground-secondary))]">
-                                                        ({msg.attachment.size})
+                                                        ({msg.attachment?.size})
                                                     </span>
                                                 </div>
                                             )}
@@ -558,14 +557,13 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                                             {msg.text}
                                         </div>
                                     )}
-                                    <div className={`flex items-center justify-end gap-1 text-[11px] tabular-nums font-normal mt-1 ${
-                                        isAdmin ? 'text-green-800/60 dark:text-green-200/50' : 'text-gray-500/70 dark:text-gray-400/60'
-                                    }`}>
+                                    <div className={`flex items-center justify-end gap-1 text-[11px] tabular-nums font-normal mt-1 ${isAdmin ? 'text-green-800/60 dark:text-green-200/50' : 'text-gray-500/70 dark:text-gray-400/60'
+                                        }`}>
                                         <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                         {isAdmin && (
                                             <svg width="16" height="11" viewBox="0 0 16 11" fill="none" className="opacity-60">
-                                                <path d="M5.5 9.5L1.5 5.5L2.91 4.09L5.5 6.67L5.5 6.67L13.59 -1.42L15 -0.01L5.5 9.5Z" fill="currentColor" transform="translate(0, 2)"/>
-                                                <path d="M10.5 9.5L6.5 5.5L7.91 4.09L10.5 6.67L10.5 6.67L18.59 -1.42L20 -0.01L10.5 9.5Z" fill="currentColor" transform="translate(0, 2)"/>
+                                                <path d="M5.5 9.5L1.5 5.5L2.91 4.09L5.5 6.67L5.5 6.67L13.59 -1.42L15 -0.01L5.5 9.5Z" fill="currentColor" transform="translate(0, 2)" />
+                                                <path d="M10.5 9.5L6.5 5.5L7.91 4.09L10.5 6.67L10.5 6.67L18.59 -1.42L20 -0.01L10.5 9.5Z" fill="currentColor" transform="translate(0, 2)" />
                                             </svg>
                                         )}
                                     </div>
@@ -613,11 +611,11 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                             </Button>
                         </div>
                     )}
-                    
+
                     <div className="relative bg-[rgb(var(--surface))] rounded-2xl border border-[rgb(var(--border))] shadow-sm focus-within:border-[rgb(var(--primary))]/30 focus-within:ring-4 focus-within:ring-[rgb(var(--primary))]/5 transition-smooth">
                         {/* Quick Templates Popup */}
                         {showTemplates && filteredTemplates.length > 0 && (
-                            <div 
+                            <div
                                 ref={templateListRef}
                                 className="absolute bottom-full left-0 right-0 mb-2 bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-lg max-h-64 overflow-y-auto z-50 animate-fade-in"
                             >
@@ -630,9 +628,8 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                                     <button
                                         key={template.id}
                                         onClick={() => selectTemplate(template)}
-                                        className={`w-full text-left px-4 py-3 hover:bg-[rgb(var(--surface-muted))] transition-colors border-b border-[rgb(var(--border))] last:border-b-0 ${
-                                            index === selectedTemplateIndex ? 'bg-[rgb(var(--primary))]/5' : ''
-                                        }`}
+                                        className={`w-full text-left px-4 py-3 hover:bg-[rgb(var(--surface-muted))] transition-colors border-b border-[rgb(var(--border))] last:border-b-0 ${index === selectedTemplateIndex ? 'bg-[rgb(var(--primary))]/5' : ''
+                                            }`}
                                     >
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="font-medium text-sm text-[rgb(var(--foreground))]">

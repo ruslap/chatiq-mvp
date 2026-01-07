@@ -55,16 +55,16 @@ ssh root@YOUR_VPS_IP
 ### Step 2: Create Deploy User
 
 ```bash
-# Create user with sudo access
-adduser deploy
-usermod -aG sudo deploy
+# Create user with sudo access (example: ubuntuvps)
+# adduser ubuntuvps
+# usermod -aG sudo ubuntuvps
 
 # Setup SSH key authentication
-mkdir -p /home/deploy/.ssh
-cp ~/.ssh/authorized_keys /home/deploy/.ssh/
-chown -R deploy:deploy /home/deploy/.ssh
-chmod 700 /home/deploy/.ssh
-chmod 600 /home/deploy/.ssh/authorized_keys
+mkdir -p /home/ubuntuvps/.ssh
+cp ~/.ssh/authorized_keys /home/ubuntuvps/.ssh/
+chown -R ubuntuvps:ubuntuvps /home/ubuntuvps/.ssh
+chmod 700 /home/ubuntuvps/.ssh
+chmod 600 /home/ubuntuvps/.ssh/authorized_keys
 
 # Disable password login (optional, recommended)
 # Edit /etc/ssh/sshd_config and set PasswordAuthentication no
@@ -89,8 +89,9 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docke
 apt update
 apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-# Add deploy user to docker group
-usermod -aG docker deploy
+# Add your user to docker group
+# usermod -aG docker deploy
+usermod -aG docker ubuntuvps  # replace with your username if different
 
 # Verify installation
 docker --version
@@ -116,10 +117,10 @@ ufw status
 # Create directories
 mkdir -p /opt/chtq
 mkdir -p /opt/chtq/backups/{daily,weekly}
-chown -R deploy:deploy /opt/chtq
+chown -R ubuntuvps:ubuntuvps /opt/chtq
 
-# Switch to deploy user
-su - deploy
+# Switch to your user
+su - ubuntuvps
 ```
 
 ---
@@ -246,7 +247,7 @@ Add these secrets in your GitHub repository settings:
 | Secret | Description |
 |--------|-------------|
 | `VPS_HOST` | Your VPS IP address |
-| `VPS_USER` | SSH user (e.g., `deploy`) |
+| `VPS_USER` | SSH user (e.g., `ubuntuvps`) |
 | `VPS_SSH_KEY` | Private SSH key for deployment |
 | `VPS_PORT` | SSH port (default: 22) |
 
@@ -257,7 +258,7 @@ Add these secrets in your GitHub repository settings:
 ssh-keygen -t ed25519 -C "github-actions" -f ~/.ssh/github_deploy
 
 # Copy public key to VPS
-ssh-copy-id -i ~/.ssh/github_deploy.pub deploy@YOUR_VPS_IP
+ssh-copy-id -i ~/.ssh/github_deploy.pub ubuntuvps@YOUR_VPS_IP
 
 # Get private key for GitHub secret
 cat ~/.ssh/github_deploy
@@ -334,7 +335,7 @@ docker compose exec postgres psql -U chtq_user -d chtq_production
 ### Automatic Backups (Cron)
 
 ```bash
-# Edit crontab for deploy user
+# Edit crontab for your user (e.g. ubuntuvps)
 crontab -e
 
 # Add daily backup at 2 AM
