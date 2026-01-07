@@ -241,6 +241,7 @@ export default function ChatsPage() {
                                 chat={selectedChat}
                                 socket={socket}
                                 siteId={siteId}
+                                searchQuery={searchQuery}
                                 onClearMessages={(id) => {
                                     setChats(prev => prev.map(c => c.id === id ? { ...c, lastMsg: "No messages", time: "" } : c));
                                 }}

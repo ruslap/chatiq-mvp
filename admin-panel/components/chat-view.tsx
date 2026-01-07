@@ -43,11 +43,32 @@ interface ChatViewProps {
     };
     socket: any;
     siteId: string;
+    searchQuery?: string;
     onDeleteChat?: (id: string) => void;
     onClearMessages?: (id: string) => void;
 }
 
-export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages, onRenameVisitor }: ChatViewProps & { onRenameVisitor?: (id: string, name: string) => void }) {
+// Helper function to highlight search matches
+function highlightText(text: string, query: string) {
+    if (!query || !query.trim()) return text;
+
+    const parts = text.split(new RegExp(`(${query})`, 'gi'));
+    return (
+        <>
+            {parts.map((part, i) =>
+                part.toLowerCase() === query.toLowerCase() ? (
+                    <mark key={i} className="bg-yellow-200 dark:bg-yellow-900/50 text-yellow-900 dark:text-yellow-200 px-0.5 rounded">
+                        {part}
+                    </mark>
+                ) : (
+                    part
+                )
+            )}
+        </>
+    );
+}
+
+export function ChatView({ chat, socket, siteId, searchQuery = "", onDeleteChat, onClearMessages, onRenameVisitor }: ChatViewProps & { onRenameVisitor?: (id: string, name: string) => void }) {
     const { data: session } = useSession();
     const { language } = useLanguage();
     const t = useTranslation(language);
@@ -557,7 +578,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages, 
                                     )}
                                     {msg.text && (
                                         <div className="whitespace-pre-wrap break-words text-[14px] leading-[1.5] pr-12 mb-0.5">
-                                            {msg.text}
+                                            {highlightText(msg.text, searchQuery)}
                                         </div>
                                     )}
                                     <div className={`flex items-center justify-end gap-1 text-[11px] tabular-nums font-normal mt-1 ${isAdmin ? 'text-green-800/60 dark:text-green-200/50' : 'text-gray-500/70 dark:text-gray-400/60'

@@ -22,6 +22,26 @@ interface ChatListProps {
     onSearchChange: (query: string) => void;
 }
 
+// Helper function to highlight search matches
+function highlightText(text: string, query: string) {
+    if (!query.trim()) return text;
+
+    const parts = text.split(new RegExp(`(${query})`, 'gi'));
+    return (
+        <>
+            {parts.map((part, i) =>
+                part.toLowerCase() === query.toLowerCase() ? (
+                    <mark key={i} className="bg-[rgb(var(--primary))]/20 text-[rgb(var(--primary-700))] dark:text-[rgb(var(--primary-300))] px-0.5 rounded">
+                        {part}
+                    </mark>
+                ) : (
+                    part
+                )
+            )}
+        </>
+    );
+}
+
 export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchChange }: ChatListProps) {
     const { language } = useLanguage();
     const t = useTranslation(language);
@@ -180,7 +200,7 @@ export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchCha
                                                 ? 'font-semibold text-[rgb(var(--foreground))]'
                                                 : 'font-medium text-[rgb(var(--foreground))]'
                                             }`}>
-                                            {chat?.visitor || 'Visitor'}
+                                            {highlightText(chat?.visitor || 'Visitor', searchQuery)}
                                         </span>
                                         <span className={`text-[10px] font-medium tabular-nums transition-colors shrink-0 ml-2 ${isSelected
                                             ? 'text-[rgb(var(--primary))]'
@@ -198,7 +218,7 @@ export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchCha
                                                 ? 'text-[rgb(var(--foreground))] font-medium'
                                                 : 'text-[rgb(var(--foreground-secondary))]'
                                             }`}>
-                                            {chat.lastMsg}
+                                            {highlightText(chat.lastMsg, searchQuery)}
                                         </span>
                                         {isUnread && (
                                             <div className="relative">
