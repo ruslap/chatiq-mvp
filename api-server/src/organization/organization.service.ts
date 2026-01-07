@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class OrganizationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getOrCreateOrganization(userId: string) {
     // First check if user already has an organization
@@ -20,7 +20,7 @@ export class OrganizationService {
     // Check if there's an existing organization we can connect to
     // or create a new one
     const organizationId = uuidv4();
-    
+
     const organization = await this.prisma.widgetSettings.create({
       data: {
         organizationId,
@@ -42,7 +42,7 @@ export class OrganizationService {
     return user?.organization;
   }
 
-  async updateOrganizationSettings(organizationId: string, settings: any) {
+  async updateOrganizationSettings(organizationId: string, settings: Record<string, unknown>) {
     return this.prisma.widgetSettings.update({
       where: { organizationId },
       data: settings

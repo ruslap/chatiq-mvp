@@ -1,8 +1,28 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { OrganizationService } from '../organization/organization.service';
 import * as bcrypt from 'bcrypt';
+
+interface RegisterDetails {
+    email: string;
+    password: string;
+    name?: string;
+}
+
+interface GoogleUserDetails {
+    email: string;
+    googleId: string;
+    firstName: string;
+    lastName: string;
+    picture?: string;
+}
+
+interface UserPayload {
+    email: string;
+    id: string;
+    role: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -12,7 +32,7 @@ export class AuthService {
         private organizationService: OrganizationService,
     ) { }
 
-    async register(details: any) {
+    async register(details: RegisterDetails) {
         const existingUser = await this.prisma.user.findUnique({
             where: { email: details.email },
         });
@@ -41,11 +61,12 @@ export class AuthService {
         return user;
     }
 
-    async validateUser(email: string, pass: string): Promise<any> {
+    async validateUser(email: string, pass: string) {
         const user = await this.prisma.user.findUnique({ where: { email } });
         if (user && user.password) {
             const isMatch = await bcrypt.compare(pass, user.password);
             if (isMatch) {
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { password, ...result } = user;
                 return result;
             }
@@ -53,7 +74,7 @@ export class AuthService {
         return null;
     }
 
-    async validateGoogleUser(details: any) {
+    async validateGoogleUser(details: GoogleUserDetails) {
         let user = await this.prisma.user.findUnique({
             where: { email: details.email },
         });
@@ -66,7 +87,7 @@ export class AuthService {
                     data: { googleId: details.googleId, avatar: details.picture },
                 });
             }
-            
+
             // Check if user has organization, create if not
             if (!user.organizationId) {
                 await this.organizationService.getOrCreateOrganization(user.id);
@@ -94,7 +115,7 @@ export class AuthService {
         return user;
     }
 
-    async login(user: any) {
+    login(user: UserPayload) {
         const payload = { email: user.email, sub: user.id, role: user.role };
         return {
             access_token: this.jwtService.sign(payload),

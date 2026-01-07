@@ -15,7 +15,7 @@ export class ChatService {
         });
     }
 
-    async saveVisitorMessage(siteId: string, visitorId: string, text: string, attachment?: any) {
+    async saveVisitorMessage(siteId: string, visitorId: string, text: string, attachment?: string) {
         // 1. Ensure the site exists (SaaS logic: sites should be pre-registered, 
         // but for demo/testing we'll ensure it exists to avoid FK errors)
         let site = await this.prisma.site.findUnique({ where: { id: siteId } });
@@ -79,13 +79,13 @@ export class ChatService {
         });
 
         // Trigger auto-reply execution
-        this.automationService.executeAutoReply(siteId, chat.id, text, 'visitor')
+        void this.automationService.executeAutoReply(siteId, chat.id, text, 'visitor')
             .catch(error => console.error('Auto-reply execution failed:', error));
 
         return message;
     }
 
-    async saveAdminMessage(chatId: string, text: string, attachment?: any) {
+    async saveAdminMessage(chatId: string, text: string, attachment?: string) {
         return this.prisma.message.create({
             data: {
                 chatId,

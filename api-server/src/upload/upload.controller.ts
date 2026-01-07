@@ -1,9 +1,8 @@
-import { Controller, Post, UseInterceptors, UploadedFile, Body, BadRequestException } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuid } from 'uuid';
-import { File } from 'buffer';
 
 @Controller('upload')
 export class UploadController {
@@ -12,7 +11,7 @@ export class UploadController {
     FileInterceptor('file', {
       storage: diskStorage({
         destination: './uploads',
-        filename: (req, file, cb) => {
+        filename: (_req, file, cb) => {
           const uniqueName = uuid() + extname(file.originalname);
           cb(null, uniqueName);
         },
@@ -20,17 +19,17 @@ export class UploadController {
       limits: {
         fileSize: 10 * 1024 * 1024, // 10MB
       },
-      fileFilter: (req, file, cb) => {
+      fileFilter: (_req, file, cb) => {
         const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf', '.doc', '.docx', '.txt'];
         if (allowedTypes.includes(file.mimetype) || allowedTypes.some(type => file.originalname.endsWith(type))) {
           cb(null, true);
         } else {
-          cb(new BadRequestException('Invalid file type'), false);
+          cb(new BadRequestException('Invalid file type') as unknown as Error, false);
         }
       },
     }),
   )
-  async uploadFile(@UploadedFile() file: any, @Body('siteId') siteId: string) {
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }

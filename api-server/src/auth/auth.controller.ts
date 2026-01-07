@@ -9,15 +9,15 @@ export class AuthController {
 
     @Get('google')
     @UseGuards(AuthGuard('google'))
-    async googleAuth(@Req() req) { }
+    async googleAuth() { }
 
     @Post('register')
-    async register(@Body() body: any) {
+    async register(@Body() body: { email: string; password: string; name?: string }) {
         return this.authService.register(body);
     }
 
     @Post('login')
-    async login(@Body() body: any) {
+    async login(@Body() body: { email: string; password: string }) {
         const user = await this.authService.validateUser(body.email, body.password);
         if (!user) {
             throw new UnauthorizedException('Invalid credentials');
@@ -27,8 +27,9 @@ export class AuthController {
 
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
-    async googleAuthRedirect(@Req() req, @Res() res: Response) {
-        const { access_token } = await this.authService.login(req.user);
+    async googleAuthRedirect(@Req() req: { user: any }, @Res() res: Response) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const { access_token } = await this.authService.login(req.user as any);
 
         // Redirect to frontend with token
         // For MVP, we can append it as a query param or set cookie
@@ -38,7 +39,8 @@ export class AuthController {
 
     @Get('profile')
     @UseGuards(AuthGuard('jwt'))
-    getProfile(@Req() req) {
+    getProfile(@Req() req: { user: any }) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return req.user;
     }
 }

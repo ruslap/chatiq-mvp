@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+interface DaySchedule {
+  start: string;
+  end: string;
+  isOpen: boolean;
+}
+
 @Injectable()
 export class AutomationService {
   constructor(
@@ -283,9 +289,9 @@ export class AutomationService {
         // Seed default templates and auto-replies for new site
         await this.seedDefaultAutoReplies(siteId);
         await this.seedDefaultQuickTemplates(siteId);
-      } catch (error) {
+      } catch (error: unknown) {
         // If creation fails due to unique constraint, try to find it again
-        if (error.code === 'P2002') {
+        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: string }).code === 'P2002') {
           hours = await this.prisma.businessHours.findUnique({
             where: { siteId },
           });
@@ -379,9 +385,9 @@ export class AutomationService {
       sunday: hours.sunday,
     };
 
-    let schedule = daySchedules[dayName];
+    let schedule: DaySchedule | null = daySchedules[dayName] as DaySchedule | null;
     if (typeof schedule === 'string') {
-      schedule = JSON.parse(schedule);
+      schedule = JSON.parse(schedule) as DaySchedule;
     }
 
     console.log(`[BusinessHours] Schedule for ${dayName}:`, schedule);
@@ -421,7 +427,7 @@ export class AutomationService {
   async checkAndExecuteAutoReply(
     siteId: string,
     trigger: string,
-    chatId: string,
+    _chatId: string,
   ): Promise<{ shouldReply: boolean; message?: string; delay?: number }> {
     // Get active auto-replies for this site
     const autoReplies = await this.prisma.autoReply.findMany({
@@ -490,9 +496,10 @@ export class AutomationService {
           chatId,
         );
         if (result.shouldReply) {
-          setTimeout(async () => {
+          void (async () => {
+            await new Promise((resolve) => setTimeout(resolve, result.delay || 0));
             await this.sendAutoReply(siteId, chatId, result.message!);
-          }, result.delay || 0);
+          })();
         }
       } else {
         console.log('[AutoReply] OFFLINE - sending offline message');
@@ -503,9 +510,10 @@ export class AutomationService {
           chatId,
         );
         if (offlineResult.shouldReply) {
-          setTimeout(async () => {
+          void (async () => {
+            await new Promise((resolve) => setTimeout(resolve, offlineResult.delay || 0));
             await this.sendAutoReply(siteId, chatId, offlineResult.message!);
-          }, offlineResult.delay || 0);
+          })();
         }
       }
     }

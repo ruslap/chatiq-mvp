@@ -1,6 +1,5 @@
-import { Controller, Get, Param, UseGuards, Delete, Patch, Body } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Patch, Body } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('chats')
 // @UseGuards(AuthGuard('jwt'))

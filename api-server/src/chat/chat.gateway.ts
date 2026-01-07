@@ -11,6 +11,13 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { OnEvent } from '@nestjs/event-emitter';
 
+interface MessageData {
+    text: string;
+    createdAt: Date;
+    from?: string;
+    attachment?: string | null;
+}
+
 @WebSocketGateway({
     cors: {
         origin: '*',
@@ -23,9 +30,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly chatService: ChatService) { }
 
     @OnEvent('auto-reply.sent')
-    handleAutoReplySent(payload: { siteId: string; chatId: string; visitorId: string; message: any }) {
+    handleAutoReplySent(payload: { siteId: string; chatId: string; visitorId: string; message: MessageData }) {
         const { siteId, visitorId, message } = payload;
-        
+
         // Send to visitor's room
         const visitorRoom = `chat:${siteId}:${visitorId}`;
         this.server.to(visitorRoom).emit('admin:message', {
@@ -37,7 +44,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         // Also notify admin room
         const adminRoom = `admin:${siteId}`;
         this.server.to(adminRoom).emit('chat:message', message);
-        
+
         console.log(`Auto-reply delivered via WebSocket to room ${visitorRoom}`);
     }
 
@@ -47,22 +54,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     handleDisconnect(client: Socket) {
         console.log(`Client disconnected: ${client.id}`);
-        
+
         // Try to get visitor info from the socket before it's fully disconnected
         const visitorData = client.handshake.query;
         const siteId = visitorData?.siteId as string;
         const visitorId = visitorData?.visitorId as string;
-        
+
         console.log(`[handleDisconnect] Query params:`, visitorData);
-        
+
         if (siteId && visitorId) {
             console.log(`Visitor ${visitorId} disconnected from site ${siteId}`);
-            
+
             // Find and update the chat status to closed
-            this.chatService.findChatByVisitor(siteId, visitorId).then(chat => {
+            void this.chatService.findChatByVisitor(siteId, visitorId).then(chat => {
                 if (chat) {
                     console.log(`[handleDisconnect] Found chat ${chat.id}, updating status to closed`);
-                    this.chatService.updateChatStatus(chat.id, 'closed').then(() => {
+                    void this.chatService.updateChatStatus(chat.id, 'closed').then(() => {
                         console.log(`[handleDisconnect] Status updated, emitting visitor:offline to admin:${siteId}`);
                         // Notify admins that visitor has left
                         this.server.to(`admin:${siteId}`).emit('visitor:offline', {
@@ -83,7 +90,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('visitor:join')
-    async handleVisitorJoin(
+    handleVisitorJoin(
         @ConnectedSocket() client: Socket,
         @MessageBody() payload: { siteId: string; visitorId: string },
     ) {
@@ -98,7 +105,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('visitor:message')
     async handleVisitorMessage(
         @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { siteId: string; visitorId: string; text: string; attachment?: any; visitorName?: string },
+        @MessageBody() payload: { siteId: string; visitorId: string; text: string; attachment?: string; visitorName?: string },
     ) {
         const { siteId, visitorId, text, attachment, visitorName } = payload;
 
@@ -107,8 +114,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
         // Update visitor name if provided
         if (visitorName && message.chatId) {
-            await this.chatService.renameVisitor(message.chatId, visitorName);
-            console.log(`[ChatGateway] Updated visitor name to: ${visitorName}`);
+            void this.chatService.renameVisitor(message.chatId, visitorName).then(() => {
+                console.log(`[ChatGateway] Updated visitor name to: ${visitorName}`);
+            });
         }
 
         const roomName = `chat:${siteId}:${visitorId}`;
@@ -128,7 +136,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('admin:join')
-    async handleAdminJoin(
+    handleAdminJoin(
         @ConnectedSocket() client: Socket,
         @MessageBody() payload: { siteId: string },
     ) {
@@ -142,7 +150,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @SubscribeMessage('admin:message')
     async handleAdminMessage(
         @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { chatId: string; text: string; siteId: string; attachment?: any },
+        @MessageBody() payload: { chatId: string; text: string; siteId: string; attachment?: string },
     ) {
         const { chatId, text, siteId, attachment } = payload;
 
@@ -187,7 +195,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ) {
         const { chatId } = payload;
         await this.chatService.markMessagesAsRead(chatId);
-        
+
         // Update unread count for all admins
         const chat = await this.chatService.getChatById(chatId);
         if (chat) {
@@ -195,7 +203,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const unreadCount = await this.chatService.getUnreadCount(chat.siteId);
             this.server.to(adminRoom).emit('unread_count_update', unreadCount);
         }
-        
+
         return { status: 'ok' };
     }
 
@@ -205,12 +213,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         @MessageBody() payload: { siteId: string; visitorId: string },
     ) {
         console.log(`Visitor ${payload.visitorId} disconnected from site ${payload.siteId}`);
-        
+
         // Find and update the chat status to closed
         const chat = await this.chatService.findChatByVisitor(payload.siteId, payload.visitorId);
         if (chat) {
             await this.chatService.updateChatStatus(chat.id, 'closed');
-            
+
             // Notify admins that visitor has left
             this.server.to(`admin:${payload.siteId}`).emit('visitor:offline', {
                 chatId: chat.id,
