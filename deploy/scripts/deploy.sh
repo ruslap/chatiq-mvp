@@ -35,9 +35,11 @@ cd "$DEPLOY_DIR"
 
 # Parse arguments
 BUILD_FLAG=""
+UP_FLAG=""
 if [ "$1" == "--build" ]; then
-    BUILD_FLAG="--build"
-    echo -e "${YELLOW}🔨 Build flag enabled - rebuilding all images${NC}"
+    BUILD_FLAG="--no-cache"
+    UP_FLAG="--build"
+    echo -e "${YELLOW}🔨 Build flag enabled - rebuilding all images without cache${NC}"
 fi
 
 # Step 1: Pull latest code (if in git repo)
@@ -50,7 +52,7 @@ fi
 
 # Step 2: Build images
 echo -e "${BLUE}🔨 Building Docker images...${NC}"
-docker compose build
+docker compose build $BUILD_FLAG
 
 # Step 3: Run database migrations
 echo -e "${BLUE}📊 Running database migrations...${NC}"
@@ -58,7 +60,7 @@ docker compose run --rm api-server npx prisma migrate deploy
 
 # Step 4: Start/restart containers
 echo -e "${BLUE}🚀 Starting containers...${NC}"
-docker compose up -d --remove-orphans
+docker compose up -d --remove-orphans $UP_FLAG
 
 # Step 5: Wait for health checks
 echo -e "${BLUE}⏳ Waiting for services to become healthy...${NC}"
@@ -72,21 +74,21 @@ docker compose ps
 echo -e "${BLUE}🔍 Verifying services...${NC}"
 
 # Check API
-if curl -s -o /dev/null -w "%{http_code}" http://localhost:80 --header "Host: api.chtq.ink" | grep -q "200\|301\|302"; then
+if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 --header "Host: api.chtq.ink" | grep -q "200\|301\|302"; then
     echo -e "${GREEN}✅ API Server: OK${NC}"
 else
     echo -e "${YELLOW}⚠️ API Server: Check logs with 'docker compose logs api-server'${NC}"
 fi
 
 # Check Admin
-if curl -s -o /dev/null -w "%{http_code}" http://localhost:80 --header "Host: admin.chtq.ink" | grep -q "200\|301\|302"; then
+if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 --header "Host: admin.chtq.ink" | grep -q "200\|301\|302"; then
     echo -e "${GREEN}✅ Admin Panel: OK${NC}"
 else
     echo -e "${YELLOW}⚠️ Admin Panel: Check logs with 'docker compose logs admin-panel'${NC}"
 fi
 
 # Check CDN
-if curl -s -o /dev/null -w "%{http_code}" http://localhost:80/widget.js --header "Host: cdn.chtq.ink" | grep -q "200"; then
+if curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/widget.js --header "Host: cdn.chtq.ink" | grep -q "200"; then
     echo -e "${GREEN}✅ Widget CDN: OK${NC}"
 else
     echo -e "${YELLOW}⚠️ Widget CDN: Check logs with 'docker compose logs widget-cdn'${NC}"

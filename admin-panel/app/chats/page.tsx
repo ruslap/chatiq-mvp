@@ -61,7 +61,7 @@ export default function ChatsPage() {
 
         // Configurable API URL for flexibility between local/prod
         const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
-            // || "https://api-server-chatiq.onrender.com";
+            || process.env.NEXT_PUBLIC_API_URL
             || "http://localhost:3000";
 
         console.log(`[ChatsPage] Connecting to socket at ${apiUrl}`);
@@ -132,7 +132,7 @@ export default function ChatsPage() {
 
         s.on("chat:new_message", updateChatsWithNewMessage);
         s.on("chat:message", updateChatsWithNewMessage);
-        
+
         // Handle visitor going offline
         s.on("visitor:offline", (data: any) => {
             console.log("[ChatsPage] ✅ Received visitor:offline event:", data);

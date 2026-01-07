@@ -40,7 +40,9 @@ export function SidebarNav() {
     useEffect(() => {
         if (!session?.user || !siteId) return;
 
-        const apiUrl = localStorage.getItem('chtq_api_url') || "http://localhost:3000";
+        const apiUrl = localStorage.getItem('chtq_api_url')
+            || process.env.NEXT_PUBLIC_API_URL
+            || "http://localhost:3000";
         const socket = io(apiUrl);
 
         socket.on('connect', () => {

@@ -80,4 +80,4 @@ EXPOSE 3000
 
 # Start the application
 # Using dist/main without .js to allow for commonjs/module flexibility
-CMD ["node", "dist/main"]
+CMD ["node", "dist/src/main"]

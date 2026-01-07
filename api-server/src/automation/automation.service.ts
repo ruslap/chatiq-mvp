@@ -7,7 +7,7 @@ export class AutomationService {
   constructor(
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   // ============ AUTO-REPLIES ============
 
@@ -261,19 +261,38 @@ export class AutomationService {
   // ============ BUSINESS HOURS ============
 
   async getBusinessHours(siteId: string) {
+    // 1. Ensure site exists first to avoid foreign key violations
+    await this.prisma.site.upsert({
+      where: { id: siteId },
+      update: {},
+      create: { id: siteId, name: `Site ${siteId.slice(-4)}` }
+    });
+
+    // 2. Try to find existing business hours
     let hours = await this.prisma.businessHours.findUnique({
       where: { siteId },
     });
 
-    // Create default if not exists
+    // 3. Create default if not exists (using try-catch to handle rare race conditions)
     if (!hours) {
-      hours = await this.prisma.businessHours.create({
-        data: { siteId },
-      });
+      try {
+        hours = await this.prisma.businessHours.create({
+          data: { siteId },
+        });
 
-      // Seed default templates and auto-replies for new site
-      await this.seedDefaultAutoReplies(siteId);
-      await this.seedDefaultQuickTemplates(siteId);
+        // Seed default templates and auto-replies for new site
+        await this.seedDefaultAutoReplies(siteId);
+        await this.seedDefaultQuickTemplates(siteId);
+      } catch (error) {
+        // If creation fails due to unique constraint, try to find it again
+        if (error.code === 'P2002') {
+          hours = await this.prisma.businessHours.findUnique({
+            where: { siteId },
+          });
+        } else {
+          throw error;
+        }
+      }
     }
 
     return hours;
@@ -443,7 +462,7 @@ export class AutomationService {
     from: 'admin' | 'visitor',
   ): Promise<void> {
     console.log('[AutoReply] executeAutoReply called', { siteId, chatId, from });
-    
+
     // Don't execute auto-replies for admin messages
     if (from === 'admin') {
       console.log('[AutoReply] Skipping - message from admin');

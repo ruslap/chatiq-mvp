@@ -71,6 +71,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
 
     // Configurable API URL for flexibility between local/prod
     const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
+        || process.env.NEXT_PUBLIC_API_URL
         || "http://localhost:3000";
 
     // Fetch message history
@@ -450,8 +451,8 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                                 <div>
                                     <div className="font-semibold text-sm text-[rgb(var(--foreground))] leading-none">{chat.visitor}</div>
                                     <div className={`text-[10px] font-medium uppercase tracking-wider mt-1 ${chat.status === 'offline'
-                                            ? 'text-[rgb(var(--foreground-secondary))]'
-                                            : 'text-[rgb(var(--success))]'
+                                        ? 'text-[rgb(var(--foreground-secondary))]'
+                                        : 'text-[rgb(var(--success))]'
                                         }`}>
                                         {chat.status === 'offline' ? 'Офлайн' : t.chatView.activeNow}
                                     </div>

@@ -38,14 +38,14 @@
   'use strict';
 
   // Configuration
+  // Configuration
   const WIDGET_VERSION = '3.2.0';
-  // const API_URL = 'http://localhost:3000'; // Production
-  const API_URL = 'http://localhost:3000'; // Local development
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const ALLOWED_FILE_TYPES = ['image/*', 'application/pdf', '.doc', '.docx', '.txt'];
 
   // Get configuration from new window.chtq or legacy window.ChatIQConfig / script attribute
   const chtqConfig = window.chtq || {};
+  const API_URL = chtqConfig.apiUrl || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : 'https://api.chtq.ink');
   const legacyConfig = window.ChatIQConfig || {};
   const currentScript = document.currentScript;
 
@@ -142,32 +142,32 @@
   // Update presence UI based on business hours status
   function updatePresenceUI() {
     if (!shadow) return;
-    
+
     const statusText = shadow.querySelector('.status-text');
     const statusDot = shadow.querySelector('.status-dot');
     const offlineBanner = shadow.querySelector('.offline-banner');
     const avatarIconOnline = shadow.querySelector('.avatar-icon-online');
     const avatarIconOffline = shadow.querySelector('.avatar-icon-offline');
-    
+
     if (statusText) {
       statusText.textContent = businessStatus.isOpen ? t('online') : t('offline');
     }
-    
+
     if (statusDot) {
       statusDot.style.background = businessStatus.isOpen ? '#22c55e' : '#ef4444';
     }
-    
+
     // Switch avatar icons based on status
     if (avatarIconOnline && avatarIconOffline) {
       avatarIconOnline.style.display = businessStatus.isOpen ? 'block' : 'none';
       avatarIconOffline.style.display = businessStatus.isOpen ? 'none' : 'block';
     }
-    
+
     // Show/hide offline banner
     if (offlineBanner) {
       offlineBanner.style.display = businessStatus.isOpen ? 'none' : 'flex';
     }
-    
+
     console.log('[ChatIQ] Business status updated:', businessStatus);
   }
 
@@ -286,13 +286,13 @@
     try {
       const response = await fetch(`${API_URL}/automation/business-hours/${siteId}/status`);
       const data = await response.json();
-      
+
       // Update business status
       businessStatus = data;
-      
+
       // Update all UI elements
       updatePresenceUI();
-      
+
       // Update widget class for offline styling
       const panel = shadow.querySelector('.panel');
       if (panel) {
@@ -302,7 +302,7 @@
           panel.classList.add('widget-offline');
         }
       }
-      
+
       console.log('[ChatIQ] Business status updated:', businessStatus);
     } catch (error) {
       console.error('[ChatIQ] Failed to check business hours:', error);
@@ -2217,7 +2217,7 @@
   startBtn?.addEventListener('click', async () => {
     // Get visitor name from input - REQUIRED
     const enteredName = visitorNameInput?.value?.trim();
-    
+
     if (!enteredName) {
       // Show error - name is required
       visitorNameInput.style.borderColor = '#ef4444';
@@ -2226,20 +2226,20 @@
       visitorNameInput.focus();
       return;
     }
-    
+
     // Create unique display name with date/time
     const now = new Date();
     const dateStr = now.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
     const timeStr = now.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
     const uniqueDisplayName = `${enteredName} (${dateStr} ${timeStr})`;
-    
+
     visitorDisplayName = uniqueDisplayName;
     localStorage.setItem('chatiq_visitor_name', enteredName); // Save original name for pre-fill
-    
+
     // Update visitor name on server (will be done after chat is created)
     window._chatiqPendingVisitorName = uniqueDisplayName;
     window._chatiqVisitorFirstName = enteredName; // For personalized greeting
-    
+
     welcome.style.display = 'none';
     composerContainer.style.display = 'block';
     input.focus();
@@ -2268,28 +2268,28 @@
   function showWelcomeMessageIfNeeded() {
     if (!welcomeMessageShown && messageHistory.length === 0) {
       welcomeMessageShown = true;
-      
+
       // Get visitor's first name for personalized greeting
       const visitorFirstName = window._chatiqVisitorFirstName || '';
-      
+
       // Create personalized greeting
       let personalizedGreeting = '';
       if (visitorFirstName) {
         personalizedGreeting = `Привіт, <span style="color: ${accentColor}; font-weight: 600;">${visitorFirstName}</span>! 👋 `;
       }
-      
+
       // Show offline message if offline, otherwise show welcome message
-      let messageToShow = !businessStatus.isOpen && businessStatus.message 
-        ? businessStatus.message 
+      let messageToShow = !businessStatus.isOpen && businessStatus.message
+        ? businessStatus.message
         : welcomeMessage;
-      
+
       // Add personalized greeting to the beginning
       if (personalizedGreeting && messageToShow) {
         messageToShow = personalizedGreeting + messageToShow;
       } else if (personalizedGreeting) {
         messageToShow = personalizedGreeting + 'Чим можу допомогти?';
       }
-      
+
       if (messageToShow) {
         addMessage(messageToShow, 'bot');
       }
@@ -2374,7 +2374,7 @@
     currentFile = file;
     uploadName.textContent = file.name;
     uploadSize.textContent = formatFileSize(file.size);
-    
+
     // Enable send button when file is selected
     sendBtn.disabled = false;
 
@@ -2546,10 +2546,10 @@
     typing.id = 'typing';
     typing.innerHTML = `
           <div class="typing-avatar">
-            ${agentAvatar || shadow?.querySelector('.header-avatar img')?.src 
-              ? `<img src="${agentAvatar || shadow.querySelector('.header-avatar img').src}" alt="${agentName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`
-              : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
-            }
+            ${agentAvatar || shadow?.querySelector('.header-avatar img')?.src
+        ? `<img src="${agentAvatar || shadow.querySelector('.header-avatar img').src}" alt="${agentName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`
+        : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
+      }
           </div>
           <div class="typing-content">
             <div class="typing-name">${agentName}</div>
@@ -2588,10 +2588,10 @@
 
     const avatarHTML = from === 'bot' ? `
           <div class="message-avatar">
-            ${agentAvatar 
-              ? `<img src="${agentAvatar}" alt="${agentName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`
-              : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
-            }
+            ${agentAvatar
+        ? `<img src="${agentAvatar}" alt="${agentName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`
+        : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
+      }
           </div>
         ` : '';
 
@@ -2689,20 +2689,20 @@
       // Show uploading state
       sendBtn.disabled = true;
       sendBtn.innerHTML = '⏳';
-      
+
       try {
         // Upload file first
         const formData = new FormData();
         formData.append('file', currentFile);
         formData.append('siteId', siteId);
-        
+
         const response = await fetch(`${API_URL}/upload`, {
           method: 'POST',
           body: formData
         });
-        
+
         if (!response.ok) throw new Error('Upload failed');
-        
+
         const uploadedFile = await response.json();
         attachment = uploadedFile;
       } catch (error) {
@@ -2720,7 +2720,7 @@
       // Include visitor name if set
       const visitorName = window._chatiqPendingVisitorName || localStorage.getItem('chatiq_visitor_name') || null;
       socket.emit('visitor:message', { siteId, visitorId, text, attachment, visitorName });
-      
+
       // Clear pending name after first message
       if (window._chatiqPendingVisitorName) {
         delete window._chatiqPendingVisitorName;
