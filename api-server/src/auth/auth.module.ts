@@ -6,6 +6,8 @@ import { JwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OrganizationModule } from '../organization/organization.module';
+import { SitesModule } from '../sites/sites.module';
+import { AutomationModule } from '../automation/automation.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { OrganizationModule } from '../organization/organization.module';
       }),
     }),
     OrganizationModule,
+    SitesModule,
+    AutomationModule,
   ],
   providers: [AuthService, GoogleStrategy, JwtStrategy],
   controllers: [AuthController],

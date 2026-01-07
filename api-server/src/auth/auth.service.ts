@@ -2,6 +2,8 @@ import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { OrganizationService } from '../organization/organization.service';
+import { SitesService } from '../sites/sites.service';
+import { AutomationService } from '../automation/automation.service';
 import * as bcrypt from 'bcrypt';
 
 interface RegisterDetails {
@@ -18,7 +20,7 @@ interface GoogleUserDetails {
     picture?: string;
 }
 
-interface UserPayload {
+export interface UserPayload {
     email: string;
     id: string;
     role: string;
@@ -30,6 +32,8 @@ export class AuthService {
         private prisma: PrismaService,
         private jwtService: JwtService,
         private organizationService: OrganizationService,
+        private sitesService: SitesService,
+        private automationService: AutomationService,
     ) { }
 
     async register(details: RegisterDetails) {
@@ -58,6 +62,9 @@ export class AuthService {
         // Create organization for new user
         await this.organizationService.getOrCreateOrganization(user.id);
 
+        // Create default site with templates
+        await this.createDefaultSite(user.id);
+
         return user;
     }
 
@@ -72,6 +79,42 @@ export class AuthService {
             }
         }
         return null;
+    }
+
+    /**
+     * Creates a default site with templates for a new user
+     */
+    private async createDefaultSite(userId: string): Promise<void> {
+        try {
+            // Check if user already has sites
+            const existingSites = await this.prisma.site.count({
+                where: { ownerId: userId },
+            });
+
+            // Only create default site if user has no sites
+            if (existingSites > 0) {
+                return;
+            }
+
+            // Create default site
+            const site = await this.sitesService.createSite(
+                userId,
+                'Мій перший сайт',
+                'example.com', // User can change this later
+            );
+
+            // Seed default templates and auto-replies
+            await this.automationService.seedDefaultAutoReplies(site.id);
+            await this.automationService.seedDefaultQuickTemplates(site.id);
+
+            // Initialize business hours (this will create the record with defaults)
+            await this.automationService.getBusinessHours(site.id);
+
+            console.log(`Default site created for user ${userId} with templates`);
+        } catch (error) {
+            console.error('Failed to create default site:', error);
+            // Don't throw - we don't want to fail registration if site creation fails
+        }
     }
 
     async validateGoogleUser(details: GoogleUserDetails) {
@@ -110,6 +153,9 @@ export class AuthService {
 
             // Create organization for new Google user
             await this.organizationService.getOrCreateOrganization(user.id);
+
+            // Create default site with templates
+            await this.createDefaultSite(user.id);
         }
 
         return user;

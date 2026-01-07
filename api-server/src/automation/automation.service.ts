@@ -267,12 +267,31 @@ export class AutomationService {
   // ============ BUSINESS HOURS ============
 
   async getBusinessHours(siteId: string) {
-    // 1. Ensure site exists first to avoid foreign key violations
-    await this.prisma.site.upsert({
+    // 1. Check if site exists - if not, we cannot create business hours
+    const siteExists = await this.prisma.site.findUnique({
       where: { id: siteId },
-      update: {},
-      create: { id: siteId, name: `Site ${siteId.slice(-4)}` }
+      select: { id: true },
     });
+
+    if (!siteExists) {
+      // Return default values if site doesn't exist (for widget preview, etc.)
+      return {
+        id: 'default',
+        siteId,
+        timezone: 'Europe/Kyiv',
+        isEnabled: false,
+        offlineMessage: 'Дякуємо за звернення! 🕐 Наразі ми не в мережі.',
+        monday: '{"start": "09:00", "end": "18:00", "isOpen": true}',
+        tuesday: '{"start": "09:00", "end": "18:00", "isOpen": true}',
+        wednesday: '{"start": "09:00", "end": "18:00", "isOpen": true}',
+        thursday: '{"start": "09:00", "end": "18:00", "isOpen": true}',
+        friday: '{"start": "09:00", "end": "18:00", "isOpen": true}',
+        saturday: '{"start": "10:00", "end": "15:00", "isOpen": false}',
+        sunday: '{"start": "10:00", "end": "15:00", "isOpen": false}',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+    }
 
     // 2. Try to find existing business hours
     let hours = await this.prisma.businessHours.findUnique({
@@ -343,6 +362,11 @@ export class AutomationService {
     siteId: string,
   ): Promise<{ isOpen: boolean; message?: string }> {
     const hours = await this.getBusinessHours(siteId);
+
+    // If hours is null (shouldn't happen but handle for type safety)
+    if (!hours) {
+      return { isOpen: true }; // Default to always open if no settings
+    }
 
     if (!hours.isEnabled) {
       return { isOpen: true }; // If disabled, always open

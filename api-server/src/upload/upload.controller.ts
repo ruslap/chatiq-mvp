@@ -29,7 +29,7 @@ export class UploadController {
       },
     }),
   )
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: { filename: string; originalname: string; size: number; mimetype: string }) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
