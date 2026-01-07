@@ -97,7 +97,7 @@ export class ChatService {
     }
 
     async getChatsBySite(siteId: string, search?: string) {
-        return this.prisma.chat.findMany({
+        const chats = await this.prisma.chat.findMany({
             where: {
                 siteId,
                 ...(search ? {
@@ -115,6 +115,25 @@ export class ChatService {
                 }
             }
         });
+
+        // Add unreadCount for each chat
+        const chatsWithUnreadCount = await Promise.all(
+            chats.map(async (chat) => {
+                const unreadCount = await this.prisma.message.count({
+                    where: {
+                        chatId: chat.id,
+                        from: 'visitor',
+                        read: false
+                    }
+                });
+                return {
+                    ...chat,
+                    unreadCount
+                };
+            })
+        );
+
+        return chatsWithUnreadCount;
     }
 
     async getMessagesByChat(chatId: string) {

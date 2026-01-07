@@ -64,6 +64,12 @@ export default function ChatsPage() {
         setSelectedChatId(id);
         selectedChatIdRef.current = id;
         setChats(prev => prev.map(c => c.id === id ? { ...c, unreadCount: 0 } : c));
+
+        // Notify server to mark messages as read
+        if (socketRef.current) {
+            console.log(`[ChatsPage] Marking chat ${id} as read on server`);
+            socketRef.current.emit('admin:mark_read', { chatId: id });
+        }
     };
 
     // Separate effect for fetching chats with search
@@ -91,9 +97,7 @@ export default function ChatsPage() {
             .then(data => {
                 if (Array.isArray(data)) {
                     setChats(prev => {
-                        // Merge with existing data to keep client-side state if possible, 
-                        // but for search results usually we strictly replace.
-                        // However, let's map to our internal format.
+                        // Map API data to internal format
                         return data.map((c: any) => {
                             const existing = prev.find(p => p.id === c.id);
                             return {
@@ -103,7 +107,8 @@ export default function ChatsPage() {
                                 lastMsg: c.messages?.[0]?.text || (c.messages?.[0]?.attachment ? t.chatList.fileAttached : t.chatList.noMessages),
                                 time: c.messages?.[0] ? new Date(c.messages[0].createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "",
                                 createdAt: c.createdAt,
-                                unreadCount: existing?.unreadCount || 0,
+                                // Use unreadCount from API, but reset to 0 if this chat is currently selected
+                                unreadCount: selectedChatIdRef.current === c.id ? 0 : (c.unreadCount || 0),
                                 status: existing?.status || 'offline'
                             };
                         });
@@ -172,6 +177,13 @@ export default function ChatsPage() {
                 console.log("[ChatsPage] Updated chats:", updated.map(c => ({ id: c.id, status: c.status })));
                 return updated;
             });
+        });
+
+        // Handle unread count updates from server (when messages are marked as read)
+        s.on("unread_count_update", (totalUnreadCount: number) => {
+            console.log(`[ChatsPage] Received unread_count_update: ${totalUnreadCount}`);
+            // This event tells us the total unread count has changed
+            // We could use this to update a global badge, but individual chat counts are already synced
         });
 
         return () => {
