@@ -4,8 +4,7 @@ export async function getMyOrganization(): Promise<string> {
   try {
     const session = await getSession();
     if (!session?.user) {
-      // Fallback to localStorage for unauthenticated access
-      return localStorage.getItem('chtq_org_id') || '';
+      return '';
     }
 
     const response = await fetch('/api/organization/my', {
@@ -18,19 +17,18 @@ export async function getMyOrganization(): Promise<string> {
       const data = await response.json();
       const orgId = data.organizationId;
 
-      // Store in localStorage as backup
-      localStorage.setItem('chtq_org_id', orgId);
+      // We can cache it, but let's be careful. 
+      // For now, let's NOT rely on localStorage for the source of truth.
+      // localStorage.setItem('chtq_org_id', orgId);
 
       return orgId;
     } else {
       console.error('Failed to get organization from API');
-      // Fallback to localStorage
-      return localStorage.getItem('chtq_org_id') || '';
+      return '';
     }
   } catch (error) {
     console.error('Error getting organization:', error);
-    // Fallback to localStorage
-    return localStorage.getItem('chtq_org_id') || '';
+    return '';
   }
 }
 

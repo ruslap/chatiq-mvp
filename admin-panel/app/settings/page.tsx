@@ -17,38 +17,11 @@ import { AutomationSettings } from "@/components/automation-settings";
 import { TemplatesSettings } from "@/components/templates-settings";
 import { BusinessHoursSettings } from "@/components/business-hours-settings";
 
-// Generate a unique UUID
-function generateUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-}
+import { getMyOrganization } from "@/lib/organization";
 
-// Get or create organization ID
-function getOrCreateOrgId(): string {
-    if (typeof window === 'undefined') return '';
+// ... (other imports remain, but remove generateUUID if unused or keep if used elsewhere)
 
-    // Use fixed ID for development
-    const DEV_ORG_ID = '8df94c53-1364-4bbd-99a4-f9a0ffb01f9a';
-    
-    // In development, always use the fixed ID
-    if (process.env.NODE_ENV === 'development') {
-        return DEV_ORG_ID;
-    }
-
-    // In production, use localStorage logic
-    const storageKey = 'chtq_org_id';
-    let orgId = localStorage.getItem(storageKey);
-
-    if (!orgId) {
-        orgId = generateUUID();
-        localStorage.setItem(storageKey, orgId);
-    }
-
-    return orgId;
-}
+// Remove getOrCreateOrgId function completely
 
 const TABS = [
     { id: 'company', label: 'Компанія' },
@@ -108,15 +81,17 @@ export default function SettingsPage() {
     const [welcomeMessage, setWelcomeMessage] = useState('Вітаю! 👋 Чим можу допомогти?');
     const [operatorName, setOperatorName] = useState('Support Team');
     const [operatorAvatar, setOperatorAvatar] = useState('');
-
-    // Initialize org ID and load settings from API
     useEffect(() => {
-        const id = getOrCreateOrgId();
-        setOrgId(id);
+        const initSettings = async () => {
+            if (!session) return;
 
-        // Load settings from API
-        const loadSettings = async () => {
             try {
+                const id = await getMyOrganization();
+                setOrgId(id);
+
+                if (!id) return;
+
+                // Load settings from API
                 const res = await fetch(`${API_URL}/widget-settings/${id}`, {
                     headers: {
                         'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
@@ -128,7 +103,6 @@ export default function SettingsPage() {
                     const colorMatch = WIDGET_COLORS.find(c => c.value === data.color);
                     if (colorMatch) setWidgetColor(colorMatch.id);
                     else if (data.color) setWidgetColor(data.color);
-
 
                     setWidgetSize(data.size || 'standard');
                     setWidgetPosition(data.position || 'right');
@@ -147,7 +121,7 @@ export default function SettingsPage() {
         };
 
         if (session) {
-            loadSettings();
+            initSettings();
         }
     }, [session]);
 
@@ -163,7 +137,7 @@ export default function SettingsPage() {
 
             const response = await fetch(`${API_URL}/widget-settings/${orgId}`, {
                 method: 'PUT',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
                 },
@@ -324,171 +298,171 @@ export default function SettingsPage() {
                                         </div>
                                     </div>
 
-                                {/* Operator Name */}
-                                <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
-                                    <label className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                        Ім'я оператора:
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={operatorName}
-                                        onChange={(e) => setOperatorName(e.target.value)}
-                                        placeholder="Support Team"
-                                        className="px-4 py-2.5 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-[rgb(var(--foreground))] text-sm focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none transition-smooth w-full max-w-md"
-                                    />
-                                </div>
+                                    {/* Operator Name */}
+                                    <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
+                                        <label className="text-sm text-[rgb(var(--foreground-secondary))]">
+                                            Ім'я оператора:
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={operatorName}
+                                            onChange={(e) => setOperatorName(e.target.value)}
+                                            placeholder="Support Team"
+                                            className="px-4 py-2.5 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-[rgb(var(--foreground))] text-sm focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none transition-smooth w-full max-w-md"
+                                        />
+                                    </div>
 
-                                {/* Admin Avatar */}
-                                <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
-                                    <label className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                        Аватар оператора:
-                                    </label>
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-16 h-16 rounded-full bg-[rgb(var(--surface-muted))] border-2 border-[rgb(var(--border))] overflow-hidden flex items-center justify-center">
-                                            {operatorAvatar ? (
-                                                <img src={operatorAvatar} alt="Admin Avatar" className="w-full h-full object-cover" />
-                                            ) : (
-                                                <div className="text-[rgb(var(--foreground-secondary))] text-2xl">👤</div>
-                                            )}
-                                        </div>
-                                        <div className="flex-1">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => {
-                                                    const file = e.target.files?.[0];
-                                                    if (file) {
-                                                        const reader = new FileReader();
-                                                        reader.onloadend = () => {
-                                                            setOperatorAvatar(reader.result as string);
-                                                        };
-                                                        reader.readAsDataURL(file);
-                                                    }
-                                                }}
-                                                className="hidden"
-                                                id="avatar-upload"
-                                            />
-                                            <label
-                                                htmlFor="avatar-upload"
-                                                className="inline-flex items-center gap-2 px-4 py-2 bg-[rgb(var(--primary))] text-white rounded-xl cursor-pointer hover:bg-[rgb(var(--primary-600))] transition-smooth text-sm font-medium"
-                                            >
-                                                Завантажити фото
-                                            </label>
-                                            {operatorAvatar && (
-                                                <button
-                                                    onClick={() => setOperatorAvatar('')}
-                                                    className="ml-3 px-4 py-2 text-sm text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--destructive))] transition-smooth"
+                                    {/* Admin Avatar */}
+                                    <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
+                                        <label className="text-sm text-[rgb(var(--foreground-secondary))]">
+                                            Аватар оператора:
+                                        </label>
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-16 h-16 rounded-full bg-[rgb(var(--surface-muted))] border-2 border-[rgb(var(--border))] overflow-hidden flex items-center justify-center">
+                                                {operatorAvatar ? (
+                                                    <img src={operatorAvatar} alt="Admin Avatar" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="text-[rgb(var(--foreground-secondary))] text-2xl">👤</div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1">
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files?.[0];
+                                                        if (file) {
+                                                            const reader = new FileReader();
+                                                            reader.onloadend = () => {
+                                                                setOperatorAvatar(reader.result as string);
+                                                            };
+                                                            reader.readAsDataURL(file);
+                                                        }
+                                                    }}
+                                                    className="hidden"
+                                                    id="avatar-upload"
+                                                />
+                                                <label
+                                                    htmlFor="avatar-upload"
+                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-[rgb(var(--primary))] text-white rounded-xl cursor-pointer hover:bg-[rgb(var(--primary-600))] transition-smooth text-sm font-medium"
                                                 >
-                                                    Видалити
-                                                </button>
-                                            )}
+                                                    Завантажити фото
+                                                </label>
+                                                {operatorAvatar && (
+                                                    <button
+                                                        onClick={() => setOperatorAvatar('')}
+                                                        className="ml-3 px-4 py-2 text-sm text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--destructive))] transition-smooth"
+                                                    >
+                                                        Видалити
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* Widget Position */}
-                                <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
-                                    <label className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                        Позиція віджета:
-                                    </label>
-                                    <div className="flex flex-wrap p-1 bg-[rgb(var(--surface-muted))] rounded-full w-fit">
-                                        {WIDGET_POSITIONS.map(pos => (
-                                            <button
-                                                key={pos.id}
-                                                onClick={() => setWidgetPosition(pos.id)}
-                                                className={`px-4 py-2 text-sm font-medium rounded-full transition-smooth ${widgetPosition === pos.id
-                                                    ? 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground))] shadow-sm'
-                                                    : 'text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--foreground))]'
-                                                    }`}
-                                            >
-                                                {pos.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Languages */}
-                                <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
-                                    <label className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                        Мова віджета:
-                                    </label>
-                                    <div className="flex flex-wrap gap-4">
-                                        {LANGUAGES.map(lang => (
-                                            <label
-                                                key={lang.id}
-                                                className="flex items-center gap-2 cursor-pointer group"
-                                            >
-                                                <div
-                                                    onClick={() => toggleLanguage(lang.id)}
-                                                    className={`w-5 h-5 rounded flex items-center justify-center transition-smooth border ${selectedLanguages.includes(lang.id)
-                                                        ? 'bg-[rgb(var(--primary))] border-[rgb(var(--primary))]'
-                                                        : 'bg-[rgb(var(--surface))] border-[rgb(var(--border))] group-hover:border-[rgb(var(--primary))]/50'
+                                    {/* Widget Position */}
+                                    <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
+                                        <label className="text-sm text-[rgb(var(--foreground-secondary))]">
+                                            Позиція віджета:
+                                        </label>
+                                        <div className="flex flex-wrap p-1 bg-[rgb(var(--surface-muted))] rounded-full w-fit">
+                                            {WIDGET_POSITIONS.map(pos => (
+                                                <button
+                                                    key={pos.id}
+                                                    onClick={() => setWidgetPosition(pos.id)}
+                                                    className={`px-4 py-2 text-sm font-medium rounded-full transition-smooth ${widgetPosition === pos.id
+                                                        ? 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground))] shadow-sm'
+                                                        : 'text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--foreground))]'
                                                         }`}
                                                 >
-                                                    {selectedLanguages.includes(lang.id) && (
-                                                        <Check className="w-3.5 h-3.5 text-white" />
-                                                    )}
-                                                </div>
-                                                <span className="text-sm text-[rgb(var(--foreground))] group-hover:text-[rgb(var(--primary))] transition-colors">
-                                                    {lang.label}
-                                                </span>
-                                            </label>
-                                        ))}
+                                                    {pos.label}
+                                                </button>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
 
-                                {/* Show Welcome Toggle */}
-                                <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-center">
-                                    <label className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                        Показувати welcome message:
-                                    </label>
-                                    <button
-                                        onClick={() => setShowWelcome(!showWelcome)}
-                                        className={`relative w-12 h-7 rounded-full transition-smooth ${showWelcome
-                                            ? 'bg-[rgb(var(--primary))]'
-                                            : 'bg-[rgb(var(--border))]'
-                                            }`}
-                                    >
-                                        <div
-                                            className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-smooth ${showWelcome ? 'left-6' : 'left-1'
-                                                }`}
-                                        />
-                                    </button>
-                                </div>
-
-                                {/* Welcome Message */}
-                                {showWelcome && (
-                                    <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start animate-fade-in">
+                                    {/* Languages */}
+                                    <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start">
                                         <label className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                            Повідомлення:
+                                            Мова віджета:
                                         </label>
-                                        <Textarea
-                                            value={welcomeMessage}
-                                            onChange={(e) => setWelcomeMessage(e.target.value)}
-                                            placeholder="Вітальне повідомлення..."
-                                            className="min-h-[120px] rounded-xl border-[rgb(var(--border))] bg-[rgb(var(--surface))] focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 resize-none"
-                                        />
+                                        <div className="flex flex-wrap gap-4">
+                                            {LANGUAGES.map(lang => (
+                                                <label
+                                                    key={lang.id}
+                                                    className="flex items-center gap-2 cursor-pointer group"
+                                                >
+                                                    <div
+                                                        onClick={() => toggleLanguage(lang.id)}
+                                                        className={`w-5 h-5 rounded flex items-center justify-center transition-smooth border ${selectedLanguages.includes(lang.id)
+                                                            ? 'bg-[rgb(var(--primary))] border-[rgb(var(--primary))]'
+                                                            : 'bg-[rgb(var(--surface))] border-[rgb(var(--border))] group-hover:border-[rgb(var(--primary))]/50'
+                                                            }`}
+                                                    >
+                                                        {selectedLanguages.includes(lang.id) && (
+                                                            <Check className="w-3.5 h-3.5 text-white" />
+                                                        )}
+                                                    </div>
+                                                    <span className="text-sm text-[rgb(var(--foreground))] group-hover:text-[rgb(var(--primary))] transition-colors">
+                                                        {lang.label}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
                                     </div>
-                                )}
 
-                                {/* Show Contact Form Toggle */}
-                                <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-center">
-                                    <label className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                        Показувати контактну форму:
-                                    </label>
-                                    <button
-                                        onClick={() => setShowContactForm(!showContactForm)}
-                                        className={`relative w-12 h-7 rounded-full transition-smooth ${showContactForm
-                                            ? 'bg-[rgb(var(--primary))]'
-                                            : 'bg-[rgb(var(--border))]'
-                                            }`}
-                                    >
-                                        <div
-                                            className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-smooth ${showContactForm ? 'left-6' : 'left-1'
+                                    {/* Show Welcome Toggle */}
+                                    <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-center">
+                                        <label className="text-sm text-[rgb(var(--foreground-secondary))]">
+                                            Показувати welcome message:
+                                        </label>
+                                        <button
+                                            onClick={() => setShowWelcome(!showWelcome)}
+                                            className={`relative w-12 h-7 rounded-full transition-smooth ${showWelcome
+                                                ? 'bg-[rgb(var(--primary))]'
+                                                : 'bg-[rgb(var(--border))]'
                                                 }`}
-                                        />
-                                    </button>
-                                </div>
+                                        >
+                                            <div
+                                                className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-smooth ${showWelcome ? 'left-6' : 'left-1'
+                                                    }`}
+                                            />
+                                        </button>
+                                    </div>
+
+                                    {/* Welcome Message */}
+                                    {showWelcome && (
+                                        <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-start animate-fade-in">
+                                            <label className="text-sm text-[rgb(var(--foreground-secondary))]">
+                                                Повідомлення:
+                                            </label>
+                                            <Textarea
+                                                value={welcomeMessage}
+                                                onChange={(e) => setWelcomeMessage(e.target.value)}
+                                                placeholder="Вітальне повідомлення..."
+                                                className="min-h-[120px] rounded-xl border-[rgb(var(--border))] bg-[rgb(var(--surface))] focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 resize-none"
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* Show Contact Form Toggle */}
+                                    <div className="grid md:grid-cols-[220px_1fr] gap-3 md:gap-4 items-center">
+                                        <label className="text-sm text-[rgb(var(--foreground-secondary))]">
+                                            Показувати контактну форму:
+                                        </label>
+                                        <button
+                                            onClick={() => setShowContactForm(!showContactForm)}
+                                            className={`relative w-12 h-7 rounded-full transition-smooth ${showContactForm
+                                                ? 'bg-[rgb(var(--primary))]'
+                                                : 'bg-[rgb(var(--border))]'
+                                                }`}
+                                        >
+                                            <div
+                                                className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-smooth ${showContactForm ? 'left-6' : 'left-1'
+                                                    }`}
+                                            />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Save Button */}
@@ -620,9 +594,9 @@ export default function SettingsPage() {
                     {/* Automation Tab */}
                     {activeTab === 'automation' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
-                            <AutomationSettings 
-                                siteId={orgId} 
-                                accessToken={(session as any)?.accessToken || 'dummy'} 
+                            <AutomationSettings
+                                siteId={orgId}
+                                accessToken={(session as any)?.accessToken || 'dummy'}
                             />
                         </div>
                     )}
@@ -630,9 +604,9 @@ export default function SettingsPage() {
                     {/* Templates Tab */}
                     {activeTab === 'templates' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
-                            <TemplatesSettings 
-                                siteId={orgId} 
-                                accessToken={(session as any)?.accessToken || 'dummy'} 
+                            <TemplatesSettings
+                                siteId={orgId}
+                                accessToken={(session as any)?.accessToken || 'dummy'}
                             />
                         </div>
                     )}
@@ -640,9 +614,9 @@ export default function SettingsPage() {
                     {/* Business Hours Tab */}
                     {activeTab === 'hours' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
-                            <BusinessHoursSettings 
-                                siteId={orgId} 
-                                accessToken={(session as any)?.accessToken || 'dummy'} 
+                            <BusinessHoursSettings
+                                siteId={orgId}
+                                accessToken={(session as any)?.accessToken || 'dummy'}
                             />
                         </div>
                     )}

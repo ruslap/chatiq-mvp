@@ -116,10 +116,9 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
 
     // Load quick templates
     useEffect(() => {
-        const orgId = typeof window !== 'undefined' ? localStorage.getItem('chtq_org_id') : null;
-        if (!orgId) return;
+        if (!siteId) return;
 
-        fetch(`${apiUrl}/automation/templates/${orgId}/active`, {
+        fetch(`${apiUrl}/automation/templates/${siteId}/active`, {
             headers: { 'Authorization': `Bearer ${(session as any)?.accessToken || 'dummy'}` }
         })
             .then(res => res.ok ? res.json() : [])

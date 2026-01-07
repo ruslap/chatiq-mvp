@@ -178,7 +178,10 @@ export function SidebarNav() {
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <button
-                                onClick={() => signOut()}
+                                onClick={() => {
+                                    localStorage.removeItem('chtq_org_id');
+                                    signOut();
+                                }}
                                 className="flex items-center justify-center w-full aspect-square rounded-xl text-white/40 hover:text-red-300 hover:bg-red-500/20 transition-smooth"
                             >
                                 <LogOut className="w-5 h-5" />
