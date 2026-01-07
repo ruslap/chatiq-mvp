@@ -114,7 +114,9 @@ export const authOptions: NextAuthOptions = {
                     token.accessToken = extendedUser.accessToken;
                 }
             }
-            if (account) {
+            // Only use account.access_token if it exists AND we don't already have a token
+            // This prevents overwriting the backend JWT with Google's access token
+            if (account?.access_token && !token.accessToken) {
                 token.accessToken = account.access_token;
             }
             return token;
