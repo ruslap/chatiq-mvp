@@ -7,6 +7,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // Enable trust proxy for correct IP and Protocol detection behind Nginx
+  app.set('trust proxy', 1);
+
   // Increase body parser limit to handle larger payloads (e.g., file uploads, large messages)
   app.use(json({ limit: '10mb' }));
   app.use(urlencoded({ extended: true, limit: '10mb' }));

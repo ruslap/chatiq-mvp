@@ -20,10 +20,18 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
         private configService: ConfigService,
         private authService: AuthService,
     ) {
+        const callbackURL = configService.get<string>('GOOGLE_CALLBACK_URL') ||
+            `${configService.get<string>('PUBLIC_API_URL') || 'https://api.chtq.ink'}/auth/google/callback`;
+
+        console.log('--- Google Auth Configuration ---');
+        console.log('ClientID:', configService.get<string>('GOOGLE_CLIENT_ID') ? 'Set' : 'MISSING');
+        console.log('CallbackURL:', callbackURL);
+        console.log('-------------------------------');
+
         super({
             clientID: (configService.get<string>('GOOGLE_CLIENT_ID') || '').trim(),
             clientSecret: (configService.get<string>('GOOGLE_CLIENT_SECRET') || '').trim(),
-            callbackURL: (configService.get<string>('GOOGLE_CALLBACK_URL') || '').trim(),
+            callbackURL: callbackURL.trim(),
             scope: ['email', 'profile'],
         });
     }
