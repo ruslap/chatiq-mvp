@@ -7,8 +7,13 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
+# Install dependencies needed for Prisma
+RUN apk add --no-cache libc6-compat openssl
+
 # Copy package files
 COPY api-server/package*.json ./
+# Copy Prisma schema (needed for postinstall generate)
+COPY api-server/prisma ./prisma/
 
 # Install dependencies
 RUN npm ci --only=production && npm cache clean --force
@@ -17,14 +22,17 @@ RUN npm ci --only=production && npm cache clean --force
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# Install dependencies needed for Prisma
+RUN apk add --no-cache libc6-compat openssl
+
 # Copy package files and install all dependencies
 COPY api-server/package*.json ./
-RUN npm ci
-
-# Copy Prisma schema first (for generate)
+# Copy Prisma schema (needed for postinstall generate)
 COPY api-server/prisma ./prisma/
 
-# Generate Prisma client
+RUN npm ci
+
+# Generate Prisma client (if not already done by postinstall)
 RUN npx prisma generate
 
 # Copy source code
