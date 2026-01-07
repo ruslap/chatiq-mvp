@@ -81,7 +81,7 @@ model WidgetSettings {
   color           String   @default("#6366F1")
   operatorName    String   @default("Support Team")
   operatorAvatar  String?
-  welcomeMessage  String   @default("Вітаю! 👋 Чим можу допомогти?")
+  welcomeMessage  String   @default("Вітаємо! 👋 Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!")
   showWelcome     Boolean  @default(true)
   position        String   @default("right")
   size            String   @default("standard")

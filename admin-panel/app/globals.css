@@ -43,6 +43,7 @@
 
     --primary: 61 61 184;
     --primary-foreground: 255 255 255;
+    --primary-hover: 50 50 160;
 
     --secondary: 243 244 246;
     --secondary-foreground: 75 85 99;
@@ -85,6 +86,7 @@
 
     --primary: 100 104 210;
     --primary-foreground: 17 24 39;
+    --primary-hover: 120 124 230;
 
     --secondary: 31 41 55;
     --secondary-foreground: 229 231 235;
