@@ -50,7 +50,7 @@ fi
 
 # Step 2: Build images
 echo -e "${BLUE}🔨 Building Docker images...${NC}"
-docker compose build $BUILD_FLAG
+docker compose build
 
 # Step 3: Run database migrations
 echo -e "${BLUE}📊 Running database migrations...${NC}"
