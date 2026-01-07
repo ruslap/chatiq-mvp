@@ -1,0 +1,162 @@
+# ============================================
+# CHTQ CI/CD Pipeline - Deploy to VPS
+# ============================================
+# Triggers:
+#   - Push to main    → Production deployment
+#   - Push to staging → Staging deployment (if configured)
+# ============================================
+
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  DOCKER_BUILDKIT: 1
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+jobs:
+  # ==========================================
+  # Build and Test
+  # ==========================================
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: |
+            api-server/package-lock.json
+            admin-panel/package-lock.json
+
+      - name: Install API dependencies
+        working-directory: ./api-server
+        run: npm ci
+
+      - name: Run API linting
+        working-directory: ./api-server
+        run: npm run lint || true  # Don't fail on lint warnings
+
+      - name: Install Admin dependencies
+        working-directory: ./admin-panel
+        run: npm ci
+
+      - name: Run Admin linting
+        working-directory: ./admin-panel
+        run: npm run lint || true
+
+  # ==========================================
+  # Deploy to VPS
+  # ==========================================
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set environment based on branch
+        id: set-env
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "deploy_path=/opt/chtq" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "deploy_path=/opt/chtq-staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            set -e
+            
+            echo "🚀 Starting deployment to ${{ steps.set-env.outputs.environment }}..."
+            
+            # Navigate to project directory
+            cd ${{ steps.set-env.outputs.deploy_path }}
+            
+            # Pull latest code
+            echo "📥 Pulling latest code..."
+            git fetch origin ${{ github.ref_name }}
+            git reset --hard origin/${{ github.ref_name }}
+            
+            # Navigate to deploy directory
+            cd deploy
+            
+            # Build Docker images
+            echo "🔨 Building Docker images..."
+            docker compose build --no-cache
+            
+            # Run database migrations
+            echo "📊 Running database migrations..."
+            docker compose run --rm api-server npx prisma migrate deploy
+            
+            # Deploy with zero-downtime
+            echo "🔄 Deploying containers..."
+            docker compose up -d --remove-orphans
+            
+            # Wait for health checks
+            echo "⏳ Waiting for services to be healthy..."
+            sleep 30
+            
+            # Verify deployment
+            echo "✅ Verifying deployment..."
+            docker compose ps
+            
+            # Clean up old images
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f
+            
+            echo "✨ Deployment complete!"
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            # Check all containers are running
+            cd ${{ steps.set-env.outputs.deploy_path }}/deploy
+            
+            if docker compose ps | grep -q "unhealthy\|Exit"; then
+              echo "❌ Some containers are unhealthy!"
+              docker compose logs --tail=50
+              exit 1
+            fi
+            
+            echo "✅ All containers are healthy!"
+
+      - name: Notify on failure
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            cd ${{ steps.set-env.outputs.deploy_path }}/deploy
+            echo "⚠️ Deployment failed, checking logs..."
+            docker compose logs --tail=100

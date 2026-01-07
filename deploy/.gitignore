@@ -1,0 +1,16 @@
+# CHTQ Deploy - Git Ignore
+# ========================
+
+# Environment files with secrets
+.env
+.env.local
+.env.production
+
+# Backup files (stored on VPS, not in git)
+backups/
+
+# Logs
+*.log
+
+# Docker volumes (managed by Docker)
+volumes/

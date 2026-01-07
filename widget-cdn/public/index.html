@@ -438,16 +438,17 @@
         <p class="description">Вірю вам сподобається досвід викоритсання чату</p>
 
         <div class="cta-section">
-            <button class="btn-primary">
+            <a href="https://admin.chtq.ink/register" class="btn-primary" style="text-decoration: none;">
                 Почати
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-            </button>
-            <button class="btn-secondary">
+            </a>
+            <a href="https://github.com/ruslap/chatiq-mvp" target="_blank" class="btn-secondary"
+                style="text-decoration: none;">
                 Переглянути документацію
-            </button>
+            </a>
         </div>
 
         <div class="code-section">
@@ -470,11 +471,10 @@
             </div>
             <div class="code-block">
                 <pre><span class="comment">&lt;!-- Add this before &lt;/body&gt; --&gt;</span>
-<span class="comment">&lt;!-- &lt;script async src="https://widget-cdn-chatiq.vercel.app/widget.js"&gt;&lt;/script&gt; --&gt;</span>
-<span class="tag">&lt;script</span> <span class="attr">async src</span>=<span class="value">"http://localhost:3002/widget.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">async src</span>=<span class="value">"https://cdn.chtq.ink/widget.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
 <span class="tag">&lt;script&gt;</span>
   <span class="attr">window.chtq</span> = {
-    <span class="attr">organizationId</span>: <span class="string">"8df94c53-1364-4bbd-99a4-f9a0ffb01f9a"</span>,
+    <span class="attr">organizationId</span>: <span class="string">"YOUR_ORGANIZATION_ID"</span>,
     <span class="attr">language</span>: <span class="string">"uk"</span>,
     <span class="attr">color</span>: <span class="string">"#6366F1"</span>,
     <span class="attr">position</span>: <span class="string">"right"</span>,
@@ -494,11 +494,11 @@
 
     <footer class="footer">
         Built with
-        <a href="#">ChatIQ by Ruslan Lap</a>
+        <a href="https://github.com/ruslap/chatiq-mvp" target="_blank">ChatIQ by Ruslan Lap</a>
         ·
-        <a href="#">Docs</a>
+        <a href="https://admin.chtq.ink" target="_blank">Admin Panel</a>
         ·
-        <a href="#">GitHub</a>
+        <a href="https://github.com/ruslap/chatiq-mvp" target="_blank">GitHub</a>
     </footer>
 
     <!-- Configure widget BEFORE loading the script -->
@@ -511,17 +511,15 @@
             size: "standard"
         };
     </script>
-    <!-- <script async src="https://widget-cdn-chatiq.vercel.app/widget.js"></script> -->
-    <script src="http://localhost:3002/widget.js"></script>
+    <script src="/widget.js"></script>
     <script>
         document.querySelector('.copy-btn').addEventListener('click', function () {
             // Використовуємо екранування \x3C (<) та \x3E (>), щоб уникнути помилок парсингу
             const code = '\x3C!-- Add this before \x3C/body\x3E --\x3E\n' +
-                '// \x3Cscript async src="https://widget-cdn-chatiq.vercel.app/widget.js"\x3E\x3C/script\x3E\n' +
-                '\x3Cscript async src="http://localhost:3002/widget.js"\x3E\x3C/script\x3E\n' +
+                '\x3Cscript async src="https://cdn.chtq.ink/widget.js"\x3E\x3C/script\x3E\n' +
                 '\x3Cscript\x3E\n' +
                 '  window.chtq = {\n' +
-                '    organizationId: "8df94c53-1364-4bbd-99a4-f9a0ffb01f9a",\n' +
+                '    organizationId: "YOUR_ORGANIZATION_ID",\n' +
                 '    language: "uk",\n' +
                 '    color: "#6366F1",\n' +
                 '    position: "right",\n' +

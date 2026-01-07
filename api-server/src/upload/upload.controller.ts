@@ -37,7 +37,7 @@ export class UploadController {
 
     // Return the file URL that can be accessed
     const fileUrl = `http://localhost:3000/uploads/${file.filename}`;
-    
+
     return {
       url: fileUrl,
       name: file.originalname,
