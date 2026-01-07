@@ -160,12 +160,12 @@ export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchCha
                                             ? 'bg-[rgb(var(--primary))] text-white'
                                             : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
                                             } font-medium transition-colors text-sm`}>
-                                            {chat.visitor[0] || 'V'}
+                                            {chat?.visitor?.[0] || 'V'}
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[rgb(var(--surface))] rounded-full flex items-center justify-center border border-[rgb(var(--border))]">
                                         <div className={`w-2 h-2 ${isUnread ? 'bg-[rgb(var(--primary))]' :
-                                            chat.status === 'offline' ? 'bg-[rgb(var(--foreground-secondary))]' :
+                                            chat?.status === 'offline' ? 'bg-[rgb(var(--foreground-secondary))]' :
                                                 'bg-[rgb(var(--success))]'
                                             } rounded-full`}></div>
                                     </div>
@@ -180,7 +180,7 @@ export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchCha
                                                 ? 'font-semibold text-[rgb(var(--foreground))]'
                                                 : 'font-medium text-[rgb(var(--foreground))]'
                                             }`}>
-                                            {chat.visitor}
+                                            {chat?.visitor || 'Visitor'}
                                         </span>
                                         <span className={`text-[10px] font-medium tabular-nums transition-colors shrink-0 ml-2 ${isSelected
                                             ? 'text-[rgb(var(--primary))]'

@@ -95,17 +95,15 @@ export default function ChatsPage() {
                         // but for search results usually we strictly replace.
                         // However, let's map to our internal format.
                         return data.map((c: any) => {
-                            // Try to find existing to preserve some transient state if needed
-                            // But for search, we mostly trust the backend result order.
                             const existing = prev.find(p => p.id === c.id);
                             return {
                                 id: c.id,
                                 visitorId: c.visitorId,
-                                visitor: c.visitorName || `Visitor ${c.visitorId.slice(-4)}`,
+                                visitor: c.visitorName || (c.visitorId ? `Visitor ${c.visitorId.slice(-4)}` : 'Visitor'),
                                 lastMsg: c.messages?.[0]?.text || (c.messages?.[0]?.attachment ? t.chatList.fileAttached : t.chatList.noMessages),
                                 time: c.messages?.[0] ? new Date(c.messages[0].createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "",
                                 createdAt: c.createdAt,
-                                unreadCount: existing?.unreadCount || 0, // Unread count might need to be fetched from backend or preserved
+                                unreadCount: existing?.unreadCount || 0,
                                 status: existing?.status || 'offline'
                             };
                         });
@@ -142,7 +140,7 @@ export default function ChatsPage() {
                 const chatData = {
                     id: msg.chatId,
                     visitorId: msg.visitorId || existingChat?.visitorId,
-                    visitor: msg.visitorName || existingChat?.visitor || `Visitor ${msg.visitorId?.slice(-4) || '....'}`,
+                    visitor: msg.visitorName || existingChat?.visitor || (msg.visitorId ? `Visitor ${msg.visitorId.slice(-4)}` : 'Visitor'),
                     lastMsg: msg.text || (msg.attachment ? t.chatList.fileAttached : t.chatList.noMessages),
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     unreadCount: (existingChat?.unreadCount || 0) + (isCurrentlySelected || msg.from === 'admin' ? 0 : 1),
@@ -230,20 +228,33 @@ export default function ChatsPage() {
 
                 {/* Main Content Area */}
                 <div className="flex-1 bg-[rgb(var(--surface-muted))] h-full overflow-hidden">
-                    {selectedChatId ? (
-                        <ChatView
-                            chat={chats.find(c => c.id === selectedChatId)}
-                            socket={socket}
-                            siteId={siteId}
-                            onClearMessages={(id) => {
-                                setChats(prev => prev.map(c => c.id === id ? { ...c, lastMsg: "No messages", time: "" } : c));
-                            }}
-                            onDeleteChat={(id) => {
-                                setChats(prev => prev.filter(c => c.id !== id));
-                                setSelectedChatId(null);
-                            }}
-                        />
-                    ) : (
+                    {(() => {
+                        const selectedChat = selectedChatId ? chats.find(c => c.id === selectedChatId) : null;
+
+                        // If a chat was selected but is now filtered out, deselect it
+                        if (selectedChatId && !selectedChat) {
+                            setTimeout(() => setSelectedChatId(null), 0);
+                        }
+
+                        return selectedChat ? (
+                            <ChatView
+                                chat={selectedChat}
+                                socket={socket}
+                                siteId={siteId}
+                                onClearMessages={(id) => {
+                                    setChats(prev => prev.map(c => c.id === id ? { ...c, lastMsg: "No messages", time: "" } : c));
+                                }}
+                                onDeleteChat={(id) => {
+                                    setChats(prev => prev.filter(c => c.id !== id));
+                                    setSelectedChatId(null);
+                                }}
+                                onRenameVisitor={(id, newName) => {
+                                    setChats(prev => prev.map(c => c.id === id ? { ...c, visitor: newName } : c));
+                                }}
+                            />
+                        ) : null;
+                    })()}
+                    {!selectedChatId && (
                         /* Empty State */
                         <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-[rgb(var(--surface))]">
                             <div className="mb-6 relative">

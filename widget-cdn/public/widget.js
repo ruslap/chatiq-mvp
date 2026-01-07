@@ -1892,7 +1892,7 @@
     }
 
     .powered a {
-      color: var(--secondary-accent);
+      color: var(--text-primary);
       text-decoration: none;
       font-weight: var(--font-weight-semibold);
       transition: color var(--duration-fast);

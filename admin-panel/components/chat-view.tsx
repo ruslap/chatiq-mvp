@@ -47,8 +47,7 @@ interface ChatViewProps {
     onClearMessages?: (id: string) => void;
 }
 
-export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }: ChatViewProps) {
-    const chatId = chat?.id;
+export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages, onRenameVisitor }: ChatViewProps & { onRenameVisitor?: (id: string, name: string) => void }) {
     const { data: session } = useSession();
     const { language } = useLanguage();
     const t = useTranslation(language);
@@ -68,6 +67,10 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
     const fileInputRef = useRef<HTMLInputElement>(null);
     const templateListRef = useRef<HTMLDivElement>(null);
     const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+    const chatId = chat?.id;
+
+    if (!chat) return null;
 
     // Configurable API URL for flexibility between local/prod
     const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
@@ -124,7 +127,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
             .then(res => res.ok ? res.json() : [])
             .then(data => setQuickTemplates(Array.isArray(data) ? data : []))
             .catch(() => setQuickTemplates([]));
-    }, [session, apiUrl]);
+    }, [session, apiUrl, siteId]);
 
     useEffect(() => {
         if (!socket) return;
@@ -318,7 +321,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
             });
 
             if (res.ok) {
-                chat.visitor = newVisitorName.trim();
+                onRenameVisitor?.(chatId, newVisitorName.trim());
                 setIsRenaming(false);
                 setNewVisitorName("");
             } else {
@@ -404,10 +407,10 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                     <div className="relative">
                         <Avatar className="w-10 h-10 border-0 ring-2 ring-[rgb(var(--border))]">
                             <AvatarFallback className="bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))] font-medium text-sm">
-                                {chat.visitor?.[0] || 'V'}
+                                {chat?.visitor?.[0] || 'V'}
                             </AvatarFallback>
                         </Avatar>
-                        <div className={`absolute ring-2 ring-[rgb(var(--surface))] -bottom-0.5 -right-0.5 w-3 h-3 rounded-full ${chat.status === 'offline' ? 'bg-[rgb(var(--foreground-secondary))]' : 'bg-[rgb(var(--success))]'}`}></div>
+                        <div className={`absolute ring-2 ring-[rgb(var(--surface))] -bottom-0.5 -right-0.5 w-3 h-3 rounded-full ${chat?.status === 'offline' ? 'bg-[rgb(var(--foreground-secondary))]' : 'bg-[rgb(var(--success))]'}`}></div>
                     </div>
                     <div className="flex items-center gap-2">
                         {isRenaming ? (
@@ -448,18 +451,18 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                         ) : (
                             <div className="flex items-center gap-2 group">
                                 <div>
-                                    <div className="font-semibold text-sm text-[rgb(var(--foreground))] leading-none">{chat.visitor}</div>
-                                    <div className={`text-[10px] font-medium uppercase tracking-wider mt-1 ${chat.status === 'offline'
+                                    <div className="font-semibold text-sm text-[rgb(var(--foreground))] leading-none">{chat?.visitor || 'Visitor'}</div>
+                                    <div className={`text-[10px] font-medium uppercase tracking-wider mt-1 ${chat?.status === 'offline'
                                         ? 'text-[rgb(var(--foreground-secondary))]'
                                         : 'text-[rgb(var(--success))]'
                                         }`}>
-                                        {chat.status === 'offline' ? 'Офлайн' : t.chatView.activeNow}
+                                        {chat?.status === 'offline' ? 'Офлайн' : t.chatView.activeNow}
                                     </div>
                                 </div>
                                 <button
                                     onClick={() => {
                                         setIsRenaming(true);
-                                        setNewVisitorName(chat.visitor);
+                                        setNewVisitorName(chat?.visitor || "");
                                     }}
                                     className="opacity-0 group-hover:opacity-100 p-1 hover:bg-[rgb(var(--surface-muted))] rounded text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--primary))] transition-all"
                                     title={t.chatView.renameVisitor}
@@ -517,7 +520,7 @@ export function ChatView({ chat, socket, siteId, onDeleteChat, onClearMessages }
                                         {isAdmin ? (
                                             <span className="text-[10px] font-semibold text-[rgb(var(--foreground-secondary))] uppercase tracking-[0.08em] opacity-75">{t.common.you}</span>
                                         ) : (
-                                            <span className="text-[13px] font-semibold text-[rgb(var(--primary))] tracking-tight">{chat.visitor}</span>
+                                            <span className="text-[13px] font-semibold text-[rgb(var(--primary))] tracking-tight">{chat?.visitor || 'Visitor'}</span>
                                         )}
                                     </div>
                                 )}
