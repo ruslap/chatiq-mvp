@@ -17,10 +17,10 @@ export async function getMyOrganization(): Promise<string> {
     if (response.ok) {
       const data = await response.json();
       const orgId = data.organizationId;
-      
+
       // Store in localStorage as backup
       localStorage.setItem('chtq_org_id', orgId);
-      
+
       return orgId;
     } else {
       console.error('Failed to get organization from API');
@@ -34,7 +34,18 @@ export async function getMyOrganization(): Promise<string> {
   }
 }
 
-export async function updateOrganizationSettings(settings: any): Promise<any> {
+interface OrganizationSettings {
+  [key: string]: unknown;
+}
+
+interface OrganizationSettingsResponse {
+  success: boolean;
+  settings?: OrganizationSettings;
+}
+
+export async function updateOrganizationSettings(
+  settings: OrganizationSettings
+): Promise<OrganizationSettingsResponse> {
   try {
     const session = await getSession();
     if (!session?.user) {

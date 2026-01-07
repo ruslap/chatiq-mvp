@@ -1,7 +1,15 @@
 
-import { NextAuthOptions } from "next-auth";
+import { NextAuthOptions, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+
+interface ExtendedUser {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    accessToken?: string;
+}
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -42,18 +50,19 @@ export const authOptions: NextAuthOptions = {
         signIn: "/login",
     },
     callbacks: {
-        async session({ session, token }: { session: any, token: any }) {
+        async session({ session, token }: { session: Session; token: JWT }) {
             if (session.user) {
-                session.user.id = token.id;
-                session.accessToken = token.accessToken;
+                (session.user as ExtendedUser).id = token.id as string;
+                (session as Session & { accessToken?: string }).accessToken = token.accessToken as string;
             }
             return session;
         },
         async jwt({ token, user, account }) {
             if (user) {
                 token.id = user.id;
-                if ((user as any).accessToken) {
-                    token.accessToken = (user as any).accessToken;
+                const extendedUser = user as ExtendedUser;
+                if (extendedUser.accessToken) {
+                    token.accessToken = extendedUser.accessToken;
                 }
             }
             if (account) {
