@@ -194,7 +194,7 @@ export default function SettingsPage() {
 
     const getEmbedCode = () => {
         const colorValue = WIDGET_COLORS.find(c => c.id === widgetColor)?.value || '#6366F1';
-        return `<script async src="https://widget-cdn-chatiq.vercel.app/widget.js"></script>
+        return `<script async src="https://cdn.chtq.ink/widget.js"></script>
 <script>
   window.chtq = {
     organizationId: "${orgId}",
@@ -547,7 +547,7 @@ export default function SettingsPage() {
                                             <span className="text-[#9CA3AF]"> </span>
                                             <span className="text-[#F59E0B]">async</span>
                                             <span className="text-[#9CA3AF]"> src=</span>
-                                            <span className="text-[#22C55E]">"https://widget-cdn-chatiq.vercel.app/widget.js"</span>
+                                            <span className="text-[#22C55E]">"https://cdn.chtq.ink/widget.js"</span>
                                             <span className="text-[#9CA3AF]">&gt;&lt;/</span>
                                             <span className="text-[#8B5CF6]">script</span>
                                             <span className="text-[#9CA3AF]">&gt;</span>

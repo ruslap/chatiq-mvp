@@ -33,7 +33,7 @@ COPY api-server/prisma ./prisma/
 RUN npm ci
 
 # Generate Prisma client (if not already done by postinstall)
-RUN npx prisma generate
+# Generate Prisma client handled by postinstall script in npm ci
 
 # Copy source code
 COPY api-server/ ./

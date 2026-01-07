@@ -1,4 +1,4 @@
-# Task: Admin Panel (Vercel)
+# Task: Admin Panel (chtq.ink)
 
 ## Goal
 Provide an interface for operators to manage chats.
@@ -26,5 +26,5 @@ Provide an interface for operators to manage chats.
 - Auto-scroll to latest message
 
 ## Deliverables
-- Deployed Admin Panel on Vercel
+- Deployed Admin Panel on chtq.ink
 - Connected to API server

@@ -5,13 +5,13 @@ Create a universal JavaScript chat widget delivered via CDN.
 
 ## Requirements
 - Single JS file: widget.js
-- Hosted via Vercel CDN
+- Hosted via chtq.ink CDN
 - Same file for all websites
 - Reads siteId from data-site-id attribute
 
 ## Embed example
 <script
-  src="https://<cdn>.vercel.app/widget.js"
+  src="https://cdn.chtq.ink/widget.js"
   data-site-id="SITE_ID">
 </script>
 

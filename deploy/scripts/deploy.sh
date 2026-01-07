@@ -37,9 +37,9 @@ cd "$DEPLOY_DIR"
 BUILD_FLAG=""
 UP_FLAG=""
 if [ "$1" == "--build" ]; then
-    BUILD_FLAG="--no-cache"
+    BUILD_FLAG=""
     UP_FLAG="--build"
-    echo -e "${YELLOW}🔨 Build flag enabled - rebuilding all images without cache${NC}"
+    echo -e "${YELLOW}🔨 Build flag enabled - rebuilding images (using cache if possible)${NC}"
 fi
 
 # Step 1: Pull latest code (if in git repo)

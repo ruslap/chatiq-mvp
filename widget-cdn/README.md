@@ -35,7 +35,7 @@ Add this script tag to any website:
 
 ```html
 <script
-  src="https://your-cdn.vercel.app/widget.js"
+  src="https://cdn.chtq.ink/widget.js"
   data-site-id="YOUR_SITE_ID">
 </script>
 ```

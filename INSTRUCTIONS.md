@@ -218,7 +218,7 @@ cd widget-cdn && npm run dev            # Terminal 3
 ### Нова конфігурація (рекомендовано):
 
 ```html
-<script async src="https://widget-cdn-chatiq.vercel.app/widget.js"></script>
+<script async src="https://cdn.chtq.ink/widget.js"></script>
 <script>
   window.chtq = {
     organizationId: "your-uuid",
@@ -298,9 +298,9 @@ cd widget-cdn && npm run dev            # Terminal 3
 
 | Сервіс | URL |
 |--------|-----|
-| Widget CDN | `https://widget-cdn-chatiq.vercel.app` |
-| Admin Panel | `https://admin-panel-chatiq-prod.vercel.app` |
-| API Server | *(Render/Railway - налаштувати)* |
+| Widget CDN | `https://cdn.chtq.ink` |
+| Admin Panel | `https://admin.chtq.ink` |
+| API Server | `https://api.chtq.ink` |
 
 ---
 
