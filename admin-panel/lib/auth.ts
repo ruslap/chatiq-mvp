@@ -21,26 +21,75 @@ export const authOptions: NextAuthOptions = {
             name: "Credentials",
             credentials: {
                 email: { label: "Email", type: "email" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                token: { label: "Token", type: "text" }
             },
             async authorize(credentials) {
+                // Scenario 1: Login with Token (from Backend Google Auth)
+                if (credentials?.token) {
+                    try {
+                        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/auth/profile`, {
+                            headers: {
+                                'Authorization': `Bearer ${credentials.token}`
+                            }
+                        });
+
+                        if (res.ok) {
+                            const userProfile = await res.json();
+                            return {
+                                id: userProfile.userId,
+                                email: userProfile.email,
+                                name: userProfile.name || userProfile.email.split('@')[0],
+                                accessToken: credentials.token,
+                            };
+                        }
+                    } catch (error) {
+                        console.error("Token validation failed", error);
+                    }
+                    return null;
+                }
+
+                // Scenario 2: Login with Email/Password
                 if (!credentials?.email || !credentials?.password) return null;
 
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/auth/login`, {
                     method: 'POST',
-                    body: JSON.stringify(credentials),
+                    body: JSON.stringify({
+                        email: credentials.email,
+                        password: credentials.password
+                    }),
                     headers: { "Content-Type": "application/json" }
                 });
 
                 const data = await res.json();
 
-                if (res.ok && data.user) {
-                    return {
-                        id: data.user.id,
-                        name: data.user.name,
-                        email: data.user.email,
-                        accessToken: data.access_token,
-                    };
+                if (res.ok && data.access_token) {
+                    // We need to fetch user details or decode token if the login response doesn't have user info
+                    // Check if data.user exists (based on previous code it does)
+                    if (data.user) {
+                        return {
+                            id: data.user.id,
+                            name: data.user.name,
+                            email: data.user.email,
+                            accessToken: data.access_token,
+                        };
+                    }
+
+                    // Fallback to profile fetch
+                    const profileRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/auth/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${data.access_token}`
+                        }
+                    });
+                    if (profileRes.ok) {
+                        const userProfile = await profileRes.json();
+                        return {
+                            id: userProfile.userId,
+                            email: userProfile.email,
+                            name: userProfile.name,
+                            accessToken: data.access_token,
+                        };
+                    }
                 }
                 return null;
             }

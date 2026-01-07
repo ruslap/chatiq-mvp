@@ -8,12 +8,12 @@
 
 name: Deploy to VPS
 
-on:
-  push:
-    branches:
-      # - main
-      # - staging
-  workflow_dispatch:  # Allow manual trigger
+# on:
+#   push:
+#     branches:
+#       # - main
+#       # - staging
+#   workflow_dispatch:  # Allow manual trigger
 
 env:
   DOCKER_BUILDKIT: 1

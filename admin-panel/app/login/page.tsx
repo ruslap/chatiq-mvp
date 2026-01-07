@@ -20,15 +20,11 @@ export default function LoginPage() {
     const [error, setError] = useState("");
     const router = useRouter();
 
-    const handleGoogleLogin = async () => {
+    const handleGoogleLogin = () => {
         setIsLoading(true);
-        try {
-            await signIn("google", { callbackUrl: "/chats" });
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setIsLoading(false);
-        }
+        // Redirect to backend Google Auth
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        window.location.href = `${apiUrl}/auth/google`;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
