@@ -96,9 +96,17 @@ export class ChatService {
         });
     }
 
-    async getChatsBySite(siteId: string) {
+    async getChatsBySite(siteId: string, search?: string) {
         return this.prisma.chat.findMany({
-            where: { siteId },
+            where: {
+                siteId,
+                ...(search ? {
+                    OR: [
+                        { visitorName: { contains: search, mode: 'insensitive' } },
+                        { messages: { some: { text: { contains: search, mode: 'insensitive' } } } }
+                    ]
+                } : {})
+            },
             orderBy: { createdAt: 'desc' },
             include: {
                 messages: {

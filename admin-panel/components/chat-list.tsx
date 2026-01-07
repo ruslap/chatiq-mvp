@@ -18,12 +18,14 @@ interface ChatListProps {
     onSelect: (id: string) => void;
     selectedId: string | null;
     chats: Chat[];
+    searchQuery: string;
+    onSearchChange: (query: string) => void;
 }
 
-export function ChatList({ onSelect, selectedId, chats }: ChatListProps) {
+export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchChange }: ChatListProps) {
     const { language } = useLanguage();
     const t = useTranslation(language);
-    
+
     return (
         <div className="flex flex-col h-full bg-[rgb(var(--surface))] select-none">
             {/* Header */}
@@ -62,6 +64,8 @@ export function ChatList({ onSelect, selectedId, chats }: ChatListProps) {
                     </div>
                     <input
                         type="text"
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
                         placeholder={language === 'uk' ? 'Пошук розмов...' : 'Search conversations...'}
                         className="w-full pl-10 pr-4 py-2.5 bg-[rgb(var(--surface-muted))] border-none rounded-xl text-sm font-normal outline-none transition-smooth placeholder:text-[rgb(var(--foreground-secondary))] focus:bg-[rgb(var(--surface))] focus:ring-2 focus:ring-[rgb(var(--primary))]/20"
                     />
@@ -75,8 +79,8 @@ export function ChatList({ onSelect, selectedId, chats }: ChatListProps) {
                             <button
                                 key={tab}
                                 className={`px-4 py-1.5 text-xs font-medium rounded-lg transition-smooth relative ${idx === 0
-                                        ? 'bg-[rgb(var(--primary))] text-white'
-                                        : 'text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--surface-muted))]'
+                                    ? 'bg-[rgb(var(--primary))] text-white'
+                                    : 'text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--surface-muted))]'
                                     }`}
                             >
                                 {tab}
@@ -137,10 +141,10 @@ export function ChatList({ onSelect, selectedId, chats }: ChatListProps) {
                             <div
                                 key={chat.id}
                                 className={`group relative flex items-center gap-3 px-3 py-3.5 cursor-pointer rounded-xl mx-1 mb-1 transition-smooth ${isSelected
-                                        ? 'bg-[rgb(var(--accent))]'
-                                        : isUnread
-                                            ? 'bg-[rgb(var(--primary-50))]/50'
-                                            : 'hover:bg-[rgb(var(--surface-muted))]'
+                                    ? 'bg-[rgb(var(--accent))]'
+                                    : isUnread
+                                        ? 'bg-[rgb(var(--primary-50))]/50'
+                                        : 'hover:bg-[rgb(var(--surface-muted))]'
                                     }`}
                                 onClick={() => onSelect(chat.id)}
                             >
@@ -153,18 +157,17 @@ export function ChatList({ onSelect, selectedId, chats }: ChatListProps) {
                                 <div className="relative shrink-0">
                                     <Avatar className={`w-11 h-11 border-0 transition-smooth ${isSelected ? 'ring-2 ring-[rgb(var(--primary))]/20' : ''}`}>
                                         <AvatarFallback className={`${isSelected
-                                                ? 'bg-[rgb(var(--primary))] text-white'
-                                                : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
+                                            ? 'bg-[rgb(var(--primary))] text-white'
+                                            : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
                                             } font-medium transition-colors text-sm`}>
                                             {chat.visitor[0] || 'V'}
                                         </AvatarFallback>
                                     </Avatar>
                                     <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[rgb(var(--surface))] rounded-full flex items-center justify-center border border-[rgb(var(--border))]">
-                                        <div className={`w-2 h-2 ${
-                                            isUnread ? 'bg-[rgb(var(--primary))]' : 
-                                            chat.status === 'offline' ? 'bg-[rgb(var(--foreground-secondary))]' : 
-                                            'bg-[rgb(var(--success))]'
-                                        } rounded-full`}></div>
+                                        <div className={`w-2 h-2 ${isUnread ? 'bg-[rgb(var(--primary))]' :
+                                            chat.status === 'offline' ? 'bg-[rgb(var(--foreground-secondary))]' :
+                                                'bg-[rgb(var(--success))]'
+                                            } rounded-full`}></div>
                                     </div>
                                 </div>
 
@@ -172,28 +175,28 @@ export function ChatList({ onSelect, selectedId, chats }: ChatListProps) {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-baseline mb-0.5">
                                         <span className={`text-sm truncate transition-colors ${isSelected
-                                                ? 'font-semibold text-[rgb(var(--primary-700))]'
-                                                : isUnread
-                                                    ? 'font-semibold text-[rgb(var(--foreground))]'
-                                                    : 'font-medium text-[rgb(var(--foreground))]'
+                                            ? 'font-semibold text-[rgb(var(--primary-700))]'
+                                            : isUnread
+                                                ? 'font-semibold text-[rgb(var(--foreground))]'
+                                                : 'font-medium text-[rgb(var(--foreground))]'
                                             }`}>
                                             {chat.visitor}
                                         </span>
                                         <span className={`text-[10px] font-medium tabular-nums transition-colors shrink-0 ml-2 ${isSelected
+                                            ? 'text-[rgb(var(--primary))]'
+                                            : isUnread
                                                 ? 'text-[rgb(var(--primary))]'
-                                                : isUnread
-                                                    ? 'text-[rgb(var(--primary))]'
-                                                    : 'text-[rgb(var(--foreground-secondary))]'
+                                                : 'text-[rgb(var(--foreground-secondary))]'
                                             }`}>
                                             {chat.time}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between gap-2">
                                         <span className={`text-xs truncate leading-relaxed transition-colors ${isSelected
-                                                ? 'text-[rgb(var(--primary-600))]'
-                                                : isUnread
-                                                    ? 'text-[rgb(var(--foreground))] font-medium'
-                                                    : 'text-[rgb(var(--foreground-secondary))]'
+                                            ? 'text-[rgb(var(--primary-600))]'
+                                            : isUnread
+                                                ? 'text-[rgb(var(--foreground))] font-medium'
+                                                : 'text-[rgb(var(--foreground-secondary))]'
                                             }`}>
                                             {chat.lastMsg}
                                         </span>

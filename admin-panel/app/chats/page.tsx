@@ -24,6 +24,16 @@ export default function ChatsPage() {
     const [chats, setChats] = useState<any[]>([]);
     const [socket, setSocket] = useState<any>(null);
     const [siteId, setSiteId] = useState<string>('');
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+    // Debounce search query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     // Use refs for values needed in socket listeners to avoid stale closures
     const chatsRef = useRef<any[]>([]);
@@ -56,6 +66,55 @@ export default function ChatsPage() {
         setChats(prev => prev.map(c => c.id === id ? { ...c, unreadCount: 0 } : c));
     };
 
+    // Separate effect for fetching chats with search
+    useEffect(() => {
+        if (!session?.user || !siteId) return;
+
+        // Configurable API URL for flexibility between local/prod
+        const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
+            || process.env.NEXT_PUBLIC_API_URL
+            || "http://localhost:3000";
+
+        const queryParams = new URLSearchParams();
+        if (debouncedSearchQuery) {
+            queryParams.append('search', debouncedSearchQuery);
+        }
+
+        console.log(`[ChatsPage] Fetching chats with search: "${debouncedSearchQuery}"`);
+
+        fetch(`${apiUrl}/chats/site/${siteId}?${queryParams.toString()}`, {
+            headers: {
+                'Authorization': `Bearer ${(session as any).accessToken}`
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) {
+                    setChats(prev => {
+                        // Merge with existing data to keep client-side state if possible, 
+                        // but for search results usually we strictly replace.
+                        // However, let's map to our internal format.
+                        return data.map((c: any) => {
+                            // Try to find existing to preserve some transient state if needed
+                            // But for search, we mostly trust the backend result order.
+                            const existing = prev.find(p => p.id === c.id);
+                            return {
+                                id: c.id,
+                                visitorId: c.visitorId,
+                                visitor: c.visitorName || `Visitor ${c.visitorId.slice(-4)}`,
+                                lastMsg: c.messages?.[0]?.text || (c.messages?.[0]?.attachment ? t.chatList.fileAttached : t.chatList.noMessages),
+                                time: c.messages?.[0] ? new Date(c.messages[0].createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "",
+                                createdAt: c.createdAt,
+                                unreadCount: existing?.unreadCount || 0, // Unread count might need to be fetched from backend or preserved
+                                status: existing?.status || 'offline'
+                            };
+                        });
+                    });
+                }
+            })
+            .catch(err => console.error("[ChatsPage] Fetch error:", err));
+    }, [session, siteId, debouncedSearchQuery]);
+
     useEffect(() => {
         if (!session?.user || socketRef.current || !siteId) return;
 
@@ -68,38 +127,6 @@ export default function ChatsPage() {
         const s = io(apiUrl);
         socketRef.current = s;
         setSocket(s);
-
-        // Fetch initial chats only once
-        if (!initialFetchedRef.current) {
-            initialFetchedRef.current = true;
-            fetch(`${apiUrl}/chats/site/${siteId}`, {
-                headers: {
-                    'Authorization': `Bearer ${(session as any).accessToken}`
-                }
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (Array.isArray(data)) {
-                        setChats(prev => {
-                            // Merge initial data with any real-time updates that already happened
-                            return data.map((c: any) => {
-                                const existing = prev.find(p => p.id === c.id);
-                                return {
-                                    id: c.id,
-                                    visitorId: c.visitorId,
-                                    visitor: c.visitorName || `Visitor ${c.visitorId.slice(-4)}`,
-                                    lastMsg: existing?.lastMsg || c.messages?.[0]?.text || (c.messages?.[0]?.attachment ? t.chatList.fileAttached : t.chatList.noMessages),
-                                    time: existing?.time || (c.messages?.[0] ? new Date(c.messages[0].createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""),
-                                    createdAt: c.createdAt,
-                                    unreadCount: existing?.unreadCount || 0,
-                                    status: 'offline' // Visitor online status is tracked separately via socket events
-                                };
-                            });
-                        });
-                    }
-                })
-                .catch(err => console.error("[ChatsPage] Initial fetch error:", err));
-        }
 
         s.on("connect", () => {
             console.log("[ChatsPage] Socket connected");
@@ -192,7 +219,13 @@ export default function ChatsPage() {
             <div className="flex-1 flex min-w-0 h-full">
                 {/* Chat List Panel */}
                 <div className="w-[340px] border-r border-[rgb(var(--border))] bg-[rgb(var(--surface))] flex flex-col shrink-0 h-full">
-                    <ChatList onSelect={handleSelectChat} selectedId={selectedChatId} chats={chats} />
+                    <ChatList
+                        onSelect={handleSelectChat}
+                        selectedId={selectedChatId}
+                        chats={chats}
+                        searchQuery={searchQuery}
+                        onSearchChange={setSearchQuery}
+                    />
                 </div>
 
                 {/* Main Content Area */}

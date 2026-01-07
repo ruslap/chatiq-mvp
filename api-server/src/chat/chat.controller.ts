@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete, Patch, Body } from '@nestjs/common';
+import { Controller, Get, Param, Delete, Patch, Body, Query } from '@nestjs/common';
 import { ChatService } from './chat.service';
 
 @Controller('chats')
@@ -7,8 +7,11 @@ export class ChatController {
     constructor(private readonly chatService: ChatService) { }
 
     @Get('site/:siteId')
-    getSiteChats(@Param('siteId') siteId: string) {
-        return this.chatService.getChatsBySite(siteId);
+    getSiteChats(
+        @Param('siteId') siteId: string,
+        @Query('search') search?: string
+    ) {
+        return this.chatService.getChatsBySite(siteId, search);
     }
 
     @Get(':chatId/history')

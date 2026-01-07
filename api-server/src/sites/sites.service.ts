@@ -16,14 +16,38 @@ export class SitesService {
     }
 
     async getMySites(userId: string) {
-        return this.prisma.site.findMany({
+        const sites = await this.prisma.site.findMany({
             where: {
                 OR: [
                     { ownerId: userId },
                     { operators: { some: { userId } } },
                 ],
             },
+            include: {
+                _count: {
+                    select: {
+                        chats: true,
+                        autoReplies: { where: { isActive: true } },
+                        quickTemplates: { where: { isActive: true } },
+                    },
+                },
+                businessHours: {
+                    select: {
+                        isEnabled: true,
+                    },
+                },
+            },
         });
+
+        return sites.map(site => ({
+            ...site,
+            stats: {
+                chats: site._count.chats,
+                activeAutoReplies: site._count.autoReplies,
+                activeTemplates: site._count.quickTemplates,
+                businessHoursEnabled: site.businessHours?.isEnabled ?? false,
+            },
+        }));
     }
 
     async inviteOperator(ownerId: string, siteId: string, email: string) {
