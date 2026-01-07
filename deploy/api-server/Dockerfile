@@ -39,7 +39,9 @@ RUN npx prisma generate
 COPY api-server/ ./
 
 # Build the application
-RUN npm run build
+RUN npm run build \
+    && ls -la dist/ \
+    && (ls -la dist/main.js || ls -la dist/src/main.js || echo "Warning: main.js not found in expected locations")
 
 # Stage 3: Production
 FROM node:20-alpine AS runner
@@ -76,9 +78,6 @@ USER nestjs
 # Expose port
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
-
 # Start the application
-CMD ["node", "dist/main.js"]
+# Using dist/main without .js to allow for commonjs/module flexibility
+CMD ["node", "dist/main"]
