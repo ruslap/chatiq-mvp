@@ -78,7 +78,7 @@ export default function SettingsPage() {
     const [selectedLanguages, setSelectedLanguages] = useState(['uk']);
     const [showWelcome, setShowWelcome] = useState(true);
     const [showContactForm, setShowContactForm] = useState(false);
-    const [welcomeMessage, setWelcomeMessage] = useState('Вітаємо! 👋 Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!');
+    const [welcomeMessage, setWelcomeMessage] = useState('Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!');
     const [operatorName, setOperatorName] = useState('Support Team');
     const [operatorAvatar, setOperatorAvatar] = useState('');
     useEffect(() => {
@@ -109,7 +109,7 @@ export default function SettingsPage() {
                     setSelectedLanguages([data.language || 'uk']);
                     setShowWelcome(data.showWelcome ?? true);
                     setShowContactForm(data.showContactForm ?? false);
-                    setWelcomeMessage(data.welcomeMessage || 'Вітаємо! 👋 Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!');
+                    setWelcomeMessage(data.welcomeMessage || 'Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!');
                     setOperatorName(data.operatorName || 'Support Team');
                     if (data.operatorAvatar) setOperatorAvatar(data.operatorAvatar);
                 }

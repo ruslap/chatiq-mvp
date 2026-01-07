@@ -2275,7 +2275,7 @@
       // Create personalized greeting
       let personalizedGreeting = '';
       if (visitorFirstName) {
-        personalizedGreeting = ` <span style="color: ${accentColor}; font-weight: 600;">${visitorFirstName}</span>! 👋 `;
+        personalizedGreeting = `Вітаємо, <span style="color: ${accentColor}; font-weight: 600;">${visitorFirstName}</span> 👋! `;
       }
 
       // Show offline message if offline, otherwise show welcome message
