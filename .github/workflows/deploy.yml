@@ -11,8 +11,8 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main
-      - staging
+      # - main
+      # - staging
   workflow_dispatch:  # Allow manual trigger
 
 env:
