@@ -87,3 +87,5 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
+*.spec.ts
+*.e2e-spec.ts
