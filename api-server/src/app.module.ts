@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PrismaModule } from './prisma/prisma.module';
+import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
 import { SitesModule } from './sites/sites.module';
 import { ChatModule } from './chat/chat.module';
@@ -17,6 +18,7 @@ import { AutomationModule } from './automation/automation.module';
     ConfigModule.forRoot({ isGlobal: true }),
     EventEmitterModule.forRoot(),
     PrismaModule,
+    RedisModule,
     AuthModule,
     SitesModule,
     ChatModule,

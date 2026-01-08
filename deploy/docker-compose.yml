@@ -7,6 +7,12 @@
 #   docker compose down           # Stop all services
 #   docker compose build          # Rebuild images
 # ============================================
+# Data Persistence:
+#   All data is stored in ./data/ directory:
+#   - ./data/postgres/  - PostgreSQL database files
+#   - ./data/redis/     - Redis persistence (AOF)
+#   - ./data/uploads/   - User uploaded files
+# ============================================
 
 services:
   # ==========================================
@@ -21,7 +27,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
     networks:
       - chtq-internal
     healthcheck:
@@ -30,6 +36,26 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    # NOT exposed to host - internal only
+
+  # ==========================================
+  # Redis Cache
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: chtq-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - chtq-internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     # NOT exposed to host - internal only
 
   # ==========================================
@@ -44,6 +70,7 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
@@ -52,11 +79,13 @@ services:
       - PUBLIC_API_URL=${PUBLIC_API_URL}
       - PORT=3000
     volumes:
-      - api_uploads:/app/uploads
+      - ./data/uploads:/app/uploads
     networks:
       - chtq-internal
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/"]
@@ -144,12 +173,3 @@ networks:
   chtq-internal:
     driver: bridge
     internal: false  # Allow outbound for OAuth, etc.
-
-# ==========================================
-# Volumes
-# ==========================================
-volumes:
-  postgres_data:
-    driver: local
-  api_uploads:
-    driver: local
