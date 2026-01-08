@@ -64,8 +64,8 @@
             position: fixed;
             inset: 0;
             background-image:
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
             background-size: 64px 64px;
             pointer-events: none;
         }
@@ -142,10 +142,13 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
                 transform: scale(1);
             }
+
             50% {
                 opacity: 0.6;
                 transform: scale(0.95);
@@ -157,6 +160,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -282,7 +286,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 14px 20px;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16162a 100%);
+            background: linear-gradient(180deg, #111111 0%, #0a0a0a 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px 12px 0 0;
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
@@ -361,7 +365,7 @@
         }
 
         .code-block {
-            background: linear-gradient(180deg, #16162a 0%, #0f0f1a 100%);
+            background: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-top: none;
             border-radius: 0 0 12px 12px;
