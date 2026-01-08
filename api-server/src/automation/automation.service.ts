@@ -546,17 +546,28 @@ export class AutomationService {
           })();
         }
       } else {
-        console.log('[AutoReply] OFFLINE - sending offline message');
-        // Offline: send offline message instead of welcome
-        const offlineResult = await this.checkAndExecuteAutoReply(
+        console.log('[AutoReply] OFFLINE - checking offline message');
+        // Offline: try offline message first
+        let result = await this.checkAndExecuteAutoReply(
           siteId,
           'offline',
           chatId,
         );
-        if (offlineResult.shouldReply) {
+
+        // Fallback: if no offline message, try welcome message
+        if (!result.shouldReply) {
+          console.log('[AutoReply] No offline message, falling back to welcome message');
+          result = await this.checkAndExecuteAutoReply(
+            siteId,
+            'first_message',
+            chatId,
+          );
+        }
+
+        if (result.shouldReply) {
           void (async () => {
-            await new Promise((resolve) => setTimeout(resolve, offlineResult.delay || 0));
-            await this.sendAutoReply(siteId, chatId, offlineResult.message!);
+            await new Promise((resolve) => setTimeout(resolve, result.delay || 0));
+            await this.sendAutoReply(siteId, chatId, result.message!);
           })();
         }
       }

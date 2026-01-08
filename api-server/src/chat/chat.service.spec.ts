@@ -93,7 +93,7 @@ describe('ChatService', () => {
 
   describe('getChatById', () => {
     it('should return chat when found', async () => {
-      prisma.chat.findUnique.mockResolvedValue(mockChat as never);
+      (prisma.chat.findUnique as any).mockResolvedValue(mockChat as never);
 
       const result = await service.getChatById('chat-123');
 
@@ -104,7 +104,7 @@ describe('ChatService', () => {
     });
 
     it('should return null when chat not found', async () => {
-      prisma.chat.findUnique.mockResolvedValue(null);
+      (prisma.chat.findUnique as any).mockResolvedValue(null);
 
       const result = await service.getChatById('nonexistent');
 
@@ -114,10 +114,10 @@ describe('ChatService', () => {
 
   describe('saveVisitorMessage', () => {
     it('should create new chat and message when no chat exists', async () => {
-      prisma.site.findUnique.mockResolvedValue(mockSite as never);
-      prisma.chat.findFirst.mockResolvedValue(null);
-      prisma.chat.create.mockResolvedValue(mockChat as never);
-      prisma.message.create.mockResolvedValue(mockMessage as never);
+      (prisma.site.findUnique as any).mockResolvedValue(mockSite as never);
+      (prisma.chat.findFirst as any).mockResolvedValue(null);
+      (prisma.chat.create as any).mockResolvedValue(mockChat as never);
+      (prisma.message.create as any).mockResolvedValue(mockMessage as never);
 
       const result = await service.saveVisitorMessage('site-123', 'visitor-456', 'Hello!');
 
@@ -140,9 +140,9 @@ describe('ChatService', () => {
     });
 
     it('should reuse existing open chat', async () => {
-      prisma.site.findUnique.mockResolvedValue(mockSite as never);
-      prisma.chat.findFirst.mockResolvedValue(mockChat as never);
-      prisma.message.create.mockResolvedValue(mockMessage as never);
+      (prisma.site.findUnique as any).mockResolvedValue(mockSite as never);
+      (prisma.chat.findFirst as any).mockResolvedValue(mockChat as never);
+      (prisma.message.create as any).mockResolvedValue(mockMessage as never);
 
       await service.saveVisitorMessage('site-123', 'visitor-456', 'Hello again!');
 
@@ -152,10 +152,10 @@ describe('ChatService', () => {
 
     it('should reopen closed chat', async () => {
       const closedChat = { ...mockChat, status: 'closed' };
-      prisma.site.findUnique.mockResolvedValue(mockSite as never);
-      prisma.chat.findFirst.mockResolvedValue(closedChat as never);
-      prisma.chat.update.mockResolvedValue({ ...closedChat, status: 'open' } as never);
-      prisma.message.create.mockResolvedValue(mockMessage as never);
+      (prisma.site.findUnique as any).mockResolvedValue(mockSite as never);
+      (prisma.chat.findFirst as any).mockResolvedValue(closedChat as never);
+      (prisma.chat.update as any).mockResolvedValue({ ...closedChat, status: 'open' } as never);
+      (prisma.message.create as any).mockResolvedValue(mockMessage as never);
 
       await service.saveVisitorMessage('site-123', 'visitor-456', 'Hello!');
 
@@ -167,12 +167,12 @@ describe('ChatService', () => {
 
     it('should create site if not exists and user available', async () => {
       const mockUser = { id: 'user-123', email: 'test@example.com' };
-      prisma.site.findUnique.mockResolvedValue(null);
-      prisma.user.findFirst.mockResolvedValue(mockUser as never);
-      prisma.site.create.mockResolvedValue(mockSite as never);
-      prisma.chat.findFirst.mockResolvedValue(null);
-      prisma.chat.create.mockResolvedValue(mockChat as never);
-      prisma.message.create.mockResolvedValue(mockMessage as never);
+      (prisma.site.findUnique as any).mockResolvedValue(null);
+      (prisma.user.findFirst as any).mockResolvedValue(mockUser as never);
+      (prisma.site.create as any).mockResolvedValue(mockSite as never);
+      (prisma.chat.findFirst as any).mockResolvedValue(null);
+      (prisma.chat.create as any).mockResolvedValue(mockChat as never);
+      (prisma.message.create as any).mockResolvedValue(mockMessage as never);
 
       await service.saveVisitorMessage('site-123', 'visitor-456', 'Hello!');
 
@@ -187,8 +187,8 @@ describe('ChatService', () => {
     });
 
     it('should throw error when no user exists for site creation', async () => {
-      prisma.site.findUnique.mockResolvedValue(null);
-      prisma.user.findFirst.mockResolvedValue(null);
+      (prisma.site.findUnique as any).mockResolvedValue(null);
+      (prisma.user.findFirst as any).mockResolvedValue(null);
 
       await expect(
         service.saveVisitorMessage('site-123', 'visitor-456', 'Hello!'),
@@ -196,9 +196,9 @@ describe('ChatService', () => {
     });
 
     it('should save message with attachment', async () => {
-      prisma.site.findUnique.mockResolvedValue(mockSite as never);
-      prisma.chat.findFirst.mockResolvedValue(mockChat as never);
-      prisma.message.create.mockResolvedValue({ ...mockMessage, attachment: 'file.jpg' } as never);
+      (prisma.site.findUnique as any).mockResolvedValue(mockSite as never);
+      (prisma.chat.findFirst as any).mockResolvedValue(mockChat as never);
+      (prisma.message.create as any).mockResolvedValue({ ...mockMessage, attachment: 'file.jpg' } as never);
 
       await service.saveVisitorMessage('site-123', 'visitor-456', 'Hello!', 'file.jpg');
 
@@ -213,9 +213,9 @@ describe('ChatService', () => {
     });
 
     it('should trigger auto-reply after saving message', async () => {
-      prisma.site.findUnique.mockResolvedValue(mockSite as never);
-      prisma.chat.findFirst.mockResolvedValue(mockChat as never);
-      prisma.message.create.mockResolvedValue(mockMessage as never);
+      (prisma.site.findUnique as any).mockResolvedValue(mockSite as never);
+      (prisma.chat.findFirst as any).mockResolvedValue(mockChat as never);
+      (prisma.message.create as any).mockResolvedValue(mockMessage as never);
 
       await service.saveVisitorMessage('site-123', 'visitor-456', 'Hello!');
 
@@ -231,7 +231,7 @@ describe('ChatService', () => {
   describe('saveAdminMessage', () => {
     it('should create admin message', async () => {
       const adminMessage = { ...mockMessage, from: 'admin', text: 'How can I help?' };
-      prisma.message.create.mockResolvedValue(adminMessage as never);
+      (prisma.message.create as any).mockResolvedValue(adminMessage as never);
 
       const result = await service.saveAdminMessage('chat-123', 'How can I help?');
 
@@ -247,7 +247,7 @@ describe('ChatService', () => {
     });
 
     it('should save admin message with attachment', async () => {
-      prisma.message.create.mockResolvedValue({ ...mockMessage, attachment: '"file.pdf"' } as never);
+      (prisma.message.create as any).mockResolvedValue({ ...mockMessage, attachment: '"file.pdf"' } as never);
 
       await service.saveAdminMessage('chat-123', 'See attachment', 'file.pdf');
 
@@ -265,8 +265,8 @@ describe('ChatService', () => {
   describe('getChatsBySite', () => {
     it('should return chats with unread counts', async () => {
       const chatsFromDb = [mockChat];
-      prisma.chat.findMany.mockResolvedValue(chatsFromDb as never);
-      prisma.message.count.mockResolvedValue(3);
+      (prisma.chat.findMany as any).mockResolvedValue(chatsFromDb as never);
+      (prisma.message.count as any).mockResolvedValue(3);
 
       const result = await service.getChatsBySite('site-123');
 
@@ -284,8 +284,8 @@ describe('ChatService', () => {
     });
 
     it('should filter chats by search term', async () => {
-      prisma.chat.findMany.mockResolvedValue([]);
-      prisma.message.count.mockResolvedValue(0);
+      (prisma.chat.findMany as any).mockResolvedValue([]);
+      (prisma.message.count as any).mockResolvedValue(0);
 
       await service.getChatsBySite('site-123', 'search term');
 
@@ -311,7 +311,7 @@ describe('ChatService', () => {
   describe('getMessagesByChat', () => {
     it('should return messages ordered by creation date', async () => {
       const messages = [mockMessage];
-      prisma.message.findMany.mockResolvedValue(messages as never);
+      (prisma.message.findMany as any).mockResolvedValue(messages as never);
 
       const result = await service.getMessagesByChat('chat-123');
 
@@ -325,7 +325,7 @@ describe('ChatService', () => {
 
   describe('clearChatMessages', () => {
     it('should delete all messages for chat', async () => {
-      prisma.message.deleteMany.mockResolvedValue({ count: 5 } as never);
+      (prisma.message.deleteMany as any).mockResolvedValue({ count: 5 } as never);
 
       const result = await service.clearChatMessages('chat-123');
 
@@ -338,8 +338,8 @@ describe('ChatService', () => {
 
   describe('deleteChat', () => {
     it('should delete messages first then chat', async () => {
-      prisma.message.deleteMany.mockResolvedValue({ count: 3 } as never);
-      prisma.chat.delete.mockResolvedValue(mockChat as never);
+      (prisma.message.deleteMany as any).mockResolvedValue({ count: 3 } as never);
+      (prisma.chat.delete as any).mockResolvedValue(mockChat as never);
 
       const result = await service.deleteChat('chat-123');
 
@@ -355,7 +355,7 @@ describe('ChatService', () => {
 
   describe('getUnreadCount', () => {
     it('should return count of unread visitor messages', async () => {
-      prisma.message.count.mockResolvedValue(7);
+      (prisma.message.count as any).mockResolvedValue(7);
 
       const result = await service.getUnreadCount('site-123');
 
@@ -372,7 +372,7 @@ describe('ChatService', () => {
 
   describe('markMessagesAsRead', () => {
     it('should mark all unread visitor messages as read', async () => {
-      prisma.message.updateMany.mockResolvedValue({ count: 4 } as never);
+      (prisma.message.updateMany as any).mockResolvedValue({ count: 4 } as never);
 
       const result = await service.markMessagesAsRead('chat-123');
 
@@ -391,7 +391,7 @@ describe('ChatService', () => {
   describe('renameVisitor', () => {
     it('should update visitor name', async () => {
       const updatedChat = { ...mockChat, visitorName: 'New Name' };
-      prisma.chat.update.mockResolvedValue(updatedChat as never);
+      (prisma.chat.update as any).mockResolvedValue(updatedChat as never);
 
       const result = await service.renameVisitor('chat-123', 'New Name');
 
@@ -405,7 +405,7 @@ describe('ChatService', () => {
 
   describe('findChatByVisitor', () => {
     it('should find most recent chat for visitor', async () => {
-      prisma.chat.findFirst.mockResolvedValue(mockChat as never);
+      (prisma.chat.findFirst as any).mockResolvedValue(mockChat as never);
 
       const result = await service.findChatByVisitor('site-123', 'visitor-456');
 
@@ -420,7 +420,7 @@ describe('ChatService', () => {
     });
 
     it('should return null when no chat found', async () => {
-      prisma.chat.findFirst.mockResolvedValue(null);
+      (prisma.chat.findFirst as any).mockResolvedValue(null);
 
       const result = await service.findChatByVisitor('site-123', 'unknown-visitor');
 
@@ -431,7 +431,7 @@ describe('ChatService', () => {
   describe('updateChatStatus', () => {
     it('should update chat status to closed', async () => {
       const closedChat = { ...mockChat, status: 'closed' };
-      prisma.chat.update.mockResolvedValue(closedChat as never);
+      (prisma.chat.update as any).mockResolvedValue(closedChat as never);
 
       const result = await service.updateChatStatus('chat-123', 'closed');
 
@@ -443,7 +443,7 @@ describe('ChatService', () => {
     });
 
     it('should update chat status to open', async () => {
-      prisma.chat.update.mockResolvedValue(mockChat as never);
+      (prisma.chat.update as any).mockResolvedValue(mockChat as never);
 
       const result = await service.updateChatStatus('chat-123', 'open');
 
