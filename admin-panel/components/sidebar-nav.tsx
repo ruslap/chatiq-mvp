@@ -86,7 +86,7 @@ export function SidebarNav() {
 
     return (
         <TooltipProvider delayDuration={0}>
-            <div className="flex flex-col h-full w-[72px] bg-[rgb(var(--primary-600))] py-5 items-center gap-2 shrink-0 overflow-hidden relative">
+            <div className="hidden md:flex flex-col h-full w-[72px] bg-[rgb(var(--primary-600))] py-5 items-center gap-2 shrink-0 overflow-hidden relative">
                 {/* Brand Logo */}
                 <div className="mb-6">
                     <div className="w-11 h-11 bg-white/95 rounded-2xl flex items-center justify-center text-[rgb(var(--primary-600))] font-bold text-sm shadow-lg shadow-black/10 transition-smooth hover:scale-105">

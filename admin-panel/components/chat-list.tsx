@@ -49,7 +49,7 @@ export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchCha
     return (
         <div className="flex flex-col h-full bg-[rgb(var(--surface))] select-none">
             {/* Header */}
-            <div className="px-5 py-5 shrink-0 border-b border-[rgb(var(--border))] flex flex-col gap-4">
+            <div className="px-4 md:px-5 py-4 md:py-5 shrink-0 border-b border-[rgb(var(--border))] flex flex-col gap-3 md:gap-4">
                 <div className="flex items-center justify-between">
                     <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2.5">

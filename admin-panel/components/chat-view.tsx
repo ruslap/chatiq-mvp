@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Settings, Paperclip, Smile, Send, Trash2, Eraser, X, Pencil, Check } from "lucide-react";
+import { Settings, Paperclip, Smile, Send, Trash2, Eraser, X, Pencil, Check, ArrowLeft } from "lucide-react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import dynamic from 'next/dynamic';
 
@@ -44,6 +44,7 @@ interface ChatViewProps {
     socket: any;
     siteId: string;
     searchQuery?: string;
+    onBack?: () => void;
     onDeleteChat?: (id: string) => void;
     onClearMessages?: (id: string) => void;
 }
@@ -68,7 +69,7 @@ function highlightText(text: string, query: string) {
     );
 }
 
-export function ChatView({ chat, socket, siteId, searchQuery = "", onDeleteChat, onClearMessages, onRenameVisitor }: ChatViewProps & { onRenameVisitor?: (id: string, name: string) => void }) {
+export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDeleteChat, onClearMessages, onRenameVisitor }: ChatViewProps & { onRenameVisitor?: (id: string, name: string) => void }) {
     const { data: session } = useSession();
     const { language } = useLanguage();
     const t = useTranslation(language);
@@ -423,10 +424,20 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onDeleteChat,
     return (
         <div className="flex flex-col h-full bg-[rgb(var(--surface-muted))] selection:bg-[rgb(var(--primary))]/20">
             {/* Header */}
-            <div className="h-16 px-6 bg-[rgb(var(--surface))] border-b border-[rgb(var(--border))] flex items-center justify-between shrink-0 z-10">
-                <div className="flex items-center gap-3">
+            <div className="h-14 md:h-16 px-3 md:px-6 bg-[rgb(var(--surface))] border-b border-[rgb(var(--border))] flex items-center justify-between shrink-0 z-10">
+                <div className="flex items-center gap-2 md:gap-3">
+                    {/* Back button - mobile only */}
+                    {onBack && (
+                        <button
+                            onClick={onBack}
+                            className="md:hidden flex items-center justify-center w-10 h-10 -ml-1 rounded-xl text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--foreground))] hover:bg-[rgb(var(--surface-muted))] transition-smooth touch-target"
+                            aria-label="Back to chats"
+                        >
+                            <ArrowLeft className="w-5 h-5" />
+                        </button>
+                    )}
                     <div className="relative">
-                        <Avatar className="w-10 h-10 border-0 ring-2 ring-[rgb(var(--border))]">
+                        <Avatar className="w-9 h-9 md:w-10 md:h-10 border-0 ring-2 ring-[rgb(var(--border))]">
                             <AvatarFallback className="bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))] font-medium text-sm">
                                 {chat?.visitor?.[0] || 'V'}
                             </AvatarFallback>
@@ -613,7 +624,7 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onDeleteChat,
             </ScrollArea>
 
             {/* Composer */}
-            <div className="px-6 pb-6 pt-2 shrink-0">
+            <div className="px-3 md:px-6 pb-3 md:pb-6 pt-2 shrink-0 bg-[rgb(var(--surface-muted))] safe-area-bottom">
                 <div className="max-w-2xl mx-auto">
                     {/* File Preview */}
                     {attachedFile && (

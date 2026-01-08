@@ -7,6 +7,7 @@ import { ChatView } from "@/components/chat-view";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import { io } from "socket.io-client";
 import { SidebarNav } from "@/components/sidebar-nav";
+import { MobileHeader, MobileBottomNav } from "@/components/mobile-nav";
 import { MessageSquare, Send } from "lucide-react";
 import { getMyOrganization } from "@/lib/organization";
 
@@ -223,12 +224,25 @@ export default function ChatsPage() {
     );
 
     return (
-        <div className="h-screen w-full flex bg-[rgb(var(--surface))] overflow-hidden selection:bg-[rgb(var(--primary))]/20">
+        <div className="h-screen w-full flex flex-col md:flex-row bg-[rgb(var(--surface))] overflow-hidden selection:bg-[rgb(var(--primary))]/20">
+            {/* Desktop Sidebar - hidden on mobile */}
             <SidebarNav />
 
-            <div className="flex-1 flex min-w-0 h-full">
-                {/* Chat List Panel */}
-                <div className="w-[340px] border-r border-[rgb(var(--border))] bg-[rgb(var(--surface))] flex flex-col shrink-0 h-full">
+            {/* Mobile Header - visible only on mobile */}
+            <MobileHeader />
+
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col md:flex-row min-w-0 h-full overflow-hidden">
+                {/* Chat List Panel - full width on mobile when no chat selected, fixed width on desktop */}
+                <div className={`
+                    ${selectedChatId ? 'hidden md:flex' : 'flex'} 
+                    w-full md:w-[340px] 
+                    border-r-0 md:border-r border-[rgb(var(--border))] 
+                    bg-[rgb(var(--surface))] 
+                    flex-col shrink-0 
+                    h-full
+                    overflow-hidden
+                `}>
                     <ChatList
                         onSelect={handleSelectChat}
                         selectedId={selectedChatId}
@@ -238,8 +252,14 @@ export default function ChatsPage() {
                     />
                 </div>
 
-                {/* Main Content Area */}
-                <div className="flex-1 bg-[rgb(var(--surface-muted))] h-full overflow-hidden">
+                {/* Chat View Area - full screen on mobile when chat selected, always visible on desktop */}
+                <div className={`
+                    ${selectedChatId ? 'flex' : 'hidden md:flex'} 
+                    flex-1 flex-col
+                    bg-[rgb(var(--surface-muted))] 
+                    h-full 
+                    overflow-hidden
+                `}>
                     {(() => {
                         const selectedChat = selectedChatId ? chats.find(c => c.id === selectedChatId) : null;
 
@@ -254,6 +274,7 @@ export default function ChatsPage() {
                                 socket={socket}
                                 siteId={siteId}
                                 searchQuery={searchQuery}
+                                onBack={() => setSelectedChatId(null)}
                                 onClearMessages={(id) => {
                                     setChats(prev => prev.map(c => c.id === id ? { ...c, lastMsg: "No messages", time: "" } : c));
                                 }}
@@ -267,9 +288,9 @@ export default function ChatsPage() {
                             />
                         ) : null;
                     })()}
+                    {/* Empty State - only on desktop when no chat selected */}
                     {!selectedChatId && (
-                        /* Empty State */
-                        <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-[rgb(var(--surface))]">
+                        <div className="hidden md:flex flex-col items-center justify-center h-full text-center p-8 bg-[rgb(var(--surface))]">
                             <div className="mb-6 relative">
                                 <div className="w-20 h-20 bg-[rgb(var(--accent))] rounded-3xl flex items-center justify-center relative z-10 animate-float">
                                     <Send className="w-8 h-8 text-[rgb(var(--primary))]" />
@@ -289,6 +310,9 @@ export default function ChatsPage() {
                     )}
                 </div>
             </div>
+
+            {/* Mobile Bottom Navigation - visible only on mobile */}
+            <MobileBottomNav />
         </div>
     );
 }
