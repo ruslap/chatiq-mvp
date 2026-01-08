@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChatService } from './chat.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AutomationService } from '../automation/automation.service';
@@ -70,6 +71,12 @@ describe('ChatService', () => {
           provide: AutomationService,
           useValue: {
             executeAutoReply: jest.fn().mockResolvedValue(undefined),
+          },
+        },
+        {
+          provide: EventEmitter2,
+          useValue: {
+            emit: jest.fn(),
           },
         },
       ],
