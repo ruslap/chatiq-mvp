@@ -57,7 +57,7 @@ export function MobileHeader({ unreadCount = 0 }: MobileNavProps) {
     };
 
     return (
-        <div className="h-14 px-4 bg-[rgb(var(--primary-600))] flex items-center justify-between shrink-0 safe-area-top">
+        <div className="h-14 px-4 bg-[rgb(var(--primary-600))] flex items-center justify-between shrink-0 safe-area-top md:hidden">
             {/* Logo & Brand */}
             <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-white/95 rounded-xl flex items-center justify-center text-[rgb(var(--primary-600))] font-bold text-xs shadow-lg">

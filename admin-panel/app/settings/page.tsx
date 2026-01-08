@@ -224,7 +224,7 @@ export default function SettingsPage() {
             <MobileHeader />
 
             <div className="flex-1 overflow-y-auto bg-[rgb(var(--surface-muted))] scrollbar-thin">
-                <div className="max-w-[1100px] mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8 pb-24 md:pb-8">
+                <div className="w-full md:max-w-6xl md:mx-auto px-4 md:px-6 lg:px-8 py-4 md:py-6 lg:py-8 pb-24 md:pb-8">
                     {/* Page Title */}
                     <h1 className="text-xl md:text-2xl lg:text-3xl font-light text-[rgb(var(--foreground-secondary))] mb-4 md:mb-6">
                         Налаштування
