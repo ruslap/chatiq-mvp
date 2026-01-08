@@ -4,9 +4,14 @@ import { AutomationService } from '../automation/automation.service';
 
 @Injectable()
 export class ChatService {
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
+@Injectable()
+export class ChatService {
     constructor(
         private prisma: PrismaService,
-        private automationService: AutomationService
+        private automationService: AutomationService,
+        private eventEmitter: EventEmitter2
     ) { }
 
     async getChatById(chatId: string) {
@@ -86,7 +91,7 @@ export class ChatService {
     }
 
     async saveAdminMessage(chatId: string, text: string, attachment?: string) {
-        return this.prisma.message.create({
+        const message = await this.prisma.message.create({
             data: {
                 chatId,
                 from: 'admin',
@@ -94,6 +99,14 @@ export class ChatService {
                 attachment: attachment ? JSON.stringify(attachment) : undefined,
             },
         });
+
+        // Emit event so automation service can cancel pending auto-replies
+        this.eventEmitter.emit('chat.admin_message', {
+            siteId: (await this.getChatById(chatId))?.siteId,
+            chatId,
+        });
+
+        return message;
     }
 
     async getChatsBySite(siteId: string, search?: string) {

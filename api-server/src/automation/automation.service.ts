@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 interface DaySchedule {
   start: string;
@@ -10,10 +10,23 @@ interface DaySchedule {
 
 @Injectable()
 export class AutomationService {
+  private pendingTimers = new Map<string, Map<string, NodeJS.Timeout>>();
+
   constructor(
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
   ) { }
+
+  @OnEvent('chat.admin_message')
+  handleAdminMessage(payload: { siteId: string; chatId: string }) {
+    const { chatId } = payload;
+    if (this.pendingTimers.has(chatId)) {
+      console.log(`[AutoReply] Admin replied in chat ${chatId}, cancelling pending auto-replies`);
+      const chatTimers = this.pendingTimers.get(chatId);
+      chatTimers?.forEach((timer) => clearTimeout(timer));
+      this.pendingTimers.delete(chatId);
+    }
+  }
 
   // ============ AUTO-REPLIES ============
 
@@ -499,6 +512,13 @@ export class AutomationService {
       return;
     }
 
+    // Cancel existing timers for this chat (reset clock on visitor message)
+    if (this.pendingTimers.has(chatId)) {
+      const chatTimers = this.pendingTimers.get(chatId);
+      chatTimers?.forEach((timer) => clearTimeout(timer));
+      this.pendingTimers.delete(chatId);
+    }
+
     // Check business hours status first
     const businessStatus = await this.isWithinBusinessHours(siteId);
     console.log('[AutoReply] Business status:', businessStatus);
@@ -538,6 +558,50 @@ export class AutomationService {
             await new Promise((resolve) => setTimeout(resolve, offlineResult.delay || 0));
             await this.sendAutoReply(siteId, chatId, offlineResult.message!);
           })();
+        }
+      }
+    }
+
+    // Schedule delayed "no_reply" messages if we are ONLINE
+    // (If offline, usually the offline message is enough, or we might want to schedule them anyway? 
+    // Usually no_reply is "wait for operator". If offline, no operator is coming.)
+    if (businessStatus.isOpen) {
+      const delayedReplies = await this.prisma.autoReply.findMany({
+        where: {
+          siteId,
+          isActive: true,
+          trigger: { startsWith: 'no_reply_' },
+        },
+      });
+
+      if (delayedReplies.length > 0) {
+        console.log(`[AutoReply] Found ${delayedReplies.length} delayed replies, scheduling...`);
+        const chatTimers = new Map<string, NodeJS.Timeout>();
+
+        for (const reply of delayedReplies) {
+          // Verify delay > 0 to avoid immediate loops if misconfigured
+          if (reply.delay > 0) {
+            console.log(`[AutoReply] Scheduling ${reply.trigger} in ${reply.delay}s`);
+            const timer = setTimeout(async () => {
+              console.log(`[AutoReply] Executing delayed reply ${reply.trigger} for chat ${chatId}`);
+              await this.sendAutoReply(siteId, chatId, reply.message);
+
+              // Remove this specific timer from map
+              const currentTimers = this.pendingTimers.get(chatId);
+              if (currentTimers) {
+                currentTimers.delete(reply.trigger);
+                if (currentTimers.size === 0) {
+                  this.pendingTimers.delete(chatId);
+                }
+              }
+            }, reply.delay * 1000);
+
+            chatTimers.set(reply.trigger, timer);
+          }
+        }
+
+        if (chatTimers.size > 0) {
+          this.pendingTimers.set(chatId, chatTimers);
         }
       }
     }
