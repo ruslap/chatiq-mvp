@@ -10,7 +10,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <title>ChtQ Widget Demo</title>
-    <link rel="icon" type="image/x-icon" href="/assets/ico.svg">
+    <link rel="icon" type="image/svg+xml" href="/assets/ico.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -290,23 +290,25 @@
         }
 
         .code-block .comment {
-            color: #444444;
+            color: #676e95;
         }
 
-        .code-block .tag {
-            color: #ff7b72;
+        .code-block .tag,
+        .tag-highlight {
+            color: #f07178;
         }
 
         .code-block .attr {
-            color: #79c0ff;
+            color: #c792ea;
         }
 
+        .code-block .key {
+            color: #89ddff;
+        }
+
+        .code-block .string,
         .code-block .value {
-            color: #a5d6ff;
-        }
-
-        .code-block .string {
-            color: #a5d6ff;
+            color: #c3e88d;
         }
 
         /* Pointer */
@@ -432,7 +434,7 @@
 
         <p class="description">
             Привіт, Степане! <strong>Chtq</strong> додається на сайт за 2 хвилини через один
-            <code>&lt;script&gt;</code>.
+            <code><span class="tag-highlight">&lt;script&gt;</span></code>.
             Оператор бачить звернення миттєво й відповідає з адмінки.
         </p>
         <p class="description" style="margin-top: -32px; font-size: 16px; opacity: 0.8;">
@@ -473,14 +475,14 @@
             </div>
             <div class="code-block">
                 <pre><span class="comment">&lt;!-- Add this before &lt;/body&gt; --&gt;</span>
-<span class="tag">&lt;script</span> <span class="attr">async src</span>=<span class="value">"https://cdn.chtq.ink/widget.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;script</span> <span class="attr">async src</span>=<span class="string">"https://cdn.chtq.ink/widget.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
 <span class="tag">&lt;script&gt;</span>
-  <span class="attr">window.chtq</span> = {
-    <span class="attr">organizationId</span>: <span class="string">"YOUR_ORGANIZATION_ID"</span>,
-    <span class="attr">language</span>: <span class="string">"uk"</span>,
-    <span class="attr">color</span>: <span class="string">"#6366F1"</span>,
-    <span class="attr">position</span>: <span class="string">"right"</span>,
-    <span class="attr">size</span>: <span class="string">"standard"</span>
+  <span class="key">window.chtq</span> = {
+    <span class="key">organizationId</span>: <span class="string">"YOUR_ORGANIZATION_ID"</span>,
+    <span class="key">language</span>: <span class="string">"uk"</span>,
+    <span class="key">color</span>: <span class="string">"#10B981"</span>,
+    <span class="key">position</span>: <span class="string">"left"</span>,
+    <span class="key">size</span>: <span class="string">"standard"</span>
   };
 <span class="tag">&lt;/script&gt;</span></pre>
             </div>
@@ -509,8 +511,8 @@
         window.chtq = {
             organizationId: "4c799242-5671-496c-95b0-558799f47cc0",
             language: "uk",
-            color: "#6366F1",
-            position: "right",
+            color: "#10B981",
+            position: "left",
             size: "standard"
         };
     </script>

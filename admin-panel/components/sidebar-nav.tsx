@@ -88,11 +88,13 @@ export function SidebarNav() {
         <TooltipProvider delayDuration={0}>
             <div className="hidden md:flex flex-col h-full w-[72px] bg-[rgb(var(--primary-600))] py-5 items-center gap-2 shrink-0 overflow-hidden relative">
                 {/* Brand Logo */}
-                <div className="mb-6">
-                    <div className="w-11 h-11 bg-white/95 rounded-2xl flex items-center justify-center text-[rgb(var(--primary-600))] font-bold text-sm shadow-lg shadow-black/10 transition-smooth hover:scale-105">
-                        Chtq
+                <Link href="/chats" className="mb-6 group">
+                    <div className="w-11 h-11 bg-[#312E81] rounded-2xl flex items-center justify-center shadow-lg shadow-black/10 transition-smooth group-hover:scale-105 border border-white/10">
+                        <div className="w-8 h-8 bg-white rounded-[10px] flex items-center justify-center">
+                            <span className="text-[#312E81] font-bold text-[9px]">Chtq</span>
+                        </div>
                     </div>
-                </div>
+                </Link>
 
                 {/* Main Navigation */}
                 <nav className="flex-1 flex flex-col gap-1.5 w-full px-2.5">

@@ -59,12 +59,14 @@ export function MobileHeader({ unreadCount = 0 }: MobileNavProps) {
     return (
         <div className="h-14 px-4 bg-[rgb(var(--primary-600))] flex items-center justify-between shrink-0 safe-area-top md:hidden">
             {/* Logo & Brand */}
-            <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-white/95 rounded-xl flex items-center justify-center text-[rgb(var(--primary-600))] font-bold text-xs shadow-lg">
-                    Chtq
+            <Link href="/chats" className="flex items-center gap-3 group active:opacity-80 transition-opacity">
+                <div className="w-9 h-9 bg-[#312E81] rounded-xl flex items-center justify-center shadow-lg border border-white/10">
+                    <div className="w-6 h-6 bg-white rounded-[7px] flex items-center justify-center">
+                        <span className="text-[#312E81] font-bold text-[7px]">Chtq</span>
+                    </div>
                 </div>
                 <span className="text-white font-semibold text-sm">Dashboard</span>
-            </div>
+            </Link>
 
             {/* Hamburger Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>

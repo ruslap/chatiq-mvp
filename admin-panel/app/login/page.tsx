@@ -79,8 +79,10 @@ export default function LoginPage() {
             <div className="w-full max-w-sm relative animate-fade-in">
                 {/* Logo */}
                 <div className="flex flex-col items-center justify-center mb-8 gap-3">
-                    <div className="w-14 h-14 bg-[rgb(var(--primary))] rounded-2xl flex items-center justify-center shadow-lg shadow-[rgb(var(--primary))]/20">
-                        <MessageSquare className="w-7 h-7 text-white" />
+                    <div className="w-16 h-16 bg-[#312E81] rounded-[22px] flex items-center justify-center shadow-xl shadow-[#312E81]/20">
+                        <div className="w-11 h-11 bg-white rounded-[15px] flex items-center justify-center">
+                            <span className="text-[#312E81] font-bold text-xs">Chtq</span>
+                        </div>
                     </div>
                     <span className="text-2xl font-bold text-[rgb(var(--foreground))] tracking-tight">Chtq</span>
                 </div>
