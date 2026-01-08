@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AutomationService } from '../automation/automation.service';
 
-@Injectable()
-export class ChatService {
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
