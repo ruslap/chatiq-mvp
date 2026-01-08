@@ -189,7 +189,7 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                     {language === 'uk' ? 'Робочі години' : 'Business Hours'}
                 </h2>
                 <p className="text-sm text-[rgb(var(--foreground-secondary))] mt-1">
-                    {language === 'uk' 
+                    {language === 'uk'
                         ? 'Налаштуйте години роботи для автоматичних повідомлень у неробочий час'
                         : 'Set working hours for automatic offline messages'}
                 </p>
@@ -198,9 +198,8 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
             {/* Enable Toggle */}
             <div className="flex items-center justify-between p-4 bg-[rgb(var(--surface-muted))] rounded-xl">
                 <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        isEnabled ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]' : 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground-secondary))]'
-                    }`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isEnabled ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]' : 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground-secondary))]'
+                        }`}>
                         <Clock className="w-5 h-5" />
                     </div>
                     <div>
@@ -208,7 +207,7 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                             {language === 'uk' ? 'Увімкнути робочі години' : 'Enable business hours'}
                         </h3>
                         <p className="text-sm text-[rgb(var(--foreground-secondary))]">
-                            {language === 'uk' 
+                            {language === 'uk'
                                 ? 'Автоматичні повідомлення в неробочий час'
                                 : 'Auto-reply when outside business hours'}
                         </p>
@@ -216,13 +215,11 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                 </div>
                 <button
                     onClick={() => setIsEnabled(!isEnabled)}
-                    className={`relative w-12 h-7 rounded-full transition-colors ${
-                        isEnabled ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
-                    }`}
+                    className={`relative w-12 h-7 rounded-full transition-colors ${isEnabled ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
+                        }`}
                 >
-                    <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${
-                        isEnabled ? 'left-6' : 'left-1'
-                    }`} />
+                    <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${isEnabled ? 'left-6' : 'left-1'
+                        }`} />
                 </button>
             </div>
 
@@ -230,28 +227,26 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
             {(() => {
                 const allClosed = DAYS.every(day => !schedule[day.key]?.isOpen);
                 return (
-                    <div className={`flex items-center justify-between p-4 rounded-xl border ${
-                        allClosed 
-                            ? 'bg-[rgb(var(--destructive))]/5 border-[rgb(var(--destructive))]/20' 
+                    <div className={`flex items-center justify-between p-4 rounded-xl border ${allClosed
+                            ? 'bg-[rgb(var(--destructive))]/5 border-[rgb(var(--destructive))]/20'
                             : 'bg-[rgb(var(--success))]/5 border-[rgb(var(--success))]/20'
-                    }`}>
+                        }`}>
                         <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                                allClosed 
-                                    ? 'bg-[rgb(var(--destructive))]/10 text-[rgb(var(--destructive))]' 
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${allClosed
+                                    ? 'bg-[rgb(var(--destructive))]/10 text-[rgb(var(--destructive))]'
                                     : 'bg-[rgb(var(--success))]/10 text-[rgb(var(--success))]'
-                            }`}>
+                                }`}>
                                 {allClosed ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
                             </div>
                             <div>
                                 <h3 className="font-medium text-[rgb(var(--foreground))]">
-                                    {allClosed 
+                                    {allClosed
                                         ? (language === 'uk' ? 'Компанія не працює' : 'Company closed')
                                         : (language === 'uk' ? 'Компанія працює' : 'Company open')
                                     }
                                 </h3>
                                 <p className="text-sm text-[rgb(var(--foreground-secondary))]">
-                                    {allClosed 
+                                    {allClosed
                                         ? (language === 'uk' ? 'Всі дні закриті (відпустка, свята)' : 'All days closed (vacation, holidays)')
                                         : (language === 'uk' ? 'Чат працює за розкладом' : 'Chat works according to schedule')
                                     }
@@ -267,10 +262,10 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                                     const openSchedule: Record<string, DaySchedule> = {};
                                     DAYS.forEach(day => {
                                         const isWeekend = day.key === 'saturday' || day.key === 'sunday';
-                                        openSchedule[day.key] = { 
-                                            start: '09:00', 
-                                            end: '18:00', 
-                                            isOpen: !isWeekend 
+                                        openSchedule[day.key] = {
+                                            start: '09:00',
+                                            end: '18:00',
+                                            isOpen: !isWeekend
                                         };
                                     });
                                     setSchedule(openSchedule);
@@ -284,7 +279,7 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                                 }
                                 setIsEnabled(true);
                             }}
-                            className={allClosed 
+                            className={allClosed
                                 ? 'text-[rgb(var(--success))] border-[rgb(var(--success))]/30 hover:bg-[rgb(var(--success))]/10'
                                 : 'text-[rgb(var(--destructive))] border-[rgb(var(--destructive))]/30 hover:bg-[rgb(var(--destructive))]/10'
                             }
@@ -361,52 +356,59 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                             {DAYS.map((day, index) => {
                                 const daySchedule = schedule[day.key];
                                 const isWeekend = day.key === 'saturday' || day.key === 'sunday';
-                                
+
                                 return (
-                                    <div 
+                                    <div
                                         key={day.key}
-                                        className={`flex items-center gap-4 px-4 py-3 ${
-                                            index < DAYS.length - 1 ? 'border-b border-[rgb(var(--border))]' : ''
-                                        } ${isWeekend ? 'bg-[rgb(var(--surface-muted))]/50' : ''}`}
+                                        className={`flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 px-4 py-3 ${index < DAYS.length - 1 ? 'border-b border-[rgb(var(--border))]' : ''
+                                            } ${isWeekend ? 'bg-[rgb(var(--surface-muted))]/50' : ''}`}
                                     >
-                                        {/* Day toggle */}
-                                        <button
-                                            onClick={() => updateDaySchedule(day.key, 'isOpen', !daySchedule.isOpen)}
-                                            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                                                daySchedule.isOpen 
-                                                    ? 'bg-[rgb(var(--success))]/10 text-[rgb(var(--success))]' 
-                                                    : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
-                                            }`}
-                                        >
-                                            {daySchedule.isOpen ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                                        </button>
+                                        {/* Day header row */}
+                                        <div className="flex items-center gap-3 sm:gap-4">
+                                            {/* Day toggle */}
+                                            <button
+                                                onClick={() => updateDaySchedule(day.key, 'isOpen', !daySchedule.isOpen)}
+                                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors shrink-0 ${daySchedule.isOpen
+                                                        ? 'bg-[rgb(var(--success))]/10 text-[rgb(var(--success))]'
+                                                        : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
+                                                    }`}
+                                            >
+                                                {daySchedule.isOpen ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                                            </button>
 
-                                        {/* Day name */}
-                                        <span className={`w-28 text-sm font-medium ${
-                                            daySchedule.isOpen ? 'text-[rgb(var(--foreground))]' : 'text-[rgb(var(--foreground-secondary))]'
-                                        }`}>
-                                            {language === 'uk' ? day.label : day.labelEn}
-                                        </span>
+                                            {/* Day name */}
+                                            <span className={`text-sm font-medium sm:w-28 ${daySchedule.isOpen ? 'text-[rgb(var(--foreground))]' : 'text-[rgb(var(--foreground-secondary))]'
+                                                }`}>
+                                                {language === 'uk' ? day.label : day.labelEn}
+                                            </span>
 
-                                        {/* Time inputs */}
+                                            {/* Mobile: closed label */}
+                                            {!daySchedule.isOpen && (
+                                                <span className="sm:hidden text-xs text-[rgb(var(--foreground-secondary))] italic ml-auto">
+                                                    {language === 'uk' ? 'Вихідний' : 'Closed'}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        {/* Time inputs - stacked on mobile */}
                                         {daySchedule.isOpen ? (
-                                            <div className="flex items-center gap-2 flex-1">
+                                            <div className="flex items-center gap-2 pl-11 sm:pl-0 sm:flex-1">
                                                 <input
                                                     type="time"
                                                     value={daySchedule.start}
                                                     onChange={(e) => updateDaySchedule(day.key, 'start', e.target.value)}
-                                                    className="px-3 py-1.5 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-sm focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none"
+                                                    className="flex-1 sm:flex-none px-3 py-1.5 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-sm focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none"
                                                 />
                                                 <span className="text-[rgb(var(--foreground-secondary))]">—</span>
                                                 <input
                                                     type="time"
                                                     value={daySchedule.end}
                                                     onChange={(e) => updateDaySchedule(day.key, 'end', e.target.value)}
-                                                    className="px-3 py-1.5 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-sm focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none"
+                                                    className="flex-1 sm:flex-none px-3 py-1.5 rounded-lg border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-sm focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none"
                                                 />
                                             </div>
                                         ) : (
-                                            <span className="text-sm text-[rgb(var(--foreground-secondary))] italic flex-1">
+                                            <span className="hidden sm:block text-sm text-[rgb(var(--foreground-secondary))] italic flex-1">
                                                 {language === 'uk' ? 'Вихідний' : 'Closed'}
                                             </span>
                                         )}
@@ -424,13 +426,13 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                         <Textarea
                             value={offlineMessage}
                             onChange={(e) => setOfflineMessage(e.target.value)}
-                            placeholder={language === 'uk' 
+                            placeholder={language === 'uk'
                                 ? 'Дякуємо за звернення! Наразі ми не в мережі...'
                                 : 'Thank you for reaching out! We are currently offline...'}
                             className="min-h-[120px] rounded-xl border-[rgb(var(--border))] bg-[rgb(var(--surface))] resize-none"
                         />
                         <p className="text-xs text-[rgb(var(--foreground-secondary))]">
-                            {language === 'uk' 
+                            {language === 'uk'
                                 ? 'Це повідомлення буде автоматично надіслано відвідувачам у неробочий час'
                                 : 'This message will be automatically sent to visitors outside business hours'}
                         </p>

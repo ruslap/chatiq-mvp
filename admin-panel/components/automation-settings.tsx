@@ -366,56 +366,55 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
                         return (
                             <div
                                 key={reply.id}
-                                className={`bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] p-4 transition-all ${
-                                    !reply.isActive ? 'opacity-60' : ''
-                                }`}
+                                className={`bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] p-4 transition-all ${!reply.isActive ? 'opacity-60' : ''
+                                    }`}
                             >
-                                <div className="flex items-start gap-4">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                                        reply.isActive 
-                                            ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]' 
+                                <div className="flex items-start gap-3 md:gap-4">
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${reply.isActive
+                                            ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]'
                                             : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
-                                    }`}>
+                                        }`}>
                                         <TriggerIcon className="w-5 h-5" />
                                     </div>
 
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <h4 className="font-medium text-[rgb(var(--foreground))]">
-                                                {reply.name}
-                                            </h4>
-                                            <span className="text-xs px-2 py-0.5 rounded-full bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]">
-                                                {trigger?.label}
-                                            </span>
+                                        <div className="flex items-start justify-between gap-2">
+                                            <div className="min-w-0 flex-1">
+                                                <h4 className="font-medium text-[rgb(var(--foreground))] truncate">
+                                                    {reply.name}
+                                                </h4>
+                                                <span className="hidden md:inline-block text-xs px-2 py-0.5 rounded-full bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))] mt-1">
+                                                    {trigger?.label}
+                                                </span>
+                                            </div>
+
+                                            {/* Actions - aligned right */}
+                                            <div className="flex items-center gap-1 md:gap-2 shrink-0">
+                                                <button
+                                                    onClick={() => handleToggleActive(reply.id, reply.isActive)}
+                                                    className={`relative w-10 h-6 rounded-full transition-colors shrink-0 ${reply.isActive ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
+                                                        }`}
+                                                >
+                                                    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${reply.isActive ? 'left-5' : 'left-1'
+                                                        }`} />
+                                                </button>
+                                                <button
+                                                    onClick={() => startEditing(reply)}
+                                                    className="p-2 hover:bg-[rgb(var(--surface-muted))] rounded-lg text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
+                                                >
+                                                    <Edit2 className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(reply.id)}
+                                                    className="p-2 hover:bg-[rgb(var(--surface-muted))] rounded-lg text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--destructive))] transition-colors"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </div>
-                                        <p className="text-sm text-[rgb(var(--foreground-secondary))] line-clamp-2">
+                                        <p className="text-sm text-[rgb(var(--foreground-secondary))] line-clamp-2 mt-1">
                                             {reply.message}
                                         </p>
-                                    </div>
-
-                                    <div className="flex items-center gap-2 shrink-0">
-                                        <button
-                                            onClick={() => handleToggleActive(reply.id, reply.isActive)}
-                                            className={`relative w-10 h-6 rounded-full transition-colors ${
-                                                reply.isActive ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
-                                            }`}
-                                        >
-                                            <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
-                                                reply.isActive ? 'left-5' : 'left-1'
-                                            }`} />
-                                        </button>
-                                        <button
-                                            onClick={() => startEditing(reply)}
-                                            className="p-2 hover:bg-[rgb(var(--surface-muted))] rounded-lg text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--primary))] transition-colors"
-                                        >
-                                            <Edit2 className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(reply.id)}
-                                            className="p-2 hover:bg-[rgb(var(--surface-muted))] rounded-lg text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--destructive))] transition-colors"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
                                     </div>
                                 </div>
                             </div>

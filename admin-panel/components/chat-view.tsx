@@ -481,9 +481,9 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                                 </button>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-2 group">
-                                <div>
-                                    <div className="font-semibold text-sm text-[rgb(var(--foreground))] leading-none">{chat?.visitor || 'Visitor'}</div>
+                            <div className="flex items-center gap-2 group min-w-0">
+                                <div className="min-w-0">
+                                    <div className="font-semibold text-sm text-[rgb(var(--foreground))] leading-none truncate max-w-[150px] md:max-w-[250px]">{chat?.visitor || 'Visitor'}</div>
                                     <div className={`text-[10px] font-medium uppercase tracking-wider mt-1 ${chat?.status === 'offline'
                                         ? 'text-[rgb(var(--foreground-secondary))]'
                                         : 'text-[rgb(var(--success))]'
