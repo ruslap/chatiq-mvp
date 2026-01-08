@@ -79,10 +79,8 @@ export default function LoginPage() {
             <div className="w-full max-w-sm relative animate-fade-in">
                 {/* Logo */}
                 <div className="flex flex-col items-center justify-center mb-8 gap-3">
-                    <div className="w-16 h-16 bg-[#312E81] rounded-[22px] flex items-center justify-center shadow-xl shadow-[#312E81]/20">
-                        <div className="w-11 h-11 bg-white rounded-[15px] flex items-center justify-center">
-                            <span className="text-[#312E81] font-bold text-xs">Chtq</span>
-                        </div>
+                    <div className="w-16 h-16 bg-white rounded-[22px] flex items-center justify-center shadow-xl shadow-black/10 overflow-hidden border border-black/5">
+                        <img src="/icon.svg" alt="Chtq" className="w-full h-full object-cover" />
                     </div>
                     <span className="text-2xl font-bold text-[rgb(var(--foreground))] tracking-tight">Chtq</span>
                 </div>

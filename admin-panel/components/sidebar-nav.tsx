@@ -89,10 +89,8 @@ export function SidebarNav() {
             <div className="hidden md:flex flex-col h-full w-[72px] bg-[rgb(var(--primary-600))] py-5 items-center gap-2 shrink-0 overflow-hidden relative">
                 {/* Brand Logo */}
                 <Link href="/chats" className="mb-6 group">
-                    <div className="w-11 h-11 bg-[#312E81] rounded-2xl flex items-center justify-center shadow-lg shadow-black/10 transition-smooth group-hover:scale-105 border border-white/10">
-                        <div className="w-8 h-8 bg-white rounded-[10px] flex items-center justify-center">
-                            <span className="text-[#312E81] font-bold text-[9px]">Chtq</span>
-                        </div>
+                    <div className="w-11 h-11 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-black/10 transition-smooth group-hover:scale-105 border border-white/10 overflow-hidden">
+                        <img src="/icon.svg" alt="Chtq" className="w-full h-full object-cover" />
                     </div>
                 </Link>
 

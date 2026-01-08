@@ -90,25 +90,46 @@
             padding: 0 24px;
         }
 
+        /* Logo Section */
+        .logo-container {
+            margin-bottom: 56px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .logo-icon {
+            display: block;
+            width: 80px;
+            height: 80px;
+            filter: drop-shadow(0 2px 8px rgba(50, 50, 160, 0.3));
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .logo-icon:hover {
+            filter: drop-shadow(0 4px 16px rgba(50, 50, 160, 0.5));
+            transform: scale(1.05) translateY(-2px);
+        }
+
         /* Badge */
         .badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
             padding: 6px 14px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.2);
             border-radius: 100px;
             font-size: 13px;
             font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 32px;
-            transition: all 0.2s ease;
+            color: #6ee7b7;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out 0.1s backwards;
         }
 
         .badge:hover {
-            border-color: var(--border-hover);
-            color: var(--text-primary);
+            border-color: rgba(34, 197, 94, 0.4);
+            background: rgba(34, 197, 94, 0.12);
+            transform: translateY(-1px);
         }
 
         .badge-dot {
@@ -116,18 +137,29 @@
             height: 6px;
             background: #22c55e;
             border-radius: 50%;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
+                transform: scale(1);
             }
-
             50% {
-                opacity: 0.5;
+                opacity: 0.6;
+                transform: scale(0.95);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
@@ -137,20 +169,22 @@
             font-weight: 600;
             letter-spacing: -0.04em;
             line-height: 1.05;
-            margin-bottom: 24px;
-            background: linear-gradient(180deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            margin-bottom: 28px;
+            background: linear-gradient(180deg, #ffffff 0%, #a3a3a3 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
         }
 
         /* Description */
         .description {
             font-size: 18px;
-            line-height: 1.6;
+            line-height: 1.7;
             color: var(--text-secondary);
             margin-bottom: 48px;
-            max-width: 540px;
+            max-width: 580px;
+            animation: fadeInUp 0.8s ease-out 0.3s backwards;
         }
 
         .description strong {
@@ -163,71 +197,101 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 64px;
+            margin-bottom: 80px;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
         }
 
         .btn-primary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 20px;
+            padding: 14px 24px;
             background: var(--accent);
             color: var(--bg-primary);
             font-family: inherit;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
         }
 
         .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
         }
 
         .btn-secondary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 20px;
+            padding: 14px 24px;
             background: transparent;
             color: var(--text-secondary);
             font-family: inherit;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-secondary:hover {
             border-color: var(--border-hover);
             color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0);
         }
 
         /* Code Block */
         .code-section {
             width: 100%;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out 0.5s backwards;
+        }
+
+        .code-section::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border-radius: 14px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .code-section:hover::before {
+            opacity: 1;
         }
 
         .code-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-bottom: none;
+            padding: 14px 20px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16162a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px 12px 0 0;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
         }
 
         .code-header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .window-controls {
@@ -239,63 +303,90 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .window-dot:nth-child(1) {
+            background: #ff5f57;
+            box-shadow: 0 0 8px rgba(255, 95, 87, 0.4);
+        }
+
+        .window-dot:nth-child(2) {
+            background: #febc2e;
+            box-shadow: 0 0 8px rgba(254, 188, 46, 0.4);
+        }
+
+        .window-dot:nth-child(3) {
+            background: #28c840;
+            box-shadow: 0 0 8px rgba(40, 200, 64, 0.4);
         }
 
         .code-filename {
             font-family: 'Geist Mono', monospace;
             font-size: 13px;
-            color: var(--text-tertiary);
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
         }
 
         .copy-btn {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--text-tertiary);
+            gap: 8px;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.6);
             font-family: inherit;
             font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
         }
 
         .copy-btn:hover {
-            border-color: var(--border-hover);
-            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
         }
 
         .copy-btn svg {
-            width: 14px;
-            height: 14px;
+            width: 15px;
+            height: 15px;
         }
 
         .code-block {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
+            background: linear-gradient(180deg, #16162a 0%, #0f0f1a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-top: none;
             border-radius: 0 0 12px 12px;
-            padding: 20px 24px;
+            padding: 24px;
             overflow-x: auto;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
         .code-block pre {
             font-family: 'Geist Mono', 'SF Mono', Consolas, monospace;
-            font-size: 13px;
-            line-height: 1.7;
+            font-size: 14px;
+            line-height: 1.8;
             color: var(--text-secondary);
+            margin: 0;
         }
 
         .code-block .comment {
             color: #676e95;
+            font-style: italic;
         }
 
         .code-block .tag,
         .tag-highlight {
             color: #f07178;
+            font-weight: 500;
         }
 
         .code-block .attr {
@@ -304,6 +395,7 @@
 
         .code-block .key {
             color: #89ddff;
+            font-weight: 500;
         }
 
         .code-block .string,
@@ -372,8 +464,8 @@
         /* Responsive */
         @media (max-width: 640px) {
             body {
-                padding: 80px 0;
-                padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+                padding: 60px 0;
+                padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
             }
 
             .container {
@@ -382,9 +474,33 @@
                 padding-right: calc(20px + env(safe-area-inset-right, 0px));
             }
 
+            .logo-container {
+                margin-bottom: 40px;
+            }
+
+            .logo-icon {
+                width: 64px;
+                height: 64px;
+            }
+
+            .badge {
+                margin-bottom: 32px;
+            }
+
+            h1 {
+                font-size: clamp(36px, 10vw, 48px);
+                margin-bottom: 24px;
+            }
+
+            .description {
+                font-size: 16px;
+                margin-bottom: 40px;
+            }
+
             .cta-section {
                 flex-direction: column;
                 width: 100%;
+                margin-bottom: 56px;
             }
 
             .btn-primary,
@@ -400,22 +516,23 @@
                 display: none;
             }
 
+            .code-header {
+                padding: 12px 16px;
+            }
+
+            .code-block {
+                padding: 20px;
+            }
+
             .code-block pre {
-                font-size: 11px;
+                font-size: 12px;
+                line-height: 1.6;
             }
 
             .footer {
                 position: relative;
                 margin-top: 40px;
                 padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-            }
-
-            h1 {
-                font-size: clamp(36px, 10vw, 48px);
-            }
-
-            .description {
-                font-size: 16px;
             }
         }
     </style>
@@ -425,19 +542,9 @@
     <div class="glow"></div>
 
     <main class="container">
-        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 48px; gap: 16px;">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <svg width="80" height="80" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="400" height="400" rx="80" fill="white" />
-                    <g transform="translate(-10, 45) scale(1.2)">
-                        <path
-                            d="M72.168 200.208C72.168 193.552 73.608 187.632 76.488 182.448C79.368 177.2 83.368 173.136 88.488 170.256C93.672 167.312 99.528 165.84 106.056 165.84C114.056 165.84 120.904 167.952 126.6 172.176C132.296 176.4 136.104 182.16 138.024 189.456H119.976C118.632 186.64 116.712 184.496 114.216 183.024C111.784 181.552 109 180.816 105.864 180.816C100.808 180.816 96.712 182.576 93.576 186.096C90.44 189.616 88.872 194.32 88.872 200.208C88.872 206.096 90.44 210.8 93.576 214.32C96.712 217.84 100.808 219.6 105.864 219.6C109 219.6 111.784 218.864 114.216 217.392C116.712 215.92 118.632 213.776 119.976 210.96H138.024C136.104 218.256 132.296 224.016 126.6 228.24C120.904 232.4 114.056 234.48 106.056 234.48C99.528 234.48 93.672 233.04 88.488 230.16C83.368 227.216 79.368 223.152 76.488 217.968C73.608 212.784 72.168 206.864 72.168 200.208ZM179.085 179.856C185.229 179.856 190.157 181.904 193.869 186C197.581 190.032 199.437 195.6 199.437 202.704V234H183.117V204.912C183.117 201.328 182.189 198.544 180.333 196.56C178.477 194.576 175.981 193.584 172.845 193.584C169.709 193.584 167.213 194.576 165.357 196.56C163.501 198.544 162.573 201.328 162.573 204.912V234H146.157V162.96H162.573V187.632C164.237 185.264 166.509 183.376 169.389 181.968C172.269 180.56 175.501 179.856 179.085 179.856ZM238.781 220.08V234H230.429C224.477 234 219.837 232.56 216.509 229.68C213.181 226.736 211.517 221.968 211.517 215.376V194.064H204.989V180.432H211.517V167.376H227.933V180.432H238.685V194.064H227.933V215.568C227.933 217.168 228.317 218.32 229.085 219.024C229.853 219.728 231.133 220.08 232.925 220.08H238.781ZM242.741 207.312C242.741 202 243.829 197.264 246.005 193.104C248.245 188.944 251.221 185.712 254.933 183.408C258.709 181.04 262.805 179.856 267.221 179.856C270.613 179.856 273.653 180.464 276.341 181.68C279.029 182.832 281.205 184.464 282.869 186.576V180.432H299.285V259.536H282.869V227.28C281.013 229.52 278.741 231.312 276.053 232.656C273.429 234 270.421 234.672 267.029 234.672C262.677 234.672 258.645 233.52 254.933 231.216C251.221 228.912 248.245 225.68 246.005 221.52C243.829 217.36 242.741 212.624 242.741 207.312ZM282.869 207.216C282.869 204.336 282.293 201.936 281.141 200.016C280.053 198.032 278.613 196.56 276.821 195.6C275.029 194.576 273.141 194.064 271.157 194.064C269.237 194.064 267.381 194.576 265.589 195.6C263.797 196.56 262.325 198.032 261.173 200.016C260.021 202 259.445 204.432 259.445 207.312C259.445 210.192 260.021 212.624 261.173 214.608C262.325 216.528 263.797 218 265.589 219.024C267.381 219.984 269.237 220.464 271.157 220.464C273.077 220.464 274.933 219.984 276.725 219.024C278.581 218 280.053 216.496 281.141 214.512C282.293 212.528 282.869 210.096 282.869 207.216ZM316.921 234.768C314.041 234.768 311.673 233.936 309.817 232.272C308.025 230.544 307.129 228.432 307.129 225.936C307.129 223.376 308.025 221.232 309.817 219.504C311.673 217.776 314.041 216.912 316.921 216.912C319.737 216.912 322.041 217.776 323.833 219.504C325.689 221.232 326.617 223.376 326.617 225.936C326.617 228.432 325.689 230.544 323.833 232.272C322.041 233.936 319.737 234.768 316.921 234.768Z"
-                            fill="#3232A0" />
-                    </g>
-                </svg>
-                <span
-                    style="font-size: 32px; font-weight: 600; letter-spacing: -0.02em; color: var(--text-primary);">Chtq</span>
-            </div>
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="/assets/ico.svg" alt="Chtq" class="logo-icon">
         </div>
 
         <div class="badge">
@@ -480,7 +587,7 @@
                     </div>
                     <span class="code-filename">index.html</span>
                 </div>
-                <button class="copy-btn">
+                <button class="copy-btn" onclick="copyCode()">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
                         <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
@@ -496,7 +603,7 @@
     <span class="key">organizationId</span>: <span class="string">"YOUR_ORGANIZATION_ID"</span>,
     <span class="key">language</span>: <span class="string">"uk"</span>,
     <span class="key">color</span>: <span class="string">"#10B981"</span>,
-    <span class="key">position</span>: <span class="string">"left"</span>,
+    <span class="key">position</span>: <span class="string">"right"</span>,
     <span class="key">size</span>: <span class="string">"standard"</span>
   };
 <span class="tag">&lt;/script&gt;</span></pre>
@@ -532,41 +639,23 @@
         };
     </script>
     <script>
-        document.querySelector('.copy-btn').addEventListener('click', function () {
-            // Використовуємо екранування \x3C (<) та \x3E (>), щоб уникнути помилок парсингу
-            const code = '\x3C!-- Add this before \x3C/body\x3E --\x3E\n' +
-                '\x3Cscript async src="https://cdn.chtq.ink/widget.js"\x3E\x3C/script\x3E\n' +
-                '\x3Cscript\x3E\n' +
-                '  window.chtq = {\n' +
-                '    organizationId: "YOUR_ORGANIZATION_ID",\n' +
-                '    language: "uk",\n' +
-                '    color: "#6366F1",\n' +
-                '    position: "right",\n' +
-                '    size: "standard"\n' +
-                '  };\n' +
-                '\x3C/script\x3E';
+        // Copy code functionality
+        function copyCode() {
+            const codeBlock = document.querySelector('.code-block');
+            const code = codeBlock.querySelector('pre').textContent;
+            const btn = document.querySelector('.copy-btn');
 
             navigator.clipboard.writeText(code).then(() => {
-                const btn = this;
                 const originalContent = btn.innerHTML;
-
-                // Змінюємо тільки текст, зберігаючи іконку
-                if (btn.querySelector('span')) {
-                    btn.querySelector('span').textContent = 'Copied!';
-                } else {
-                    btn.innerHTML = btn.innerHTML.replace('Copy', 'Copied!');
-                }
-
-                btn.classList.add('copied');
+                btn.innerHTML = btn.innerHTML.replace('Copy', 'Copied!');
 
                 setTimeout(() => {
                     btn.innerHTML = originalContent;
-                    btn.classList.remove('copied');
                 }, 2000);
             }).catch(err => {
-                console.error('Copy failed: ', err);
+                console.error('Copy failed:', err);
             });
-        });
+        }
     </script>
 </body>
 
