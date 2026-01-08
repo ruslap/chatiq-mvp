@@ -152,7 +152,7 @@ export function ChatList({ onSelect, selectedId, chats, searchQuery, onSearchCha
                 )}
 
                 {/* Chat Items */}
-                <div className="flex flex-col px-2">
+                <div className="flex flex-col px-2 pb-20 md:pb-2">
                     {chats.map(chat => {
                         const isUnread = (chat.unreadCount || 0) > 0 && selectedId !== chat.id;
                         const isSelected = selectedId === chat.id;

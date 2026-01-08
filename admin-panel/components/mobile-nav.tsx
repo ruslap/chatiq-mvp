@@ -202,7 +202,7 @@ export function MobileBottomNav({ unreadCount = 0 }: MobileNavProps) {
     ];
 
     return (
-        <nav className="h-16 bg-[rgb(var(--surface))] border-t border-[rgb(var(--border))] flex items-center justify-around px-2 safe-area-bottom shrink-0">
+        <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden h-16 bg-[rgb(var(--surface))] border-t border-[rgb(var(--border))] flex items-center justify-around px-2 safe-area-bottom shadow-[0_-1px_3px_rgba(0,0,0,0.05)]">
             {navItems.map((item) => {
                 const isActive = pathname.startsWith(item.href);
                 const showBadge = item.hasUnread && localUnreadCount > 0;

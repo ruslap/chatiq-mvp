@@ -196,9 +196,9 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
             </div>
 
             {/* Enable Toggle */}
-            <div className="flex items-center justify-between p-4 bg-[rgb(var(--surface-muted))] rounded-xl">
-                <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isEnabled ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]' : 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground-secondary))]'
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-[rgb(var(--surface-muted))] rounded-xl">
+                <div className="flex items-start sm:items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isEnabled ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]' : 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground-secondary))]'
                         }`}>
                         <Clock className="w-5 h-5" />
                     </div>
@@ -215,7 +215,7 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                 </div>
                 <button
                     onClick={() => setIsEnabled(!isEnabled)}
-                    className={`relative w-12 h-7 rounded-full transition-colors ${isEnabled ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
+                    className={`relative w-12 h-7 rounded-full transition-colors shrink-0 ${isEnabled ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
                         }`}
                 >
                     <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${isEnabled ? 'left-6' : 'left-1'
@@ -227,12 +227,12 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
             {(() => {
                 const allClosed = DAYS.every(day => !schedule[day.key]?.isOpen);
                 return (
-                    <div className={`flex items-center justify-between p-4 rounded-xl border ${allClosed
+                    <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border ${allClosed
                             ? 'bg-[rgb(var(--destructive))]/5 border-[rgb(var(--destructive))]/20'
                             : 'bg-[rgb(var(--success))]/5 border-[rgb(var(--success))]/20'
                         }`}>
-                        <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${allClosed
+                        <div className="flex items-start sm:items-center gap-3">
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${allClosed
                                     ? 'bg-[rgb(var(--destructive))]/10 text-[rgb(var(--destructive))]'
                                     : 'bg-[rgb(var(--success))]/10 text-[rgb(var(--success))]'
                                 }`}>
@@ -247,7 +247,7 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                                 </h3>
                                 <p className="text-sm text-[rgb(var(--foreground-secondary))]">
                                     {allClosed
-                                        ? (language === 'uk' ? 'Всі дні закриті (відпустка, свята)' : 'All days closed (vacation, holidays)')
+                                        ? (language === 'uk' ? 'Всі дні закриті (відпустка, свята)' : 'All days closed')
                                         : (language === 'uk' ? 'Чат працює за розкладом' : 'Chat works according to schedule')
                                     }
                                 </p>
@@ -279,10 +279,10 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                                 }
                                 setIsEnabled(true);
                             }}
-                            className={allClosed
+                            className={`shrink-0 w-full sm:w-auto ${allClosed
                                 ? 'text-[rgb(var(--success))] border-[rgb(var(--success))]/30 hover:bg-[rgb(var(--success))]/10'
                                 : 'text-[rgb(var(--destructive))] border-[rgb(var(--destructive))]/30 hover:bg-[rgb(var(--destructive))]/10'
-                            }
+                                }`}
                         >
                             {allClosed ? (
                                 <>
@@ -369,8 +369,8 @@ export function BusinessHoursSettings({ siteId, accessToken, language = 'uk' }: 
                                             <button
                                                 onClick={() => updateDaySchedule(day.key, 'isOpen', !daySchedule.isOpen)}
                                                 className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors shrink-0 ${daySchedule.isOpen
-                                                        ? 'bg-[rgb(var(--success))]/10 text-[rgb(var(--success))]'
-                                                        : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
+                                                    ? 'bg-[rgb(var(--success))]/10 text-[rgb(var(--success))]'
+                                                    : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
                                                     }`}
                                             >
                                                 {daySchedule.isOpen ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

@@ -369,14 +369,14 @@ export default function SettingsPage() {
                                         <label className="text-sm text-[rgb(var(--foreground-secondary))]">
                                             Позиція віджета:
                                         </label>
-                                        <div className="flex flex-wrap p-1 bg-[rgb(var(--surface-muted))] rounded-full w-fit">
+                                        <div className="flex flex-wrap md:p-1 md:bg-[rgb(var(--surface-muted))] md:rounded-full w-full md:w-fit gap-2 md:gap-0">
                                             {WIDGET_POSITIONS.map(pos => (
                                                 <button
                                                     key={pos.id}
                                                     onClick={() => setWidgetPosition(pos.id)}
-                                                    className={`px-4 py-2 text-sm font-medium rounded-full transition-smooth ${widgetPosition === pos.id
-                                                        ? 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground))] shadow-sm'
-                                                        : 'text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--foreground))]'
+                                                    className={`px-4 py-2 text-sm font-medium rounded-xl md:rounded-full transition-smooth border md:border-0 grow md:grow-0 text-center ${widgetPosition === pos.id
+                                                        ? 'bg-[rgb(var(--surface))] md:bg-[rgb(var(--surface))] text-[rgb(var(--foreground))] shadow-sm border-[rgb(var(--border))]'
+                                                        : 'bg-[rgb(var(--surface)]/50 md:bg-transparent text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--foreground))] border-transparent'
                                                         }`}
                                                 >
                                                     {pos.label}
