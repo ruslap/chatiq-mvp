@@ -53,7 +53,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             position: relative;
             overflow-x: hidden;
         }
@@ -87,12 +86,16 @@
             z-index: 1;
             max-width: 720px;
             width: 100%;
-            padding: 0 24px;
+            padding: 80px 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         /* Logo Section */
         .logo-container {
-            margin-bottom: 56px;
+            margin-bottom: 24px;
             animation: fadeInUp 0.8s ease-out;
         }
 
@@ -113,6 +116,7 @@
         .badge {
             display: inline-flex;
             align-items: center;
+            align-self: flex-start;
             gap: 8px;
             padding: 6px 14px;
             background: rgba(34, 197, 94, 0.08);
@@ -121,7 +125,7 @@
             font-size: 13px;
             font-weight: 500;
             color: #6ee7b7;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
             transition: all 0.3s ease;
             animation: fadeInUp 0.8s ease-out 0.1s backwards;
         }
@@ -169,11 +173,11 @@
 
         /* Headline */
         h1 {
-            font-size: clamp(48px, 8vw, 72px);
+            font-size: clamp(42px, 7vw, 64px);
             font-weight: 600;
-            letter-spacing: -0.04em;
-            line-height: 1.05;
-            margin-bottom: 28px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 24px;
             background: linear-gradient(180deg, #ffffff 0%, #a3a3a3 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -183,12 +187,22 @@
 
         /* Description */
         .description {
-            font-size: 18px;
+            font-size: 17px;
             line-height: 1.7;
             color: var(--text-secondary);
-            margin-bottom: 48px;
-            max-width: 580px;
+            margin-bottom: 12px;
+            max-width: 520px;
             animation: fadeInUp 0.8s ease-out 0.3s backwards;
+        }
+        
+        .description:last-of-type {
+            margin-bottom: 40px;
+        }
+        
+        .description-sub {
+            font-size: 15px;
+            opacity: 0.7;
+            margin-top: -4px;
         }
 
         .description strong {
@@ -201,7 +215,7 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            margin-bottom: 80px;
+            margin-bottom: 64px;
             animation: fadeInUp 0.8s ease-out 0.4s backwards;
         }
 
@@ -467,19 +481,14 @@
 
         /* Responsive */
         @media (max-width: 640px) {
-            body {
-                padding: 60px 0;
-                padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
-            }
-
             .container {
-                padding: 0 20px;
+                padding: 60px 20px;
                 padding-left: calc(20px + env(safe-area-inset-left, 0px));
                 padding-right: calc(20px + env(safe-area-inset-right, 0px));
             }
 
             .logo-container {
-                margin-bottom: 40px;
+                margin-bottom: 20px;
             }
 
             .logo-icon {
@@ -488,17 +497,21 @@
             }
 
             .badge {
-                margin-bottom: 32px;
-            }
-
-            h1 {
-                font-size: clamp(36px, 10vw, 48px);
                 margin-bottom: 24px;
             }
 
+            h1 {
+                font-size: clamp(32px, 9vw, 42px);
+                margin-bottom: 20px;
+            }
+
             .description {
-                font-size: 16px;
-                margin-bottom: 40px;
+                font-size: 15px;
+                margin-bottom: 10px;
+            }
+            
+            .description-sub {
+                font-size: 14px;
             }
 
             .cta-section {
@@ -537,6 +550,24 @@
                 position: relative;
                 margin-top: 40px;
                 padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+                bottom: auto;
+                left: auto;
+                transform: none;
+            }
+        }
+        
+        /* Medium screens */
+        @media (max-width: 768px) and (min-width: 641px) {
+            .container {
+                padding: 60px 24px;
+            }
+            
+            .cta-section {
+                margin-bottom: 60px;
+            }
+            
+            .footer {
+                bottom: 20px;
             }
         }
     </style>
@@ -563,7 +594,7 @@
             <code><span class="tag-highlight">&lt;script&gt;</span></code>.
             Оператор бачить звернення миттєво й відповідає з адмінки.
         </p>
-        <p class="description" style="margin-top: -32px; font-size: 16px; opacity: 0.8;">
+        <p class="description description-sub">
             Мінімум налаштувань — максимум контролю.
         </p>
 
