@@ -119,10 +119,9 @@ export default function SettingsPage() {
                 }
             } catch (error) {
                 console.error('Failed to load settings:', error);
-                // Even on error, we should stop loading to show the UI
-                setIsLoading(false);
             } finally {
-                // Should only stop if we handled it or if session is missing
+                // Always stop loading, even on error
+                setIsLoading(false);
             }
         };
 
@@ -342,31 +341,56 @@ export default function SettingsPage() {
                                                     accept="image/*"
                                                     onChange={async (e) => {
                                                         const file = e.target.files?.[0];
-                                                        if (file && orgId) {
-                                                            setIsUploadingAvatar(true);
-                                                            try {
-                                                                const formData = new FormData();
-                                                                formData.append('file', file);
-                                                                formData.append('siteId', orgId);
+                                                        if (!file) return;
 
-                                                                const response = await fetch(`${API_URL}/upload`, {
-                                                                    method: 'POST',
-                                                                    body: formData,
-                                                                    headers: {
-                                                                        'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
-                                                                    }
-                                                                });
+                                                        // Validate file type
+                                                        if (!file.type.startsWith('image/')) {
+                                                            alert('Будь ласка, виберіть файл зображення (JPG, PNG, WEBP)');
+                                                            return;
+                                                        }
 
-                                                                if (!response.ok) throw new Error('Upload failed');
+                                                        // Validate file size (5MB)
+                                                        if (file.size > 5 * 1024 * 1024) {
+                                                            alert('Розмір файлу перевищує 5 МБ. Будь ласка, виберіть менший файл.');
+                                                            return;
+                                                        }
 
-                                                                const result = await response.json();
-                                                                setOperatorAvatar(result.url);
-                                                            } catch (error) {
-                                                                console.error('Avatar upload error:', error);
-                                                                alert('Не вдалося завантажити аватар. Спробуйте інший файл або менший розмір.');
-                                                            } finally {
-                                                                setIsUploadingAvatar(false);
+                                                        // Ensure orgId is loaded
+                                                        if (!orgId) {
+                                                            alert('Зачекайте, поки завантажаться налаштування...');
+                                                            return;
+                                                        }
+
+                                                        setIsUploadingAvatar(true);
+                                                        try {
+                                                            const formData = new FormData();
+                                                            formData.append('file', file);
+                                                            formData.append('siteId', orgId);
+
+                                                            const response = await fetch(`${API_URL}/upload`, {
+                                                                method: 'POST',
+                                                                body: formData,
+                                                                headers: {
+                                                                    'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
+                                                                }
+                                                            });
+
+                                                            if (!response.ok) {
+                                                                const errorText = await response.text();
+                                                                console.error('Upload failed:', response.status, errorText);
+                                                                throw new Error(`Upload failed: ${response.status}`);
                                                             }
+
+                                                            const result = await response.json();
+                                                            console.log('Upload successful:', result);
+                                                            setOperatorAvatar(result.url);
+                                                        } catch (error) {
+                                                            console.error('Avatar upload error:', error);
+                                                            alert('Не вдалося завантажити аватар. Спробуйте інший файл або менший розмір.');
+                                                        } finally {
+                                                            setIsUploadingAvatar(false);
+                                                            // Reset file input
+                                                            e.target.value = '';
                                                         }
                                                     }}
                                                     className="hidden"

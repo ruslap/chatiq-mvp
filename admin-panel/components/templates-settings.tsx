@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -14,6 +14,8 @@ import {
     Zap,
     Hash
 } from "lucide-react";
+import { useToast } from "@/components/toast-provider";
+import { getApiUrl } from "@/lib/api-config";
 
 interface QuickTemplate {
     id: string;
@@ -33,20 +35,22 @@ const CATEGORIES = [
     { id: 'support', label: 'Підтримка' },
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-
 interface TemplatesSettingsProps {
     siteId: string;
     accessToken: string;
 }
 
 export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProps) {
+    const { showToast } = useToast();
+    const API_URL = getApiUrl();
     const [templates, setTemplates] = useState<QuickTemplate[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSeeding, setIsSeeding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [filterCategory, setFilterCategory] = useState<string | null>(null);
+    const hasInitializedRef = useRef(false);
 
     // Form state
     const [formTitle, setFormTitle] = useState('');
@@ -66,10 +70,44 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
             if (res.ok) {
                 const data = await res.json();
                 setTemplates(data);
+
+                // Auto-seed if empty and first load
+                if (data.length === 0 && !hasInitializedRef.current) {
+                    hasInitializedRef.current = true;
+                    await autoSeedDefaults();
+                    return; // autoSeedDefaults will set isLoading to false
+                }
             }
         } catch (error) {
             console.error('Failed to load templates:', error);
         } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const autoSeedDefaults = async () => {
+        setIsSeeding(true);
+        try {
+            const res = await fetch(`${API_URL}/automation/seed/${siteId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+
+            if (res.ok) {
+                // Reload after seeding
+                const reloadRes = await fetch(`${API_URL}/automation/templates/${siteId}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (reloadRes.ok) {
+                    const data = await reloadRes.json();
+                    setTemplates(data);
+                }
+                showToast('✨ Створено початкові шаблони', 'success');
+            }
+        } catch (error) {
+            console.error('Failed to seed defaults:', error);
+        } finally {
+            setIsSeeding(false);
             setIsLoading(false);
         }
     };
@@ -206,10 +244,13 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
         ? templates.filter(t => t.category === filterCategory)
         : templates;
 
-    if (isLoading) {
+    if (isLoading || isSeeding) {
         return (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex flex-col items-center justify-center py-12 gap-3">
                 <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--primary))]" />
+                <p className="text-sm text-[rgb(var(--foreground-secondary))]">
+                    {isSeeding ? 'Створюємо початкові шаблони...' : 'Завантаження...'}
+                </p>
             </div>
         );
     }
@@ -256,11 +297,10 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
                 <div className="flex flex-wrap gap-2">
                     <button
                         onClick={() => setFilterCategory(null)}
-                        className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
-                            !filterCategory
+                        className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${!filterCategory
                                 ? 'bg-[rgb(var(--primary))] text-white'
                                 : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--border))]'
-                        }`}
+                            }`}
                     >
                         Всі
                     </button>
@@ -271,11 +311,10 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
                             <button
                                 key={cat.id}
                                 onClick={() => setFilterCategory(cat.id)}
-                                className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
-                                    filterCategory === cat.id
+                                className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${filterCategory === cat.id
                                         ? 'bg-[rgb(var(--primary))] text-white'
                                         : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--border))]'
-                                }`}
+                                    }`}
                             >
                                 {cat.label} ({count})
                             </button>
@@ -397,9 +436,8 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
                     filteredTemplates.map((template) => (
                         <div
                             key={template.id}
-                            className={`bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] p-4 transition-all hover:shadow-sm ${
-                                !template.isActive ? 'opacity-60' : ''
-                            }`}
+                            className={`bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] p-4 transition-all hover:shadow-sm ${!template.isActive ? 'opacity-60' : ''
+                                }`}
                         >
                             <div className="flex items-start justify-between gap-3 mb-2">
                                 <div className="flex items-center gap-2">
@@ -415,13 +453,11 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
                                 <div className="flex items-center gap-1 shrink-0">
                                     <button
                                         onClick={() => handleToggleActive(template.id, template.isActive)}
-                                        className={`relative w-9 h-5 rounded-full transition-colors ${
-                                            template.isActive ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
-                                        }`}
+                                        className={`relative w-9 h-5 rounded-full transition-colors ${template.isActive ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
+                                            }`}
                                     >
-                                        <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${
-                                            template.isActive ? 'left-4' : 'left-0.5'
-                                        }`} />
+                                        <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${template.isActive ? 'left-4' : 'left-0.5'
+                                            }`} />
                                     </button>
                                     <button
                                         onClick={() => startEditing(template)}
@@ -463,7 +499,7 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
                             Як використовувати
                         </h4>
                         <p className="text-sm text-[rgb(var(--foreground-secondary))]">
-                            У чаті введіть <code className="px-1 py-0.5 bg-[rgb(var(--surface))] rounded text-[rgb(var(--primary))]">/</code> щоб побачити список шаблонів, 
+                            У чаті введіть <code className="px-1 py-0.5 bg-[rgb(var(--surface))] rounded text-[rgb(var(--primary))]">/</code> щоб побачити список шаблонів,
                             або введіть команду напряму (наприклад <code className="px-1 py-0.5 bg-[rgb(var(--surface))] rounded text-[rgb(var(--primary))]">/hello</code>)
                         </p>
                     </div>

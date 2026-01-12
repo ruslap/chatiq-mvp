@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -18,6 +18,8 @@ import {
     ChevronUp,
     GripVertical
 } from "lucide-react";
+import { useToast } from "@/components/toast-provider";
+import { getApiUrl } from "@/lib/api-config";
 
 interface AutoReply {
     id: string;
@@ -36,19 +38,21 @@ const TRIGGERS = [
     { id: 'offline', label: 'Офлайн режим', icon: Moon, description: 'Коли всі оператори офлайн' },
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-
 interface AutomationSettingsProps {
     siteId: string;
     accessToken: string;
 }
 
 export function AutomationSettings({ siteId, accessToken }: AutomationSettingsProps) {
+    const { showToast } = useToast();
+    const API_URL = getApiUrl();
     const [autoReplies, setAutoReplies] = useState<AutoReply[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSeeding, setIsSeeding] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [isCreating, setIsCreating] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const hasInitializedRef = useRef(false);
 
     // Form state
     const [formName, setFormName] = useState('');
@@ -68,10 +72,44 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
             if (res.ok) {
                 const data = await res.json();
                 setAutoReplies(data);
+
+                // Auto-seed if empty and first load
+                if (data.length === 0 && !hasInitializedRef.current) {
+                    hasInitializedRef.current = true;
+                    await autoSeedDefaults();
+                    return; // autoSeedDefaults will set isLoading to false
+                }
             }
         } catch (error) {
             console.error('Failed to load auto-replies:', error);
         } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const autoSeedDefaults = async () => {
+        setIsSeeding(true);
+        try {
+            const res = await fetch(`${API_URL}/automation/seed/${siteId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+
+            if (res.ok) {
+                // Reload after seeding
+                const reloadRes = await fetch(`${API_URL}/automation/auto-replies/${siteId}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (reloadRes.ok) {
+                    const data = await reloadRes.json();
+                    setAutoReplies(data);
+                }
+                showToast('✨ Створено початкові автовідповіді', 'success');
+            }
+        } catch (error) {
+            console.error('Failed to seed defaults:', error);
+        } finally {
+            setIsSeeding(false);
             setIsLoading(false);
         }
     };
@@ -219,10 +257,13 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
         }
     };
 
-    if (isLoading) {
+    if (isLoading || isSeeding) {
         return (
-            <div className="flex items-center justify-center py-12">
+            <div className="flex flex-col items-center justify-center py-12 gap-3">
                 <Loader2 className="w-6 h-6 animate-spin text-[rgb(var(--primary))]" />
+                <p className="text-sm text-[rgb(var(--foreground-secondary))]">
+                    {isSeeding ? 'Створюємо початкові налаштування...' : 'Завантаження...'}
+                </p>
             </div>
         );
     }
@@ -371,8 +412,8 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
                             >
                                 <div className="flex items-start gap-3 md:gap-4">
                                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${reply.isActive
-                                            ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]'
-                                            : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
+                                        ? 'bg-[rgb(var(--primary))]/10 text-[rgb(var(--primary))]'
+                                        : 'bg-[rgb(var(--surface-muted))] text-[rgb(var(--foreground-secondary))]'
                                         }`}>
                                         <TriggerIcon className="w-5 h-5" />
                                     </div>
