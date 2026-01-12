@@ -2481,7 +2481,7 @@
   });
 
   // Draft persistence
-  const DRAFT_KEY = `chatiq_draft_${siteId}`;
+  const DRAFT_KEY = `chatiq_draft_${organizationId}`;
 
   function saveDraft() {
     localStorage.setItem(DRAFT_KEY, input.value);
@@ -2731,7 +2731,7 @@
         // Upload file first
         const formData = new FormData();
         formData.append('file', currentFile);
-        formData.append('siteId', siteId);
+        formData.append('siteId', resolvedSiteId);
 
         const response = await fetch(`${API_URL}/upload`, {
           method: 'POST',
@@ -2756,7 +2756,7 @@
     if (socket) {
       // Include visitor name if set
       const visitorName = window._chatiqPendingVisitorName || localStorage.getItem('chatiq_visitor_name') || null;
-      socket.emit('visitor:message', { siteId, visitorId, text, attachment, visitorName });
+      socket.emit('visitor:message', { siteId: resolvedSiteId, visitorId, text, attachment, visitorName });
 
       // Clear pending name after first message
       if (window._chatiqPendingVisitorName) {
@@ -2771,7 +2771,7 @@
     clearDraft();
     clearFileUpload();
 
-    console.log('[ChatIQ] Message sent:', { siteId, visitorId, text, attachment });
+    console.log('[ChatIQ] Message sent:', { siteId: resolvedSiteId, visitorId, text, attachment });
   }
 
   // Theme toggle
@@ -2814,7 +2814,7 @@
   // Send disconnect message when user leaves
   const sendDisconnect = () => {
     if (socket) {
-      socket.emit('visitor:disconnect', { siteId, visitorId });
+      socket.emit('visitor:disconnect', { siteId: resolvedSiteId, visitorId });
     }
   };
 
@@ -2826,7 +2826,7 @@
   const originalCloseWidget = closeWidget;
   closeWidget = () => {
     if (socket) {
-      socket.emit('visitor:disconnect', { siteId, visitorId });
+      socket.emit('visitor:disconnect', { siteId: resolvedSiteId, visitorId });
     }
     originalCloseWidget();
   };
@@ -2834,7 +2834,7 @@
   // Expose API
   globalThis.ChatIQ = {
     version: WIDGET_VERSION,
-    siteId,
+    siteId: resolvedSiteId,
     visitorId,
     open: openWidget,
     close: closeWidget,

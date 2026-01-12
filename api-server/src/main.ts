@@ -25,14 +25,12 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   app.enableCors({
-    origin: [
-      'https://admin.chtq.ink',
-      'https://cdn.chtq.ink',
-      'https://chtq.ink',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-    ],
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      // Allow any origin
+      callback(null, true);
+    },
     credentials: true,
   });
 
