@@ -25,7 +25,13 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '10mb' }));
 
   app.enableCors({
-    origin: true, // For development, true allows any origin. In production, we should specify list.
+    origin: [
+      'https://admin.chtq.ink',
+      'https://chtq.ink',
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+    ],
     credentials: true,
   });
 

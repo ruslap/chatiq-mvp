@@ -17,7 +17,15 @@ export class UploadController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads',
+        destination: (_req, _file, cb) => {
+          const uploadPath = './uploads';
+          // Ensure directory exists
+          const fs = require('fs');
+          if (!fs.existsSync(uploadPath)) {
+            fs.mkdirSync(uploadPath, { recursive: true });
+          }
+          cb(null, uploadPath);
+        },
         filename: (_req, file, cb) => {
           const uniqueName = uuid() + extname(file.originalname);
           cb(null, uniqueName);

@@ -21,7 +21,14 @@ interface MessageData {
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: [
+      'https://admin.chtq.ink',
+      'https://chtq.ink',
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+    ],
+    credentials: true,
   },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -30,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
 
-  constructor(private readonly chatService: ChatService) {}
+  constructor(private readonly chatService: ChatService) { }
 
   @OnEvent('auto-reply.sent')
   handleAutoReplySent(payload: {
