@@ -146,11 +146,15 @@ export class AutomationController {
   @UseGuards(AuthGuard('jwt'))
   @Post('seed/:siteId')
   async seedDefaults(@Param('siteId') siteId: string) {
-    await this.automationService.seedDefaultAutoReplies(siteId);
-    await this.automationService.seedDefaultQuickTemplates(siteId);
-    return {
-      success: true,
-      message: 'Default auto-replies and templates created',
-    };
+    try {
+      await this.automationService.seedDefaultAutoReplies(siteId);
+      await this.automationService.seedDefaultQuickTemplates(siteId);
+      return {
+        success: true,
+        message: 'Default auto-replies and templates created',
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }

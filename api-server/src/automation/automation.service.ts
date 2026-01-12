@@ -209,8 +209,22 @@ export class AutomationService {
   // ============ SEED DEFAULT TEMPLATES ============
 
   async seedDefaultAutoReplies(siteId: string) {
+    // Verify site exists before seeding
+    const site = await this.prisma.site.findUnique({
+      where: { id: siteId },
+      select: { id: true },
+    });
+
+    if (!site) {
+      this.logger.warn(`Cannot seed auto-replies: Site ${siteId} not found`);
+      return;
+    }
+
     const existing = await this.prisma.autoReply.count({ where: { siteId } });
-    if (existing > 0) return;
+    if (existing > 0) {
+      this.logger.debug(`Auto-replies already exist for site ${siteId}`);
+      return;
+    }
 
     const defaults = [
       {
@@ -250,13 +264,29 @@ export class AutomationService {
         data: { siteId, ...item, isActive: true },
       });
     }
+
+    this.logger.log(`Seeded ${defaults.length} default auto-replies for site ${siteId}`);
   }
 
   async seedDefaultQuickTemplates(siteId: string) {
+    // Verify site exists before seeding
+    const site = await this.prisma.site.findUnique({
+      where: { id: siteId },
+      select: { id: true },
+    });
+
+    if (!site) {
+      this.logger.warn(`Cannot seed templates: Site ${siteId} not found`);
+      return;
+    }
+
     const existing = await this.prisma.quickTemplate.count({
       where: { siteId },
     });
-    if (existing > 0) return;
+    if (existing > 0) {
+      this.logger.debug(`Templates already exist for site ${siteId}`);
+      return;
+    }
 
     const defaults = [
       {
@@ -313,6 +343,8 @@ export class AutomationService {
         data: { siteId, ...item, isActive: true },
       });
     }
+
+    this.logger.log(`Seeded ${defaults.length} default quick templates for site ${siteId}`);
   }
 
   // ============ BUSINESS HOURS ============

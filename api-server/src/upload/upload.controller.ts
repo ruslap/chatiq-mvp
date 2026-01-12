@@ -5,7 +5,10 @@ import {
   UploadedFile,
   BadRequestException,
   Req,
+  UseGuards,
+  Logger,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -13,7 +16,10 @@ import { v4 as uuid } from 'uuid';
 
 @Controller('upload')
 export class UploadController {
+  private readonly logger = new Logger(UploadController.name);
+
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -70,8 +76,11 @@ export class UploadController {
     @Req() req: any,
   ) {
     if (!file) {
+      this.logger.error('Upload failed: No file received');
       throw new BadRequestException('No file uploaded');
     }
+
+    this.logger.log(`File uploaded: ${file.originalname} (${file.size} bytes, ${file.mimetype})`);
 
     // Return the file URL that can be accessed
     // 1. Check API_URL from env
@@ -92,10 +101,11 @@ export class UploadController {
     }
 
     if (!process.env.API_URL && process.env.NODE_ENV === 'production') {
-      console.warn(`[Upload] API_URL not set. Using detected baseUrl: ${baseUrl}`);
+      this.logger.warn(`API_URL not set. Using detected baseUrl: ${baseUrl}`);
     }
 
     const fileUrl = `${baseUrl}/uploads/${file.filename}`;
+    this.logger.log(`File URL generated: ${fileUrl}`);
 
     return {
       url: fileUrl,
