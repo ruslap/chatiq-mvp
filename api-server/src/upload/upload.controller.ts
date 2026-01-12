@@ -5,14 +5,17 @@ import {
   UploadedFile,
   BadRequestException,
   Req,
+  Body,
+  Delete,
   UseGuards,
   Logger,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { v4 as uuid } from 'uuid';
+import * as fs from 'fs';
 
 @Controller('upload')
 export class UploadController {
@@ -109,9 +112,37 @@ export class UploadController {
 
     return {
       url: fileUrl,
+      filename: file.filename, // Added to easily delete later
       name: file.originalname,
       size: file.size,
       type: file.mimetype.startsWith('image/') ? 'image' : 'file',
     };
+  }
+
+  @Post('delete')
+  @UseGuards(AuthGuard('jwt'))
+  async deleteFile(@Body('url') url: string) {
+    if (!url) {
+      throw new BadRequestException('URL is required');
+    }
+
+    try {
+      // Extract filename from URL
+      const parts = url.split('/');
+      const filename = parts[parts.length - 1];
+      const filePath = join(process.cwd(), 'uploads', filename);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        this.logger.log(`File deleted: ${filename}`);
+        return { success: true };
+      } else {
+        this.logger.warn(`File not found for deletion: ${filename}`);
+        return { success: false, message: 'File not found' };
+      }
+    } catch (error) {
+      this.logger.error(`Error deleting file: ${error.message}`);
+      throw new BadRequestException('Could not delete file');
+    }
   }
 }

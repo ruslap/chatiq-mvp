@@ -383,6 +383,19 @@ export default function SettingsPage() {
 
                                                             const result = await response.json();
                                                             console.log('Upload successful:', result);
+
+                                                            // Delete old avatar if exists
+                                                            if (operatorAvatar) {
+                                                                fetch(`${API_URL}/upload/delete`, {
+                                                                    method: 'POST',
+                                                                    headers: {
+                                                                        'Content-Type': 'application/json',
+                                                                        'Authorization': `Bearer ${(session as any)?.accessToken}`
+                                                                    },
+                                                                    body: JSON.stringify({ url: operatorAvatar })
+                                                                }).catch(e => console.warn('Failed to delete old avatar file', e));
+                                                            }
+
                                                             setOperatorAvatar(result.url);
                                                         } catch (error) {
                                                             console.error('Avatar upload error:', error);
@@ -412,7 +425,25 @@ export default function SettingsPage() {
                                                 </label>
                                                 {operatorAvatar && !isUploadingAvatar && (
                                                     <button
-                                                        onClick={() => setOperatorAvatar('')}
+                                                        onClick={async () => {
+                                                            if (confirm('Ви впевнені, що хочете видалити аватар?')) {
+                                                                try {
+                                                                    const token = (session as any)?.accessToken;
+                                                                    await fetch(`${API_URL}/upload/delete`, {
+                                                                        method: 'POST',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json',
+                                                                            'Authorization': `Bearer ${token}`
+                                                                        },
+                                                                        body: JSON.stringify({ url: operatorAvatar })
+                                                                    });
+                                                                    setOperatorAvatar('');
+                                                                } catch (error) {
+                                                                    console.error('Failed to delete avatar:', error);
+                                                                    setOperatorAvatar('');
+                                                                }
+                                                            }
+                                                        }}
                                                         className="ml-3 px-4 py-2 text-sm text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--destructive))] transition-smooth"
                                                     >
                                                         Видалити

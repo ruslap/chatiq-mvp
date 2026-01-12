@@ -72,7 +72,7 @@ export class AutomationService {
   }
 
   async createAutoReply(
-    siteId: string,
+    idOrOrgId: string,
     data: {
       name: string;
       trigger: string;
@@ -81,6 +81,7 @@ export class AutomationService {
       isActive?: boolean;
     },
   ) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     const maxOrder = await this.prisma.autoReply.aggregate({
       where: { siteId },
       _max: { order: true },
@@ -100,7 +101,7 @@ export class AutomationService {
   }
 
   async updateAutoReply(
-    siteId: string,
+    idOrOrgId: string,
     id: string,
     data: {
       name?: string;
@@ -111,6 +112,7 @@ export class AutomationService {
       order?: number;
     },
   ) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     const existing = await this.prisma.autoReply.findFirst({
       where: { id, siteId },
     });
@@ -125,7 +127,8 @@ export class AutomationService {
     });
   }
 
-  async deleteAutoReply(siteId: string, id: string) {
+  async deleteAutoReply(idOrOrgId: string, id: string) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     const existing = await this.prisma.autoReply.findFirst({
       where: { id, siteId },
     });
@@ -139,7 +142,8 @@ export class AutomationService {
     });
   }
 
-  async getActiveAutoReplyByTrigger(siteId: string, trigger: string) {
+  async getActiveAutoReplyByTrigger(idOrOrgId: string, trigger: string) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     return this.prisma.autoReply.findFirst({
       where: {
         siteId,
@@ -161,7 +165,7 @@ export class AutomationService {
   }
 
   async createQuickTemplate(
-    siteId: string,
+    idOrOrgId: string,
     data: {
       title: string;
       message: string;
@@ -170,6 +174,7 @@ export class AutomationService {
       isActive?: boolean;
     },
   ) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     const maxOrder = await this.prisma.quickTemplate.aggregate({
       where: { siteId },
       _max: { order: true },
@@ -189,7 +194,7 @@ export class AutomationService {
   }
 
   async updateQuickTemplate(
-    siteId: string,
+    idOrOrgId: string,
     id: string,
     data: {
       title?: string;
@@ -200,6 +205,7 @@ export class AutomationService {
       order?: number;
     },
   ) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     const existing = await this.prisma.quickTemplate.findFirst({
       where: { id, siteId },
     });
@@ -228,7 +234,8 @@ export class AutomationService {
     });
   }
 
-  async getActiveQuickTemplates(siteId: string) {
+  async getActiveQuickTemplates(idOrOrgId: string) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     return this.prisma.quickTemplate.findMany({
       where: {
         siteId,
@@ -428,7 +435,8 @@ export class AutomationService {
 
   // ============ BUSINESS HOURS ============
 
-  async getBusinessHours(siteId: string) {
+  async getBusinessHours(idOrOrgId: string) {
+    const siteId = await this.resolveSiteId(idOrOrgId);
     // 1. Check if site exists - if not, we cannot create business hours
     const siteExists = await this.prisma.site.findUnique({
       where: { id: siteId },
