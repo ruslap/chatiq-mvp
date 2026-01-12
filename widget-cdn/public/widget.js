@@ -165,17 +165,12 @@
     if (!shadow) return;
 
     const statusText = shadow.querySelector('.status-text');
-    const statusDot = shadow.querySelector('.status-dot');
     const offlineBanner = shadow.querySelector('.offline-banner');
     const avatarIconOnline = shadow.querySelector('.avatar-icon-online');
     const avatarIconOffline = shadow.querySelector('.avatar-icon-offline');
 
     if (statusText) {
       statusText.textContent = businessStatus.isOpen ? t('online') : t('offline');
-    }
-
-    if (statusDot) {
-      statusDot.style.background = businessStatus.isOpen ? '#22c55e' : '#ef4444';
     }
 
     // Switch avatar icons based on status
@@ -227,13 +222,8 @@
     if (welcomeEl) welcomeEl.textContent = welcomeMessage;
   }
 
-  // Initialize - resolve siteId first, then fetch settings
-  (async () => {
-    await resolveSiteId();
-    await fetchSettings();
-    await fetchBusinessStatus();
-    setInterval(fetchBusinessStatus, 60 * 1000);
-  })();
+  // Initialization functions moved to the bottom of the script to ensure UI elements are ready
+  // ---------------------------------------------------------------------------------------
   function getVisitorId() {
     const storageKey = 'chtq_visitor_id';
     let visitorId = localStorage.getItem(storageKey);
@@ -335,18 +325,15 @@
           }
         }
 
-        console.log('[ChatQ] Business status updated:', businessStatus);
+        console.log('[ChatIQ] Business status updated:', businessStatus);
       }
     } catch (error) {
-      console.error('[ChatQ] Failed to check business hours:', error);
+      console.error('[ChatIQ] Failed to check business hours:', error);
     }
   }
 
-  initSocket();
-
-  // Update status initially and every minute
-  updateStatus();
-  setInterval(updateStatus, 60000);
+  // Deferred initialization calls moved to the bottom
+  // ---------------------------------------------------
 
   // Create widget container with Shadow DOM
   const widgetContainer = document.createElement('div');
@@ -356,14 +343,15 @@
     position: 'fixed',
     bottom: '0',
     right: '0',
-    width: '0',
-    height: '0',
+    width: 'auto',
+    height: 'auto',
     zIndex: '2147483647',
-    overflow: 'visible'
+    overflow: 'visible',
+    pointerEvents: 'none'
   });
   document.body.appendChild(widgetContainer);
 
-  shadow = widgetContainer.attachShadow({ mode: 'closed' });
+  shadow = widgetContainer.attachShadow({ mode: 'open' });
 
   // Generate accent color variants
   function hexToHSL(hex) {
@@ -589,6 +577,7 @@
       touch-action: manipulation;
       -webkit-touch-callout: none;
       user-select: none;
+      pointer-events: auto;
     }
 
     /* Position: Right (default) */
@@ -728,6 +717,8 @@
       opacity: 0;
       transform: translateY(16px) scale(0.94);
       -webkit-overflow-scrolling: touch;
+      pointer-events: auto;
+      isolation: isolate;
     }
 
     /* Panel Position: Right (default) */
@@ -913,7 +904,6 @@
     .status-indicator {
       display: flex;
       align-items: center;
-      gap: 6px;
       transition: all 0.3s ease;
     }
 
@@ -929,6 +919,14 @@
       transition: all 0.3s ease;
     }
 
+    /* Remove any dot/indicator before status text */
+    .status-text::before,
+    .header-status::before,
+    .status-indicator::before {
+      display: none !important;
+      content: none !important;
+    }
+
     @keyframes fade-in {
       from {
         opacity: 0;
@@ -942,57 +940,6 @@
 
     .status-text:hover {
       color: rgba(255, 255, 255, 0.95);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: var(--radius-full);
-      background: #10b981;
-      border: 2px solid rgba(255, 255, 255, 0.9);
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7), 0 1px 3px rgba(0, 0, 0, 0.2);
-      animation: pulse-online 2s infinite;
-      position: relative;
-    }
-
-    .status-dot::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: #FFFFFF;
-      opacity: 0.9;
-    }
-
-    @keyframes pulse-online {
-      0%, 100% {
-        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-      }
-      50% {
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0);
-      }
-    }
-
-    .widget-offline .status-dot {
-      background: #EF4444;
-      border: 2px solid rgba(255, 255, 255, 0.9);
-      animation: pulse-offline 2s infinite;
-      box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7), 0 1px 3px rgba(0, 0, 0, 0.2);
-    }
-
-    @keyframes pulse-offline {
-      0%, 100% {
-        opacity: 1;
-        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-      }
-      50% {
-        opacity: 0.6;
-        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0);
-      }
     }
 
     .header-actions {
@@ -1308,16 +1255,18 @@
     }
 
     /* Welcome */
-    /* Welcome */
     .welcome {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: var(--space-12) var(--space-8);
+      padding: var(--space-8) var(--space-6);
       flex: 1;
       background: var(--bg-primary);
+      pointer-events: auto;
+      position: relative;
+      z-index: 2;
     }
 
     .welcome-card {
@@ -1331,6 +1280,9 @@
       align-items: center;
       gap: var(--space-4);
       max-width: 320px;
+      pointer-events: auto;
+      position: relative;
+      z-index: 3;
     }
 
     .welcome-icon {
@@ -1369,6 +1321,9 @@
     .welcome-name-form {
       width: 100%;
       margin-top: var(--space-3);
+      pointer-events: auto;
+      position: relative;
+      z-index: 5;
     }
 
     .welcome-name-label {
@@ -1382,7 +1337,7 @@
     .welcome-name-input {
       width: 100%;
       padding: var(--space-3);
-      border: 1px solid var(--border-color);
+      border: 1px solid var(--border-medium);
       border-radius: var(--radius-md);
       font-family: var(--font-family);
       font-size: 14px;
@@ -1390,6 +1345,9 @@
       background: var(--bg-primary);
       outline: none;
       transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+      pointer-events: auto;
+      position: relative;
+      z-index: 6;
     }
 
     .welcome-name-input:focus {
@@ -1404,6 +1362,9 @@
     .welcome-action {
       margin-top: var(--space-3);
       width: 100%;
+      pointer-events: auto;
+      position: relative;
+      z-index: 10;
     }
 
     .btn-start {
@@ -1422,11 +1383,19 @@
       align-items: center;
       justify-content: center;
       gap: var(--space-2);
+      pointer-events: auto;
+      position: relative;
+      z-index: 11;
     }
 
     .btn-start:hover {
-      background: #6A45EB;
+      background: var(--accent-hover);
       transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-start:active {
+      transform: translateY(0);
     }
 
     /* Quick Replies */
@@ -1850,6 +1819,11 @@
       transform: scale(1.2);
     }
 
+    /* Hidden Inputs */
+    #file-input {
+      display: none;
+    }
+
     /* Drag & Drop Overlay */
     .drop-overlay {
       position: absolute;
@@ -2071,11 +2045,9 @@
         </div>
         <div class="header-content">
           <div class="header-title" id="chat-title">${agentName}</div>
-          <div class="header-status">
-            <div class="status-indicator">
-              <span class="status-text">Online</span>
+            <div class="header-status">
+              <span class="status-text">Онлайн</span>
             </div>
-          </div>
         </div>
         <div class="header-actions">
           <button class="header-btn" id="sound-btn" aria-label="Toggle sound">
@@ -2186,7 +2158,7 @@
       </div>
 
       <!-- Hidden file input -->
-      <input type="file" id="file-input" accept="${ALLOWED_FILE_TYPES.join(',')}" />
+      <input type="file" id="file-input" accept="${ALLOWED_FILE_TYPES.join(',')}" style="display: none !important; visibility: hidden !important; position: absolute; left: -9999px;" />
     </div>
     `;
 
@@ -2252,30 +2224,27 @@
   });
 
   startBtn?.addEventListener('click', async () => {
-    // Get visitor name from input - REQUIRED
+    // Get visitor name from input - make it optional
     const enteredName = visitorNameInput?.value?.trim();
 
-    if (!enteredName) {
-      // Show error - name is required
-      visitorNameInput.style.borderColor = '#ef4444';
-      visitorNameInput.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.15)';
-      visitorNameInput.placeholder = 'Будь ласка, введіть ваше ім\'я';
-      visitorNameInput.focus();
-      return;
-    }
+    // Fallback name if none entered
+    const displayNameToUse = enteredName || 'Гість';
 
     // Create unique display name with date/time
     const now = new Date();
     const dateStr = now.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
     const timeStr = now.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' });
-    const uniqueDisplayName = `${enteredName} (${dateStr} ${timeStr})`;
+    const uniqueDisplayName = `${displayNameToUse} (${dateStr} ${timeStr})`;
 
     visitorDisplayName = uniqueDisplayName;
-    localStorage.setItem('chatiq_visitor_name', enteredName); // Save original name for pre-fill
+
+    if (enteredName) {
+      localStorage.setItem('chatiq_visitor_name', enteredName); // Save original name for pre-fill
+    }
 
     // Update visitor name on server (will be done after chat is created)
     window._chatiqPendingVisitorName = uniqueDisplayName;
-    window._chatiqVisitorFirstName = enteredName; // For personalized greeting
+    window._chatiqVisitorFirstName = displayNameToUse; // For personalized greeting
 
     welcome.style.display = 'none';
     composerContainer.style.display = 'block';
@@ -2537,6 +2506,7 @@
 
   // Toggle widget
   function openWidget() {
+    console.log('[ChatIQ] Opening widget...');
     if (isOpen) return;
     isOpen = true;
     launcher.classList.add('open');
@@ -2548,7 +2518,7 @@
     updateBadge(0);
     scrollToBottom(false);
     loadDraft();
-    updateStatus(); // Update status when opening widget
+    updateStatus();
   }
 
   function closeWidget() {
@@ -2567,6 +2537,7 @@
   }
 
   function toggleWidget() {
+    console.log('[ChatIQ] Toggle clicked, current state:', isOpen);
     isOpen ? closeWidget() : openWidget();
   }
 
@@ -2862,6 +2833,29 @@
     },
     playSound: (type) => sounds[type]?.(),
   };
+
+  // Initialization - resolve siteId first, then fetch settings and update UI
+  (async () => {
+    try {
+      // 1. Create UI basic elements synchronously
+      // (This already happened above in the script body)
+
+      // 2. Resolve IDs and Settings
+      await resolveSiteId();
+      await fetchSettings();
+
+      // 3. Setup Socket and Status
+      initSocket();
+      await updateStatus();
+
+      // 4. Periodic updates
+      setInterval(updateStatus, 60000);
+
+      console.log('[ChatIQ] Initialization complete');
+    } catch (err) {
+      console.error('[ChatIQ] Initialization failed:', err);
+    }
+  })();
 
   console.log('[ChatIQ] Enhanced Widget ready');
   console.log('[ChatIQ] New features: File upload, Emoji picker, Quick replies, Sounds, Enhanced UI');
