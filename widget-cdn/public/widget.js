@@ -139,12 +139,12 @@
         if (data.color) accentColor = data.color;
         if (data.secondaryColor) secondaryColorValue = data.secondaryColor;
         console.log('[Chtq] Loaded settings from API:', { agentName, agentAvatar, welcomeMessage, accentColor, secondaryColorValue });
-        // Update UI if already rendered
-        updateUIWithSettings();
       }
     } catch (error) {
       console.warn('[Chtq] Failed to fetch settings:', error);
     }
+    // Always update UI (show launcher) even if fetch fails - use default/config colors
+    updateUIWithSettings();
   }
 
   async function fetchBusinessStatus() {
@@ -199,6 +199,10 @@
       widgetContainer.style.setProperty('--accent-l', hsl.l + '%');
       widgetContainer.style.setProperty('--accent-primary', accentColor);
     }
+
+    // Show launcher after settings are applied (prevents color flash)
+    const launcher = shadow.querySelector('.launcher');
+    if (launcher) launcher.classList.add('ready');
 
     // Apply secondary color dynamically
     if (secondaryColorValue) {
@@ -578,6 +582,11 @@
       -webkit-touch-callout: none;
       user-select: none;
       pointer-events: auto;
+      opacity: 0;
+    }
+
+    .launcher.ready {
+      opacity: 1;
     }
 
     /* Position: Right (default) */
