@@ -72,6 +72,7 @@ export default function SettingsPage() {
     const [saveError, setSaveError] = useState('');
     const [copied, setCopied] = useState(false);
     const [orgId, setOrgId] = useState('');
+    const [siteId, setSiteId] = useState<string | null>(null);
 
     // Widget settings state
     const [widgetColor, setWidgetColor] = useState('indigo');
@@ -90,9 +91,13 @@ export default function SettingsPage() {
             if (!session) return;
 
             try {
-                const id = await getMyOrganization();
-                setOrgId(id);
+                const org = await getMyOrganization();
+                if (!org) return;
 
+                setOrgId(org.organizationId);
+                setSiteId(org.siteId);
+
+                const id = org.organizationId;
                 if (!id) return;
 
                 // Load settings from API
@@ -691,7 +696,7 @@ export default function SettingsPage() {
                     {activeTab === 'automation' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
                             <AutomationSettings
-                                siteId={orgId}
+                                siteId={siteId || orgId}
                                 accessToken={(session as any)?.accessToken || 'dummy'}
                             />
                         </div>
@@ -701,7 +706,7 @@ export default function SettingsPage() {
                     {activeTab === 'templates' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
                             <TemplatesSettings
-                                siteId={orgId}
+                                siteId={siteId || orgId}
                                 accessToken={(session as any)?.accessToken || 'dummy'}
                             />
                         </div>
@@ -711,7 +716,7 @@ export default function SettingsPage() {
                     {activeTab === 'hours' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
                             <BusinessHoursSettings
-                                siteId={orgId}
+                                siteId={siteId || orgId}
                                 accessToken={(session as any)?.accessToken || 'dummy'}
                             />
                         </div>

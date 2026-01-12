@@ -31,40 +31,21 @@ export class AutomationService {
     }
   }
 
-  // Helper to resolve siteId from either direct siteId or organizationId
-  private async resolveSiteId(id: string): Promise<string> {
-    // 1. Try to find the site directly
+  // Helper to validate that siteId exists
+  private async validateSiteId(siteId: string): Promise<void> {
     const site = await this.prisma.site.findUnique({
-      where: { id },
+      where: { id: siteId },
       select: { id: true },
     });
 
-    if (site) return id;
-
-    // 2. If not found, check if it's an organizationId
-    const widgetSettings = await this.prisma.widgetSettings.findUnique({
-      where: { organizationId: id },
-      include: { users: true },
-    });
-
-    if (widgetSettings?.users) {
-      const ownerSite = await this.prisma.site.findFirst({
-        where: { ownerId: widgetSettings.users.id },
-        select: { id: true },
-      });
-
-      if (ownerSite) {
-        return ownerSite.id;
-      }
+    if (!site) {
+      throw new NotFoundException(`Site ${siteId} not found. Ensure you are using the correct siteId, not organizationId.`);
     }
-
-    return id; // Fallback to original ID
   }
 
   // ============ AUTO-REPLIES ============
 
-  async getAutoReplies(idOrOrgId: string) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
+  async getAutoReplies(siteId: string) {
     return this.prisma.autoReply.findMany({
       where: { siteId },
       orderBy: { order: 'asc' },
@@ -72,7 +53,7 @@ export class AutomationService {
   }
 
   async createAutoReply(
-    idOrOrgId: string,
+    siteId: string,
     data: {
       name: string;
       trigger: string;
@@ -81,7 +62,6 @@ export class AutomationService {
       isActive?: boolean;
     },
   ) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
     const maxOrder = await this.prisma.autoReply.aggregate({
       where: { siteId },
       _max: { order: true },
@@ -101,7 +81,7 @@ export class AutomationService {
   }
 
   async updateAutoReply(
-    idOrOrgId: string,
+    siteId: string,
     id: string,
     data: {
       name?: string;
@@ -112,7 +92,6 @@ export class AutomationService {
       order?: number;
     },
   ) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
     const existing = await this.prisma.autoReply.findFirst({
       where: { id, siteId },
     });
@@ -127,8 +106,7 @@ export class AutomationService {
     });
   }
 
-  async deleteAutoReply(idOrOrgId: string, id: string) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
+  async deleteAutoReply(siteId: string, id: string) {
     const existing = await this.prisma.autoReply.findFirst({
       where: { id, siteId },
     });
@@ -142,8 +120,7 @@ export class AutomationService {
     });
   }
 
-  async getActiveAutoReplyByTrigger(idOrOrgId: string, trigger: string) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
+  async getActiveAutoReplyByTrigger(siteId: string, trigger: string) {
     return this.prisma.autoReply.findFirst({
       where: {
         siteId,
@@ -156,8 +133,7 @@ export class AutomationService {
 
   // ============ QUICK TEMPLATES ============
 
-  async getQuickTemplates(idOrOrgId: string) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
+  async getQuickTemplates(siteId: string) {
     return this.prisma.quickTemplate.findMany({
       where: { siteId },
       orderBy: { order: 'asc' },
@@ -165,7 +141,7 @@ export class AutomationService {
   }
 
   async createQuickTemplate(
-    idOrOrgId: string,
+    siteId: string,
     data: {
       title: string;
       message: string;
@@ -174,7 +150,6 @@ export class AutomationService {
       isActive?: boolean;
     },
   ) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
     const maxOrder = await this.prisma.quickTemplate.aggregate({
       where: { siteId },
       _max: { order: true },
@@ -194,7 +169,7 @@ export class AutomationService {
   }
 
   async updateQuickTemplate(
-    idOrOrgId: string,
+    siteId: string,
     id: string,
     data: {
       title?: string;
@@ -205,7 +180,6 @@ export class AutomationService {
       order?: number;
     },
   ) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
     const existing = await this.prisma.quickTemplate.findFirst({
       where: { id, siteId },
     });
@@ -234,8 +208,7 @@ export class AutomationService {
     });
   }
 
-  async getActiveQuickTemplates(idOrOrgId: string) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
+  async getActiveQuickTemplates(siteId: string) {
     return this.prisma.quickTemplate.findMany({
       where: {
         siteId,
@@ -248,43 +221,20 @@ export class AutomationService {
   // ============ SEED DEFAULT TEMPLATES ============
 
   async seedDefaultAutoReplies(siteId: string): Promise<number> {
-    // 1. Try to find the site directly
-    let site = await this.prisma.site.findUnique({
+    // Verify site exists
+    const site = await this.prisma.site.findUnique({
       where: { id: siteId },
       select: { id: true },
     });
 
-    let targetSiteId = siteId;
-
-    // 2. If not found, maybe it's an organizationId? 
-    // Let's try to find a site belonging to the owner of this organization
     if (!site) {
-      const widgetSettings = await this.prisma.widgetSettings.findUnique({
-        where: { organizationId: siteId },
-        include: { users: true },
-      });
-
-      if (widgetSettings?.users) {
-        const ownerSite = await this.prisma.site.findFirst({
-          where: { ownerId: widgetSettings.users.id },
-          select: { id: true },
-        });
-
-        if (ownerSite) {
-          site = ownerSite;
-          targetSiteId = ownerSite.id;
-        }
-      }
-    }
-
-    if (!site) {
-      this.logger.warn(`Cannot seed auto-replies: Site or Organization ${siteId} not found`);
+      this.logger.warn(`Cannot seed auto-replies: Site ${siteId} not found`);
       return 0;
     }
 
-    const existing = await this.prisma.autoReply.count({ where: { siteId: targetSiteId } });
+    const existing = await this.prisma.autoReply.count({ where: { siteId } });
     if (existing > 0) {
-      this.logger.debug(`Auto-replies already exist for site ${targetSiteId}`);
+      this.logger.debug(`Auto-replies already exist for site ${siteId}`);
       return 0;
     }
 
@@ -323,53 +273,31 @@ export class AutomationService {
 
     for (const item of defaults) {
       await this.prisma.autoReply.create({
-        data: { siteId: targetSiteId, ...item, isActive: true },
+        data: { siteId, ...item, isActive: true },
       });
     }
 
-    this.logger.log(`Seeded ${defaults.length} default auto-replies for site ${targetSiteId}`);
+    this.logger.log(`Seeded ${defaults.length} default auto-replies for site ${siteId}`);
     return defaults.length;
   }
 
   async seedDefaultQuickTemplates(siteId: string): Promise<number> {
-    // 1. Try to find the site directly
-    let site = await this.prisma.site.findUnique({
+    // Verify site exists
+    const site = await this.prisma.site.findUnique({
       where: { id: siteId },
       select: { id: true },
     });
 
-    let targetSiteId = siteId;
-
-    // 2. If not found, check if it's an organizationId
     if (!site) {
-      const widgetSettings = await this.prisma.widgetSettings.findUnique({
-        where: { organizationId: siteId },
-        include: { users: true },
-      });
-
-      if (widgetSettings?.users) {
-        const ownerSite = await this.prisma.site.findFirst({
-          where: { ownerId: widgetSettings.users.id },
-          select: { id: true },
-        });
-
-        if (ownerSite) {
-          site = ownerSite;
-          targetSiteId = ownerSite.id;
-        }
-      }
-    }
-
-    if (!site) {
-      this.logger.warn(`Cannot seed templates: Site or Organization ${siteId} not found`);
+      this.logger.warn(`Cannot seed templates: Site ${siteId} not found`);
       return 0;
     }
 
     const existing = await this.prisma.quickTemplate.count({
-      where: { siteId: targetSiteId },
+      where: { siteId },
     });
     if (existing > 0) {
-      this.logger.debug(`Templates already exist for site ${targetSiteId}`);
+      this.logger.debug(`Templates already exist for site ${siteId}`);
       return 0;
     }
 
@@ -435,8 +363,7 @@ export class AutomationService {
 
   // ============ BUSINESS HOURS ============
 
-  async getBusinessHours(idOrOrgId: string) {
-    const siteId = await this.resolveSiteId(idOrOrgId);
+  async getBusinessHours(siteId: string) {
     // 1. Check if site exists - if not, we cannot create business hours
     const siteExists = await this.prisma.site.findUnique({
       where: { id: siteId },

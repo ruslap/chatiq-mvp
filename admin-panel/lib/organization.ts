@@ -1,10 +1,15 @@
 import { getSession } from 'next-auth/react';
 
-export async function getMyOrganization(): Promise<string> {
+export interface OrganizationInfo {
+  organizationId: string;
+  siteId: string | null;
+}
+
+export async function getMyOrganization(): Promise<OrganizationInfo | null> {
   try {
     const session = await getSession();
     if (!session?.user) {
-      return '';
+      return null;
     }
 
     const response = await fetch('/api/organization/my', {
@@ -15,20 +20,17 @@ export async function getMyOrganization(): Promise<string> {
 
     if (response.ok) {
       const data = await response.json();
-      const orgId = data.organizationId;
-
-      // We can cache it, but let's be careful. 
-      // For now, let's NOT rely on localStorage for the source of truth.
-      // localStorage.setItem('chtq_org_id', orgId);
-
-      return orgId;
+      return {
+        organizationId: data.organizationId || '',
+        siteId: data.siteId || null,
+      };
     } else {
       console.error('Failed to get organization from API');
-      return '';
+      return null;
     }
   } catch (error) {
     console.error('Error getting organization:', error);
-    return '';
+    return null;
   }
 }
 

@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class SitesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createSite(userId: string, name: string, domain: string) {
     return this.prisma.site.create({
@@ -74,6 +74,17 @@ export class SitesService {
         siteId,
         userId: user.id,
       },
+    });
+  }
+
+  /**
+   * Get user's primary site (first created, used for single-site MVP)
+   */
+  async getPrimarySite(userId: string) {
+    return this.prisma.site.findFirst({
+      where: { ownerId: userId },
+      orderBy: { createdAt: 'asc' },
+      select: { id: true, name: true, domain: true },
     });
   }
 }

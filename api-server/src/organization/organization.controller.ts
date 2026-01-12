@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OrganizationService } from './organization.service';
+import { SitesService } from '../sites/sites.service';
 
 interface AuthRequest {
   user: {
@@ -20,15 +21,21 @@ interface AuthRequest {
 @Controller('organization')
 @UseGuards(JwtAuthGuard)
 export class OrganizationController {
-  constructor(private readonly organizationService: OrganizationService) {}
+  constructor(
+    private readonly organizationService: OrganizationService,
+    private readonly sitesService: SitesService,
+  ) { }
 
   @Get('my')
   async getMyOrganization(@Request() req: AuthRequest) {
     const userId = req.user.userId;
     const organization =
       await this.organizationService.getOrCreateOrganization(userId);
+    const primarySite = await this.sitesService.getPrimarySite(userId);
+
     return {
       organizationId: organization.organizationId,
+      siteId: primarySite?.id || null,
       settings: organization,
     };
   }
