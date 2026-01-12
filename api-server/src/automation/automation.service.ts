@@ -16,7 +16,7 @@ export class AutomationService {
   constructor(
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
-  ) {}
+  ) { }
 
   @OnEvent('chat.admin_message')
   handleAdminMessage(payload: { siteId: string; chatId: string }) {
@@ -208,7 +208,7 @@ export class AutomationService {
 
   // ============ SEED DEFAULT TEMPLATES ============
 
-  async seedDefaultAutoReplies(siteId: string) {
+  async seedDefaultAutoReplies(siteId: string): Promise<number> {
     // Verify site exists before seeding
     const site = await this.prisma.site.findUnique({
       where: { id: siteId },
@@ -217,13 +217,13 @@ export class AutomationService {
 
     if (!site) {
       this.logger.warn(`Cannot seed auto-replies: Site ${siteId} not found`);
-      return;
+      return 0;
     }
 
     const existing = await this.prisma.autoReply.count({ where: { siteId } });
     if (existing > 0) {
       this.logger.debug(`Auto-replies already exist for site ${siteId}`);
-      return;
+      return 0;
     }
 
     const defaults = [
@@ -266,9 +266,10 @@ export class AutomationService {
     }
 
     this.logger.log(`Seeded ${defaults.length} default auto-replies for site ${siteId}`);
+    return defaults.length;
   }
 
-  async seedDefaultQuickTemplates(siteId: string) {
+  async seedDefaultQuickTemplates(siteId: string): Promise<number> {
     // Verify site exists before seeding
     const site = await this.prisma.site.findUnique({
       where: { id: siteId },
@@ -277,7 +278,7 @@ export class AutomationService {
 
     if (!site) {
       this.logger.warn(`Cannot seed templates: Site ${siteId} not found`);
-      return;
+      return 0;
     }
 
     const existing = await this.prisma.quickTemplate.count({
@@ -285,7 +286,7 @@ export class AutomationService {
     });
     if (existing > 0) {
       this.logger.debug(`Templates already exist for site ${siteId}`);
-      return;
+      return 0;
     }
 
     const defaults = [
@@ -345,6 +346,7 @@ export class AutomationService {
     }
 
     this.logger.log(`Seeded ${defaults.length} default quick templates for site ${siteId}`);
+    return defaults.length;
   }
 
   // ============ BUSINESS HOURS ============

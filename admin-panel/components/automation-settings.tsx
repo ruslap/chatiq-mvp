@@ -195,6 +195,7 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
     };
 
     const handleCreateDefaults = async () => {
+        setIsSeeding(true);
         try {
             const res = await fetch(`${API_URL}/automation/seed/${siteId}`, {
                 method: 'POST',
@@ -202,10 +203,27 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
             });
 
             if (res.ok) {
-                loadAutoReplies(); // Reload the list
+                // Reload auto-replies after seeding
+                const reloadRes = await fetch(`${API_URL}/automation/auto-replies/${siteId}`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                if (reloadRes.ok) {
+                    const data = await reloadRes.json();
+                    setAutoReplies(data);
+                    if (data.length > 0) {
+                        showToast('✨ Створено початкові автовідповіді', 'success');
+                    } else {
+                        showToast('Автовідповіді вже існують або не вдалося створити', 'info');
+                    }
+                }
+            } else {
+                showToast('Помилка створення автовідповідей', 'error');
             }
         } catch (error) {
             console.error('Failed to create default auto-replies:', error);
+            showToast('Помилка створення автовідповідей', 'error');
+        } finally {
+            setIsSeeding(false);
         }
     };
 

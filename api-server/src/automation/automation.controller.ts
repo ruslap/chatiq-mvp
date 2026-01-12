@@ -147,11 +147,13 @@ export class AutomationController {
   @Post('seed/:siteId')
   async seedDefaults(@Param('siteId') siteId: string) {
     try {
-      await this.automationService.seedDefaultAutoReplies(siteId);
-      await this.automationService.seedDefaultQuickTemplates(siteId);
+      const autoRepliesCount = await this.automationService.seedDefaultAutoReplies(siteId);
+      const templatesCount = await this.automationService.seedDefaultQuickTemplates(siteId);
       return {
         success: true,
         message: 'Default auto-replies and templates created',
+        autoRepliesCreated: autoRepliesCount,
+        templatesCreated: templatesCount,
       };
     } catch (error) {
       throw error;
