@@ -305,10 +305,10 @@
           }
         }
 
-        console.log('[ChatIQ] Business status updated:', businessStatus);
+        console.log('[ChatQ] Business status updated:', businessStatus);
       }
     } catch (error) {
-      console.error('[ChatIQ] Failed to check business hours:', error);
+      console.error('[ChatQ] Failed to check business hours:', error);
     }
   }
 
@@ -2151,7 +2151,7 @@
         
         <!-- Powered by -->
         <div class="powered">
-          Powered by <a href="https://ruslan-lapiniak-cv.vercel.app/en" target="_blank" rel="noopener">ChatIQ by Ruslan Lap</a>
+          Powered by <a href="https://ruslan-lapiniak-cv.vercel.app/en" target="_blank" rel="noopener">Chatq © Ruslan Lap</a>
         </div>
       </div>
 
