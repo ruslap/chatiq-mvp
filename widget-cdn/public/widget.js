@@ -84,8 +84,9 @@
     return dict[key] || TEXTS.en[key] || key;
   }
 
-  // Use organizationId as siteId for backward compatibility
-  const siteId = config.organizationId;
+  // Store organizationId
+  const organizationId = config.organizationId;
+  let resolvedSiteId = null; // Will be resolved from API
   let accentColor = config.color;
   const position = config.position;
   const widgetSize = config.size;
@@ -96,7 +97,7 @@
   let soundEnabled = localStorage.getItem('chatiq_sound_enabled') !== 'false';
   let businessStatus = { isOpen: true, message: '' };
 
-  if (!siteId) {
+  if (!organizationId) {
     console.warn('[Chtq] Missing organizationId. Please configure window.chtq or use data-site-id attribute.');
     return;
   }
@@ -108,9 +109,27 @@
   let offlineBannerEl = null;
   let statusIndicatorEl = null;
 
+  // Resolve organizationId to siteId
+  async function resolveSiteId() {
+    try {
+      const res = await fetch(`${API_URL}/organization/resolve/${organizationId}`);
+      if (res.ok) {
+        const data = await res.json();
+        resolvedSiteId = data.siteId || organizationId;
+        console.log('[Chtq] Resolved siteId:', resolvedSiteId);
+      } else {
+        resolvedSiteId = organizationId; // Fallback
+        console.warn('[Chtq] Failed to resolve siteId, using organizationId as fallback');
+      }
+    } catch (error) {
+      console.warn('[Chtq] Error resolving siteId:', error);
+      resolvedSiteId = organizationId; // Fallback
+    }
+  }
+
   async function fetchSettings() {
     try {
-      const res = await fetch(`${API_URL}/widget-settings/${siteId}`);
+      const res = await fetch(`${API_URL}/widget-settings/${organizationId}`);
       if (res.ok) {
         const data = await res.json();
         // Update local settings
@@ -129,8 +148,9 @@
   }
 
   async function fetchBusinessStatus() {
+    if (!resolvedSiteId) return; // Wait for siteId resolution
     try {
-      const res = await fetch(`${API_URL}/automation/business-hours/${siteId}/status`);
+      const res = await fetch(`${API_URL}/automation/business-hours/${resolvedSiteId}/status`);
       if (res.ok) {
         businessStatus = await res.json();
         updatePresenceUI();
@@ -207,10 +227,13 @@
     if (welcomeEl) welcomeEl.textContent = welcomeMessage;
   }
 
-  // Fetch settings & business hours on init
-  fetchSettings();
-  fetchBusinessStatus();
-  setInterval(fetchBusinessStatus, 60 * 1000);
+  // Initialize - resolve siteId first, then fetch settings
+  (async () => {
+    await resolveSiteId();
+    await fetchSettings();
+    await fetchBusinessStatus();
+    setInterval(fetchBusinessStatus, 60 * 1000);
+  })();
   function getVisitorId() {
     const storageKey = 'chtq_visitor_id';
     let visitorId = localStorage.getItem(storageKey);
@@ -237,7 +260,7 @@
   let currentTheme = getThemePreference();
 
   console.log(`[Chtq] Widget v${WIDGET_VERSION} initialized`);
-  console.log(`[Chtq] Organization ID: ${siteId}`);
+  console.log(`[Chtq] Organization ID: ${organizationId}`);
   console.log(`[Chtq] Visitor ID: ${visitorId}`);
   console.log(`[Chtq] Config:`, { color: accentColor, position, size: widgetSize });
 
@@ -256,16 +279,22 @@
   }
 
   function connectSocket() {
+    if (!resolvedSiteId) {
+      console.warn('[Chtq] Cannot connect socket - siteId not resolved yet');
+      setTimeout(connectSocket, 500); // Retry after 500ms
+      return;
+    }
+
     socket = window.io(API_URL, {
       query: {
-        siteId: siteId,
+        siteId: resolvedSiteId,
         visitorId: visitorId
       }
     });
 
     socket.on('connect', () => {
       console.log('[ChatIQ] Connected to server');
-      socket.emit('visitor:join', { siteId, visitorId });
+      socket.emit('visitor:join', { siteId: resolvedSiteId, visitorId });
     });
 
     socket.on('admin:message', (msg) => {
@@ -284,8 +313,9 @@
 
   // Check business hours and update status
   async function updateStatus() {
+    if (!resolvedSiteId) return; // Wait for siteId resolution
     try {
-      const response = await fetch(`${API_URL}/automation/business-hours/${siteId}/status`);
+      const response = await fetch(`${API_URL}/automation/business-hours/${resolvedSiteId}/status`);
       if (response.ok) {
         const data = await response.json();
 

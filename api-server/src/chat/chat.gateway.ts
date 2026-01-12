@@ -21,14 +21,8 @@ interface MessageData {
 
 @WebSocketGateway({
   cors: {
-    origin: [
-      'https://admin.chtq.ink',
-      'https://chtq.ink',
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'http://localhost:3002',
-    ],
-    credentials: true,
+    origin: '*',
+    credentials: false,
   },
   transports: ['websocket', 'polling'],
   allowEIO3: true,

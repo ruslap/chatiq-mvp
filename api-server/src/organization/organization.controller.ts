@@ -7,10 +7,12 @@ import {
   UseGuards,
   Request,
   NotFoundException,
+  Param,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { OrganizationService } from './organization.service';
 import { SitesService } from '../sites/sites.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 interface AuthRequest {
   user: {
@@ -19,13 +21,51 @@ interface AuthRequest {
 }
 
 @Controller('organization')
-@UseGuards(JwtAuthGuard)
 export class OrganizationController {
   constructor(
     private readonly organizationService: OrganizationService,
     private readonly sitesService: SitesService,
+    private readonly prisma: PrismaService,
   ) { }
 
+  // Public endpoint for widget to resolve organizationId → siteId
+  @Get('resolve/:organizationId')
+  async resolveOrganizationToSite(
+    @Param('organizationId') organizationId: string,
+  ) {
+    try {
+      // Find widget settings by organizationId
+      const widgetSettings = await this.prisma.widgetSettings.findUnique({
+        where: { organizationId },
+        include: {
+          users: {
+            include: {
+              ownedSites: {
+                take: 1,
+                orderBy: { createdAt: 'asc' }, // Get the first (primary) site
+              },
+            },
+          },
+        },
+      });
+
+      // Get the primary site ID
+      const siteId = widgetSettings?.users?.ownedSites?.[0]?.id;
+
+      return {
+        organizationId,
+        siteId: siteId || organizationId, // Fallback to organizationId if no site found
+      };
+    } catch (error) {
+      // If anything fails, return organizationId as fallback
+      return {
+        organizationId,
+        siteId: organizationId,
+      };
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('my')
   async getMyOrganization(@Request() req: AuthRequest) {
     const userId = req.user.userId;
