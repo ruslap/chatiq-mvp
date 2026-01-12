@@ -3,15 +3,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { WidgetSettingsService } from './widget-settings.service';
 
 @Controller('widget-settings')
-@UseGuards(AuthGuard('jwt'))
 export class WidgetSettingsController {
-  constructor(private widgetSettingsService: WidgetSettingsService) {}
+  constructor(private widgetSettingsService: WidgetSettingsService) { }
 
   @Get(':organizationId')
   async getSettings(@Param('organizationId') organizationId: string) {
     return this.widgetSettingsService.getSettings(organizationId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Put(':organizationId')
   async updateSettings(
     @Param('organizationId') organizationId: string,

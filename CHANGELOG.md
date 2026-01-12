@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 - DTOs for request validation across `auth`, `automation`, `chat`, and `sites` modules.
 - `lib/api-config.ts` in `admin-panel` for centralized API URL management.
 - **Sound notifications**: Added sound effects for new messages in admin panel (similar to chat widget).
-- **Sound toggle**: Added sound mute/unmute button in chat view header with persistent localStorage setting.
+- **Sound toggle**: Added **per-chat** sound control. Mute/unmute button in chat header now saves preference for each specific conversation.
 
 ### Fixed
 - **Security**: Added `@UseGuards(AuthGuard('jwt'))` to `ChatController`, `AutomationController`, and `WidgetSettingsController`.

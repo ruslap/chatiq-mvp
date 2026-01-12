@@ -20,17 +20,18 @@ import {
 } from './dto';
 
 @Controller('automation')
-@UseGuards(AuthGuard('jwt'))
 export class AutomationController {
-  constructor(private readonly automationService: AutomationService) {}
+  constructor(private readonly automationService: AutomationService) { }
 
   // ============ AUTO-REPLIES ============
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('auto-replies/:siteId')
   async getAutoReplies(@Param('siteId') siteId: string) {
     return this.automationService.getAutoReplies(siteId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('auto-replies/:siteId')
   async createAutoReply(
     @Param('siteId') siteId: string,
@@ -39,6 +40,7 @@ export class AutomationController {
     return this.automationService.createAutoReply(siteId, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch('auto-replies/:siteId/:id')
   async updateAutoReply(
     @Param('siteId') siteId: string,
@@ -48,6 +50,7 @@ export class AutomationController {
     return this.automationService.updateAutoReply(siteId, id, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('auto-replies/:siteId/:id')
   async deleteAutoReply(
     @Param('siteId') siteId: string,
@@ -58,16 +61,19 @@ export class AutomationController {
 
   // ============ QUICK TEMPLATES ============
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('templates/:siteId')
   async getQuickTemplates(@Param('siteId') siteId: string) {
     return this.automationService.getQuickTemplates(siteId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('templates/:siteId/active')
   async getActiveQuickTemplates(@Param('siteId') siteId: string) {
     return this.automationService.getActiveQuickTemplates(siteId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('templates/:siteId')
   async createQuickTemplate(
     @Param('siteId') siteId: string,
@@ -76,6 +82,7 @@ export class AutomationController {
     return this.automationService.createQuickTemplate(siteId, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch('templates/:siteId/:id')
   async updateQuickTemplate(
     @Param('siteId') siteId: string,
@@ -85,6 +92,7 @@ export class AutomationController {
     return this.automationService.updateQuickTemplate(siteId, id, dto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('templates/:siteId/:id')
   async deleteQuickTemplate(
     @Param('siteId') siteId: string,
@@ -95,11 +103,13 @@ export class AutomationController {
 
   // ============ BUSINESS HOURS ============
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('business-hours/:siteId')
   async getBusinessHours(@Param('siteId') siteId: string) {
     return this.automationService.getBusinessHours(siteId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch('business-hours/:siteId')
   async updateBusinessHours(
     @Param('siteId') siteId: string,
@@ -115,6 +125,7 @@ export class AutomationController {
 
   // ============ AUTO-REPLY EXECUTION ============
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('auto-reply/:siteId/:chatId')
   async executeAutoReply(
     @Param('siteId') siteId: string,
@@ -132,6 +143,7 @@ export class AutomationController {
 
   // ============ SEED DEFAULTS ============
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('seed/:siteId')
   async seedDefaults(@Param('siteId') siteId: string) {
     await this.automationService.seedDefaultAutoReplies(siteId);

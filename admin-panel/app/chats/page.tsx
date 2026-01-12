@@ -138,7 +138,7 @@ export default function ChatsPage() {
 
             // Play sound for new messages from visitors (not from admin)
             if (msg.from !== 'admin') {
-                sounds.newMessage();
+                sounds.newMessage(msg.chatId);
             }
 
             setChats(prev => {

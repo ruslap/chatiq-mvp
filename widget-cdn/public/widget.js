@@ -59,6 +59,7 @@
     theme: chtqConfig.theme || legacyConfig.theme || 'light',
     agentName: chtqConfig.agentName || legacyConfig.agentName || 'Support Team',
     agentAvatar: chtqConfig.agentAvatar || legacyConfig.agentAvatar || null,
+    welcomeMessage: chtqConfig.welcomeMessage || legacyConfig.welcomeMessage || null,
   };
 
   const TEXTS = {
@@ -90,7 +91,7 @@
   const widgetSize = config.size;
   let agentName = config.agentName;
   let agentAvatar = config.agentAvatar;
-  let welcomeMessage = config.welcomeMessage;
+  let welcomeMessage = config.welcomeMessage || t('welcomeFallback');
   let secondaryColorValue = config.secondaryColor || '#B6FF00';
   let soundEnabled = localStorage.getItem('chatiq_sound_enabled') !== 'false';
   let businessStatus = { isOpen: true, message: '' };

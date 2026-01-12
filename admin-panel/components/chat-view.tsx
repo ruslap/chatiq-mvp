@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Settings, Paperclip, Smile, Send, Trash2, Eraser, X, Pencil, Check, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import { getApiUrl } from "@/lib/api-config";
-import { isSoundEnabled, setSoundEnabled } from "@/lib/sounds";
+import { isChatMuted, setChatMuted } from "@/lib/sounds";
 import type { Socket } from "socket.io-client";
 import dynamic from 'next/dynamic';
 
@@ -88,7 +88,15 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
     const [templateFilter, setTemplateFilter] = useState("");
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(0);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const [soundEnabled, setSoundEnabledState] = useState(() => isSoundEnabled());
+    // Initialize soundEnabled based on MUTED status (inverted logic)
+    const [soundEnabled, setSoundEnabledState] = useState(() => !isChatMuted(chat?.id));
+
+    // Update sound state when chat changes
+    useEffect(() => {
+        if (chat?.id) {
+            setSoundEnabledState(!isChatMuted(chat.id));
+        }
+    }, [chat?.id]);
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const templateListRef = useRef<HTMLDivElement>(null);
@@ -511,9 +519,10 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                            const newValue = !soundEnabled;
-                            setSoundEnabledState(newValue);
-                            setSoundEnabled(newValue);
+                            const newSoundEnabled = !soundEnabled;
+                            setSoundEnabledState(newSoundEnabled);
+                            // If sound enabled, we UNMUTE (mute = false). If disabled, we MUTE (mute = true)
+                            setChatMuted(chat.id, !newSoundEnabled);
                         }}
                         title={soundEnabled ? (language === 'uk' ? 'Вимкнути звук' : 'Mute notifications') : (language === 'uk' ? 'Увімкнути звук' : 'Enable notifications')}
                         className={`h-9 w-9 p-0 rounded-lg hover:bg-[rgb(var(--surface-muted))] ${soundEnabled ? 'text-[rgb(var(--success))]' : 'text-[rgb(var(--foreground-secondary))]'}`}

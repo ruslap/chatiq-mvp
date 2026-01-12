@@ -4,17 +4,45 @@
  */
 
 const SOUND_STORAGE_KEY = 'chtq_admin_sound_enabled';
+const MUTED_CHATS_KEY = 'chtq_admin_muted_chats';
 
-// Check if sound is enabled (default: true)
-export function isSoundEnabled(): boolean {
+// Check if sound is enabled globally (default: true)
+export function isGlobalSoundEnabled(): boolean {
     if (typeof window === 'undefined') return true;
     return localStorage.getItem(SOUND_STORAGE_KEY) !== 'false';
 }
 
-// Toggle sound setting
-export function setSoundEnabled(enabled: boolean): void {
+// Check if a specific chat is muted
+export function isChatMuted(chatId: string): boolean {
+    if (typeof window === 'undefined') return false;
+    try {
+        const mutedChats = JSON.parse(localStorage.getItem(MUTED_CHATS_KEY) || '[]');
+        return Array.isArray(mutedChats) && mutedChats.includes(chatId);
+    } catch {
+        return false;
+    }
+}
+
+// Toggle mute for a specific chat
+export function setChatMuted(chatId: string, muted: boolean): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem(SOUND_STORAGE_KEY, enabled ? 'true' : 'false');
+    try {
+        const mutedChats = JSON.parse(localStorage.getItem(MUTED_CHATS_KEY) || '[]');
+        const newMutedChats = muted
+            ? [...new Set([...mutedChats, chatId])]
+            : mutedChats.filter((id: string) => id !== chatId);
+
+        localStorage.setItem(MUTED_CHATS_KEY, JSON.stringify(newMutedChats));
+    } catch (e) {
+        console.error('Failed to update muted chats:', e);
+    }
+}
+
+// Check if sound should play for a specific chat
+export function shouldPlaySoundForChat(chatId?: string): boolean {
+    if (!isGlobalSoundEnabled()) return false;
+    if (chatId && isChatMuted(chatId)) return false;
+    return true;
 }
 
 // Play a tone using Web Audio API
@@ -49,18 +77,18 @@ function playTone(freq: number | number[], duration: number, type: OscillatorTyp
 // Sound effects
 export const sounds = {
     // Notification sound when new message arrives from visitor
-    newMessage: () => {
-        if (!isSoundEnabled()) return;
+    newMessage: (chatId?: string) => {
+        if (!shouldPlaySoundForChat(chatId)) return;
         playTone([500, 700, 900], 0.12, 'sine');
     },
     // Send sound when admin sends a message
-    send: () => {
-        if (!isSoundEnabled()) return;
+    send: (chatId?: string) => {
+        if (!shouldPlaySoundForChat(chatId)) return;
         playTone(800, 0.08, 'sine');
     },
     // Subtle notification for new chat
     newChat: () => {
-        if (!isSoundEnabled()) return;
+        if (!shouldPlaySoundForChat()) return;
         playTone([400, 600, 800], 0.15, 'sine');
     },
 };
