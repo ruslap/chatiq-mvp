@@ -9,6 +9,8 @@ All notable changes to this project will be documented in this file.
 - Redis connectivity verification script: `api-server/scripts/verify-redis.ts`.
 - DTOs for request validation across `auth`, `automation`, `chat`, and `sites` modules.
 - `lib/api-config.ts` in `admin-panel` for centralized API URL management.
+- **Sound notifications**: Added sound effects for new messages in admin panel (similar to chat widget).
+- **Sound toggle**: Added sound mute/unmute button in chat view header with persistent localStorage setting.
 
 ### Fixed
 - **Security**: Added `@UseGuards(AuthGuard('jwt'))` to `ChatController`, `AutomationController`, and `WidgetSettingsController`.

@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Settings, Paperclip, Smile, Send, Trash2, Eraser, X, Pencil, Check, ArrowLeft } from "lucide-react";
+import { Settings, Paperclip, Smile, Send, Trash2, Eraser, X, Pencil, Check, ArrowLeft, Volume2, VolumeX } from "lucide-react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import { getApiUrl } from "@/lib/api-config";
+import { isSoundEnabled, setSoundEnabled } from "@/lib/sounds";
 import type { Socket } from "socket.io-client";
 import dynamic from 'next/dynamic';
 
@@ -87,6 +88,7 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
     const [templateFilter, setTemplateFilter] = useState("");
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(0);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [soundEnabled, setSoundEnabledState] = useState(() => isSoundEnabled());
     const scrollRef = useRef<HTMLDivElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const templateListRef = useRef<HTMLDivElement>(null);
@@ -505,6 +507,20 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                     </div>
                 </div>
                 <div className="flex items-center gap-1">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                            const newValue = !soundEnabled;
+                            setSoundEnabledState(newValue);
+                            setSoundEnabled(newValue);
+                        }}
+                        title={soundEnabled ? (language === 'uk' ? 'Вимкнути звук' : 'Mute notifications') : (language === 'uk' ? 'Увімкнути звук' : 'Enable notifications')}
+                        className={`h-9 w-9 p-0 rounded-lg hover:bg-[rgb(var(--surface-muted))] ${soundEnabled ? 'text-[rgb(var(--success))]' : 'text-[rgb(var(--foreground-secondary))]'}`}
+                    >
+                        {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                    </Button>
+                    <div className="w-[1px] h-4 bg-[rgb(var(--border))] mx-1"></div>
                     <Button
                         variant="ghost"
                         size="sm"

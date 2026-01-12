@@ -11,6 +11,7 @@ import { MobileHeader, MobileBottomNav } from "@/components/mobile-nav";
 import { MessageSquare, Send } from "lucide-react";
 import { getMyOrganization } from "@/lib/organization";
 import { getApiUrl } from "@/lib/api-config";
+import { sounds } from "@/lib/sounds";
 
 // Get organization ID from API or localStorage
 async function getOrgId(): Promise<string> {
@@ -134,6 +135,12 @@ export default function ChatsPage() {
 
         const updateChatsWithNewMessage = (msg: any) => {
             console.log("[ChatsPage] Updating chat list with message:", msg);
+
+            // Play sound for new messages from visitors (not from admin)
+            if (msg.from !== 'admin') {
+                sounds.newMessage();
+            }
+
             setChats(prev => {
                 const existingChat = prev.find(c => c.id === msg.chatId);
                 const isCurrentlySelected = msg.chatId === selectedChatIdRef.current;
