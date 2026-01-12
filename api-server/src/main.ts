@@ -27,6 +27,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://admin.chtq.ink',
+      'https://cdn.chtq.ink',
       'https://chtq.ink',
       'http://localhost:3000',
       'http://localhost:3001',
