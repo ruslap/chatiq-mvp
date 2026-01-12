@@ -394,6 +394,9 @@ export default function SettingsPage() {
                                                         Видалити
                                                     </button>
                                                 )}
+                                                <p className="mt-2 text-xs text-[rgb(var(--foreground-secondary))]">
+                                                    * Підтримуються файли JPG, PNG, WEBP. Максимальний розмір — 5 МБ. Найкраще виглядають квадратні зображення.
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
