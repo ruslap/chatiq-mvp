@@ -286,25 +286,27 @@
   async function updateStatus() {
     try {
       const response = await fetch(`${API_URL}/automation/business-hours/${siteId}/status`);
-      const data = await response.json();
+      if (response.ok) {
+        const data = await response.json();
 
-      // Update business status
-      businessStatus = data;
+        // Update business status
+        businessStatus = data;
 
-      // Update all UI elements
-      updatePresenceUI();
+        // Update all UI elements
+        updatePresenceUI();
 
-      // Update widget class for offline styling
-      const panel = shadow.querySelector('.panel');
-      if (panel) {
-        if (data.isOpen) {
-          panel.classList.remove('widget-offline');
-        } else {
-          panel.classList.add('widget-offline');
+        // Update widget class for offline styling
+        const panel = shadow.querySelector('.panel');
+        if (panel) {
+          if (data.isOpen) {
+            panel.classList.remove('widget-offline');
+          } else {
+            panel.classList.add('widget-offline');
+          }
         }
-      }
 
-      console.log('[ChatIQ] Business status updated:', businessStatus);
+        console.log('[ChatIQ] Business status updated:', businessStatus);
+      }
     } catch (error) {
       console.error('[ChatIQ] Failed to check business hours:', error);
     }

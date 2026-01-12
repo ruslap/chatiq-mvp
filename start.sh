@@ -3,6 +3,9 @@
 # ChatIQ MVP - Quick Start Script
 # This script starts all three components of the project locally
 
+# Track start time
+START_TIME=$(date +%s)
+
 echo "🚀 Starting ChatIQ MVP project locally..."
 
 # Colors for output
@@ -99,3 +102,10 @@ echo -e "   • View logs:         ${YELLOW}tail -f logs/[service-name].log${NC}
 echo -e "   • Check status:      ${YELLOW}./status.sh${NC}"
 echo ""
 echo -e "${GREEN}✨ Happy coding! ✨${NC}"
+
+# Calculate and display execution time
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+echo ""
+echo -e "${BLUE}⏱️  Total deployment time: ${YELLOW}${DURATION}s${NC}"
+

@@ -8,6 +8,9 @@
 
 set -e
 
+# Track start time
+START_TIME=$(date +%s)
+
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -113,3 +116,9 @@ echo -e "   docker compose logs -f          # View logs"
 echo -e "   docker compose ps               # Container status"
 echo -e "   docker compose restart          # Restart all"
 echo -e "   ./scripts/backup.sh             # Backup database"
+echo ""
+
+# Calculate and display execution time
+END_TIME=$(date +%s)
+DURATION=$((END_TIME - START_TIME))
+echo -e "${BLUE}⏱️  Total deployment time: ${YELLOW}${DURATION}s${NC}"
