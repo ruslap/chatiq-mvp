@@ -16,7 +16,8 @@ import { sounds } from "@/lib/sounds";
 // Get organization ID from API or localStorage
 async function getOrgId(): Promise<string> {
     if (typeof window === 'undefined') return '';
-    return await getMyOrganization();
+    const org = await getMyOrganization();
+    return org?.siteId || '';
 }
 
 export default function ChatsPage() {

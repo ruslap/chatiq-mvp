@@ -163,8 +163,8 @@ export function MobileBottomNav({ unreadCount = 0 }: MobileNavProps) {
     // Get organization ID and set up socket for unread count
     useEffect(() => {
         const fetchOrgId = async () => {
-            const orgId = await getMyOrganization();
-            setSiteId(orgId);
+            const org = await getMyOrganization();
+            setSiteId(org?.siteId || '');
         };
         fetchOrgId();
     }, []);

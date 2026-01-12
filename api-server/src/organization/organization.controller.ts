@@ -31,11 +31,22 @@ export class OrganizationController {
     const userId = req.user.userId;
     const organization =
       await this.organizationService.getOrCreateOrganization(userId);
-    const primarySite = await this.sitesService.getPrimarySite(userId);
+
+    // Get or create primary site
+    let primarySite = await this.sitesService.getPrimarySite(userId);
+
+    // If no site exists, create a default one
+    if (!primarySite) {
+      primarySite = await this.sitesService.createSite(
+        userId,
+        'My Website',
+        'example.com'
+      );
+    }
 
     return {
       organizationId: organization.organizationId,
-      siteId: primarySite?.id || null,
+      siteId: primarySite.id,
       settings: organization,
     };
   }

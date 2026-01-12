@@ -31,8 +31,8 @@ export function SidebarNav() {
     // Get organization ID and set up socket for unread count
     useEffect(() => {
         const fetchOrgId = async () => {
-            const orgId = await getMyOrganization();
-            setSiteId(orgId);
+            const org = await getMyOrganization();
+            setSiteId(org?.siteId || '');
         };
         fetchOrgId();
     }, []);
