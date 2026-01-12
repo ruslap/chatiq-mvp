@@ -110,7 +110,7 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
     const handleUpdate = async (id: string) => {
         setIsSaving(true);
         try {
-            const res = await fetch(`${API_URL}/automation/templates/${id}`, {
+            const res = await fetch(`${API_URL}/automation/templates/${siteId}/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,7 +141,7 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
         if (!confirm('Видалити цей шаблон?')) return;
 
         try {
-            const res = await fetch(`${API_URL}/automation/templates/${id}`, {
+            const res = await fetch(`${API_URL}/automation/templates/${siteId}/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
@@ -156,7 +156,7 @@ export function TemplatesSettings({ siteId, accessToken }: TemplatesSettingsProp
 
     const handleToggleActive = async (id: string, isActive: boolean) => {
         try {
-            const res = await fetch(`${API_URL}/automation/templates/${id}`, {
+            const res = await fetch(`${API_URL}/automation/templates/${siteId}/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

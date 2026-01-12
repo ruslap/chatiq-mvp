@@ -4,9 +4,9 @@ import { WidgetSettingsService } from './widget-settings.service';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [WidgetSettingsController],
-    providers: [WidgetSettingsService],
-    exports: [WidgetSettingsService],
+  imports: [PrismaModule],
+  controllers: [WidgetSettingsController],
+  providers: [WidgetSettingsService],
+  exports: [WidgetSettingsService],
 })
-export class WidgetSettingsModule { }
+export class WidgetSettingsModule {}

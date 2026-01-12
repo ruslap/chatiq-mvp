@@ -1,4 +1,10 @@
-import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -20,22 +26,46 @@ export class UploadController {
         fileSize: 10 * 1024 * 1024, // 10MB
       },
       fileFilter: (_req, file, cb) => {
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf', '.doc', '.docx', '.txt'];
-        if (allowedTypes.includes(file.mimetype) || allowedTypes.some(type => file.originalname.endsWith(type))) {
+        const allowedTypes = [
+          'image/jpeg',
+          'image/png',
+          'image/gif',
+          'image/webp',
+          'application/pdf',
+          '.doc',
+          '.docx',
+          '.txt',
+        ];
+        if (
+          allowedTypes.includes(file.mimetype) ||
+          allowedTypes.some((type) => file.originalname.endsWith(type))
+        ) {
           cb(null, true);
         } else {
-          cb(new BadRequestException('Invalid file type') as unknown as Error, false);
+          cb(
+            new BadRequestException('Invalid file type') as unknown as Error,
+            false,
+          );
         }
       },
     }),
   )
-  uploadFile(@UploadedFile() file: { filename: string; originalname: string; size: number; mimetype: string }) {
+  uploadFile(
+    @UploadedFile()
+    file: {
+      filename: string;
+      originalname: string;
+      size: number;
+      mimetype: string;
+    },
+  ) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
 
     // Return the file URL that can be accessed
-    const fileUrl = `http://localhost:3000/uploads/${file.filename}`;
+    const baseUrl = process.env.API_URL || 'http://localhost:3000';
+    const fileUrl = `${baseUrl}/uploads/${file.filename}`;
 
     return {
       url: fileUrl,

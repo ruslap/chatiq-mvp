@@ -112,7 +112,7 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
     const handleUpdate = async (id: string) => {
         setIsSaving(true);
         try {
-            const res = await fetch(`${API_URL}/automation/auto-replies/${id}`, {
+            const res = await fetch(`${API_URL}/automation/auto-replies/${siteId}/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
         if (!confirm('Видалити це автоматичне повідомлення?')) return;
 
         try {
-            const res = await fetch(`${API_URL}/automation/auto-replies/${id}`, {
+            const res = await fetch(`${API_URL}/automation/auto-replies/${siteId}/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${accessToken}` }
             });
@@ -173,7 +173,7 @@ export function AutomationSettings({ siteId, accessToken }: AutomationSettingsPr
 
     const handleToggleActive = async (id: string, isActive: boolean) => {
         try {
-            const res = await fetch(`${API_URL}/automation/auto-replies/${id}`, {
+            const res = await fetch(`${API_URL}/automation/auto-replies/${siteId}/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

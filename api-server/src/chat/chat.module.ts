@@ -7,6 +7,6 @@ import { AutomationModule } from '../automation/automation.module';
 @Module({
   imports: [AutomationModule],
   controllers: [ChatController],
-  providers: [ChatGateway, ChatService]
+  providers: [ChatGateway, ChatService],
 })
-export class ChatModule { }
+export class ChatModule {}

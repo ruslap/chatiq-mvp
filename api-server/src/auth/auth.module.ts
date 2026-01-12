@@ -27,4 +27,4 @@ import { AutomationModule } from '../automation/automation.module';
   controllers: [AuthController],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

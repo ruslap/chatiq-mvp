@@ -162,6 +162,69 @@ Widget source: `widget-cdn/public/widget.js`
 - **Constants**: SCREAMING_SNAKE_CASE (`MAX_MESSAGE_LENGTH`, `DEFAULT_TIMEOUT`)
 - **Interfaces/Types**: PascalCase (`ChatMessageDTO`, `WidgetConfig`)
 
+### Module System (Frontend - Next.js/React)
+
+- ✅ Use ES modules with explicit `.js` extensions in imports (where applicable)
+- ✅ Named exports preferred over default exports
+- ✅ Group imports: external → internal → types → styles
+
+```typescript
+// ✅ Good - organized imports
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import type { Chat } from '@/types/chat';
+import './styles.css';
+
+// ❌ Bad - mixed order, no grouping
+import './styles.css';
+import type { Chat } from '@/types/chat';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+```
+
+### Component Structure (Next.js/React)
+
+- ✅ Functional components with hooks only
+- ✅ Custom hooks start with `use` prefix
+- ✅ Props interface defined above component
+- ✅ Named exports preferred
+
+```typescript
+// ✅ Good - clear structure
+interface ChatListProps {
+  siteId: string;
+  onChatSelect?: (chatId: string) => void;
+}
+
+export function ChatList({ siteId, onChatSelect }: ChatListProps) {
+  // component logic
+}
+
+// ❌ Bad - inline types, default export
+export default ({ siteId, onChatSelect }: {siteId: string, onChatSelect?: Function}) => {
+  // logic
+}
+```
+
+### Styling Standards (Admin Panel)
+
+- ✅ TailwindCSS utility classes preferred
+- ✅ Semantic class grouping (layout → spacing → colors → effects)
+- ✅ Responsive by default (mobile-first)
+
+```typescript
+// ✅ Good - organized classes
+<div className="
+  flex items-center gap-4
+  rounded-lg bg-white
+  shadow-md hover:shadow-lg
+  transition-shadow duration-200
+">
+
+// ❌ Bad - unorganized classes
+<div className="gap-4 transition-shadow flex rounded-lg bg-white shadow-md items-center hover:shadow-lg duration-200">
+```
+
 ### NestJS Patterns
 
 ```typescript
@@ -246,6 +309,209 @@ try {
 }
 ```
 
+### Standardized API Response Format
+
+- ✅ Consistent response structure for all endpoints
+- ✅ Include metadata (timestamps, pagination) when relevant
+
+```typescript
+// ✅ Good - Consistent success response
+interface ApiResponse<T> {
+  data: T;
+  meta?: {
+    timestamp: string;
+    pagination?: {
+      page: number;
+      limit: number;
+      total: number;
+    };
+  };
+}
+
+// Controller example
+@Get('chats')
+async getChats(@Query('page') page = 1): Promise<ApiResponse<Chat[]>> {
+  const chats = await this.chatService.getChats(page);
+  return {
+    data: chats,
+    meta: {
+      timestamp: new Date().toISOString(),
+      pagination: { page, limit: 50, total: 234 }
+    }
+  };
+}
+
+// ❌ Bad - inconsistent formats
+return { chats }; // Sometimes just data
+return { success: true, result: chats }; // Different structure
+return { data: chats, success: true }; // Mixed patterns
+```
+
+### Environment Variables Validation
+
+- ✅ All config from environment variables
+- ✅ Validated at startup, not at runtime
+- ✅ Type-safe config object
+
+```typescript
+// ✅ Good - config/env.ts (validated at startup)
+import { z } from 'zod';
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'production', 'test']),
+  PORT: z.string().transform(Number),
+  DATABASE_URL: z.string().url(),
+  JWT_SECRET: z.string().min(32),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+});
+
+export const env = envSchema.parse(process.env);
+
+// Usage in services
+const server = app.listen(env.PORT);
+
+// ❌ Bad - reading process.env directly everywhere
+app.listen(process.env.PORT || 3000); // No validation
+const secret = process.env.JWT_SECRET; // Might be undefined
+```
+
+### Logging Standards
+
+- ✅ Structured logging with context (NestJS Logger)
+- ✅ Include request IDs for tracing
+- ✅ Different log levels (debug, log, warn, error)
+- ❌ **NO console.log in production code**
+
+```typescript
+// ✅ Good - structured logging
+import { Logger } from '@nestjs/common';
+
+export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
+
+  async createChat(siteId: string) {
+    this.logger.log(`Creating chat for site: ${siteId}`);
+
+    try {
+      const chat = await this.prisma.chat.create({ data: { siteId } });
+      this.logger.log(`Chat created: ${chat.id}`, { chatId: chat.id, siteId });
+      return chat;
+    } catch (error) {
+      this.logger.error(`Failed to create chat for site: ${siteId}`, error.stack);
+      throw error;
+    }
+  }
+}
+
+// ❌ Bad - console.log everywhere
+console.log('creating chat...'); // Remove all console.logs
+console.log(error); // Unhelpful in production
+```
+
+### Comments Standards
+
+- ✅ Explain WHY, not WHAT (code should be self-explanatory)
+- ✅ Complex algorithms and business logic need comments
+- ✅ JSDoc for public APIs and exported functions
+- ❌ Remove commented-out code (use git history instead)
+- ❌ NO TODO comments in production code
+
+```typescript
+// ✅ Good - explains why
+// Use exponential backoff to avoid overwhelming Socket.IO during reconnection storms
+async function retryWithBackoff(fn: () => Promise<void>, maxAttempts = 3) {
+  for (let i = 0; i < maxAttempts; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (i === maxAttempts - 1) throw error;
+      await sleep(Math.pow(2, i) * 1000);
+    }
+  }
+}
+
+/**
+ * Validates site access based on domain whitelist
+ * @throws {NotFoundException} If site doesn't exist
+ * @throws {ForbiddenException} If domain not whitelisted
+ */
+export async function validateSiteAccess(siteId: string, origin: string) {
+  // implementation
+}
+
+// ❌ Bad - obvious comments, commented code
+function getChat(id: string) {
+  // Get chat by id  // Useless - function name already says this
+  return this.prisma.chat.findUnique({ where: { id } });
+}
+
+// const oldImplementation = () => { /* ... */ };  // DELETE THIS!
+// TODO: refactor this later  // Fix it now or create GitHub issue
+```
+
+### Security Best Practices
+
+- ✅ Input validation on all API endpoints (use DTOs + class-validator)
+- ✅ SQL injection prevention (Prisma handles this with parameterized queries)
+- ✅ XSS prevention (sanitize user input in messages)
+- ✅ CSRF protection for state-changing operations
+- ✅ Rate limiting on public endpoints
+- ✅ Secrets in environment variables, never in code
+- ✅ **Always validate `siteId` to prevent cross-tenant access**
+
+```typescript
+// ✅ Good - validated input with DTOs
+import { IsString, IsUUID, MaxLength } from 'class-validator';
+
+export class CreateMessageDto {
+  @IsUUID()
+  siteId: string;
+
+  @IsString()
+  @MaxLength(5000)
+  message: string;
+
+  @IsString()
+  chatId: string;
+}
+
+@Post('messages')
+async sendMessage(@Body() dto: CreateMessageDto) {
+  // Data is already validated by ValidationPipe
+  return this.chatService.createMessage(dto);
+}
+
+// ❌ Bad - no validation
+@Post('messages')
+async sendMessage(@Body() body: any) {
+  const { message, siteId } = body; // Could be anything!
+  // Prisma prevents SQL injection, but we still need validation
+  await this.prisma.message.create({ data: { message, siteId } });
+}
+```
+
+---
+
+## Ukrainian Language Context
+
+- ✅ Ukrainian comments welcome for complex business logic
+- ✅ Variable names and code must remain English
+- ✅ Documentation can be bilingual (EN/UK)
+
+```typescript
+// ✅ Good - English code, Ukrainian comment for clarity
+// Перевіряємо чи користувач має доступ до цього сайту через SiteUser relation
+const hasAccess = await this.prisma.siteUser.findFirst({
+  where: { userId, siteId }
+});
+
+// ❌ Bad - Ukrainian variable names
+const mayeDostup = await this.prisma.siteUser.findFirst({
+  where: { koristuvachId, saitId } // NEVER do this
+});
+```
+
 ---
 
 ## Testing Standards
@@ -319,11 +585,36 @@ API Server (`.env` in `api-server/`):
 
 ---
 
-## Priority Order for Code Changes
+## Code Simplifier Instructions
 
-1. **Security issues** (tenant isolation, XSS, SQL injection)
+When simplifying or refactoring code for this project:
+
+1. **Preserve all functionality** - never change what code does
+2. **Apply these standards** strictly - this is the project's "law"
+3. **Remove defensive coding** in internal functions (keep only at API boundaries)
+4. **Eliminate nested ternaries** - always use if/else or switch
+5. **Standardize error responses** - use NestJS exceptions consistently
+6. **Clean up imports** - group and sort as specified
+7. **Remove console.logs** - replace with NestJS Logger
+8. **Fix naming** - enforce conventions (camelCase, PascalCase, kebab-case)
+9. **DRY up duplicated logic** - extract to shared services/utilities
+10. **Simplify complex conditionals** - use early returns, guard clauses
+
+### Priority Order for Code Changes
+
+1. **Security issues** (tenant isolation, SQL injection, XSS, exposed secrets)
 2. **Functionality-breaking bugs**
 3. **Error handling consistency**
 4. **Code duplication removal**
 5. **Naming conventions**
-6. **Performance optimizations**
+6. **Import organization**
+7. **Comment cleanup**
+8. **Formatting and style**
+
+### Key Reminders
+
+- Always filter by `siteId` in queries to prevent cross-tenant access
+- Use DTOs with class-validator for all input validation
+- Use NestJS Logger instead of console.log
+- Never commit sensitive data (.env files, secrets)
+- Test changes with both unit tests and manual testing

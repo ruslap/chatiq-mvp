@@ -1,229 +1,277 @@
 import {
-    WebSocketGateway,
-    SubscribeMessage,
-    MessageBody,
-    ConnectedSocket,
-    WebSocketServer,
-    OnGatewayConnection,
-    OnGatewayDisconnect,
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
+  WebSocketServer,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { OnEvent } from '@nestjs/event-emitter';
 
 interface MessageData {
-    text: string;
-    createdAt: Date;
-    from?: string;
-    attachment?: string | null;
+  text: string;
+  createdAt: Date;
+  from?: string;
+  attachment?: string | null;
 }
 
 @WebSocketGateway({
-    cors: {
-        origin: '*',
-    },
+  cors: {
+    origin: '*',
+  },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-    @WebSocketServer()
-    server: Server;
+  private readonly logger = new Logger(ChatGateway.name);
 
-    constructor(private readonly chatService: ChatService) { }
+  @WebSocketServer()
+  server: Server;
 
-    @OnEvent('auto-reply.sent')
-    handleAutoReplySent(payload: { siteId: string; chatId: string; visitorId: string; message: MessageData }) {
-        const { siteId, visitorId, message } = payload;
+  constructor(private readonly chatService: ChatService) {}
 
-        // Send to visitor's room
-        const visitorRoom = `chat:${siteId}:${visitorId}`;
-        this.server.to(visitorRoom).emit('admin:message', {
-            text: message.text,
-            createdAt: message.createdAt,
-            from: 'admin'
+  @OnEvent('auto-reply.sent')
+  handleAutoReplySent(payload: {
+    siteId: string;
+    chatId: string;
+    visitorId: string;
+    message: MessageData;
+  }) {
+    const { siteId, visitorId, message } = payload;
+
+    // Send to visitor's room
+    const visitorRoom = `chat:${siteId}:${visitorId}`;
+    this.server.to(visitorRoom).emit('admin:message', {
+      text: message.text,
+      createdAt: message.createdAt,
+      from: 'admin',
+    });
+
+    // Also notify admin room
+    const adminRoom = `admin:${siteId}`;
+    this.server.to(adminRoom).emit('chat:message', message);
+
+    this.logger.log(
+      `Auto-reply delivered via WebSocket to room ${visitorRoom}`,
+    );
+  }
+
+  handleConnection(client: Socket) {
+    this.logger.debug(`Client connected: ${client.id}`);
+  }
+
+  handleDisconnect(client: Socket) {
+    this.logger.debug(`Client disconnected: ${client.id}`);
+
+    // Try to get visitor info from the socket before it's fully disconnected
+    const visitorData = client.handshake.query;
+    const siteId = visitorData?.siteId as string;
+    const visitorId = visitorData?.visitorId as string;
+
+    this.logger.debug(`Query params: ${JSON.stringify(visitorData)}`);
+
+    if (siteId && visitorId) {
+      this.logger.log(`Visitor ${visitorId} disconnected from site ${siteId}`);
+
+      // Find and update the chat status to closed
+      void this.chatService
+        .findChatByVisitor(siteId, visitorId)
+        .then((chat) => {
+          if (chat) {
+            this.logger.debug(
+              `Found chat ${chat.id}, updating status to closed`,
+            );
+            void this.chatService
+              .updateChatStatus(chat.id, 'closed')
+              .then(() => {
+                this.logger.debug(
+                  `Status updated, emitting visitor:offline to admin:${siteId}`,
+                );
+                // Notify admins that visitor has left
+                this.server.to(`admin:${siteId}`).emit('visitor:offline', {
+                  chatId: chat.id,
+                  visitorId: visitorId,
+                });
+                this.logger.debug('visitor:offline event emitted');
+              });
+          } else {
+            this.logger.debug(`No chat found for visitor ${visitorId}`);
+          }
+        })
+        .catch((err) => {
+          this.logger.error('Error during disconnect handling', err.stack);
         });
-
-        // Also notify admin room
-        const adminRoom = `admin:${siteId}`;
-        this.server.to(adminRoom).emit('chat:message', message);
-
-        console.log(`Auto-reply delivered via WebSocket to room ${visitorRoom}`);
+    } else {
+      this.logger.debug('Missing siteId or visitorId in query params');
     }
+  }
 
-    handleConnection(client: Socket) {
-        console.log(`Client connected: ${client.id}`);
-    }
+  @SubscribeMessage('visitor:join')
+  handleVisitorJoin(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { siteId: string; visitorId: string },
+  ) {
+    const { siteId, visitorId } = payload;
+    // Join a room specific to this site and visitor conversation
+    const roomName = `chat:${siteId}:${visitorId}`;
+    client.join(roomName);
+    this.logger.log(`Visitor ${visitorId} joined room ${roomName}`);
+    return { status: 'ok', room: roomName };
+  }
 
-    handleDisconnect(client: Socket) {
-        console.log(`Client disconnected: ${client.id}`);
+  @SubscribeMessage('visitor:message')
+  async handleVisitorMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    payload: {
+      siteId: string;
+      visitorId: string;
+      text: string;
+      attachment?: string;
+      visitorName?: string;
+    },
+  ) {
+    const { siteId, visitorId, text, attachment, visitorName } = payload;
 
-        // Try to get visitor info from the socket before it's fully disconnected
-        const visitorData = client.handshake.query;
-        const siteId = visitorData?.siteId as string;
-        const visitorId = visitorData?.visitorId as string;
+    // Persist message
+    const message = await this.chatService.saveVisitorMessage(
+      siteId,
+      visitorId,
+      text,
+      attachment,
+    );
 
-        console.log(`[handleDisconnect] Query params:`, visitorData);
-
-        if (siteId && visitorId) {
-            console.log(`Visitor ${visitorId} disconnected from site ${siteId}`);
-
-            // Find and update the chat status to closed
-            void this.chatService.findChatByVisitor(siteId, visitorId).then(chat => {
-                if (chat) {
-                    console.log(`[handleDisconnect] Found chat ${chat.id}, updating status to closed`);
-                    void this.chatService.updateChatStatus(chat.id, 'closed').then(() => {
-                        console.log(`[handleDisconnect] Status updated, emitting visitor:offline to admin:${siteId}`);
-                        // Notify admins that visitor has left
-                        this.server.to(`admin:${siteId}`).emit('visitor:offline', {
-                            chatId: chat.id,
-                            visitorId: visitorId
-                        });
-                        console.log(`[handleDisconnect] visitor:offline event emitted`);
-                    });
-                } else {
-                    console.log(`[handleDisconnect] No chat found for visitor ${visitorId}`);
-                }
-            }).catch(err => {
-                console.error(`[handleDisconnect] Error:`, err);
-            });
-        } else {
-            console.log(`[handleDisconnect] Missing siteId or visitorId in query params`);
-        }
-    }
-
-    @SubscribeMessage('visitor:join')
-    handleVisitorJoin(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { siteId: string; visitorId: string },
-    ) {
-        const { siteId, visitorId } = payload;
-        // Join a room specific to this site and visitor conversation
-        const roomName = `chat:${siteId}:${visitorId}`;
-        client.join(roomName);
-        console.log(`Visitor ${visitorId} joined room ${roomName}`);
-        return { status: 'ok', room: roomName };
-    }
-
-    @SubscribeMessage('visitor:message')
-    async handleVisitorMessage(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { siteId: string; visitorId: string; text: string; attachment?: string; visitorName?: string },
-    ) {
-        const { siteId, visitorId, text, attachment, visitorName } = payload;
-
-        // Persist message
-        const message = await this.chatService.saveVisitorMessage(siteId, visitorId, text, attachment);
-
-        // Update visitor name if provided
-        if (visitorName && message.chatId) {
-            void this.chatService.renameVisitor(message.chatId, visitorName).then(() => {
-                console.log(`[ChatGateway] Updated visitor name to: ${visitorName}`);
-            });
-        }
-
-        const roomName = `chat:${siteId}:${visitorId}`;
-        const adminRoom = `admin:${siteId}`;
-
-        // Notify visitor (confirmation/sync across tabs)
-        this.server.to(roomName).emit('chat:message', message);
-
-        // Notify all admins of this site
-        this.server.to(adminRoom).emit('chat:new_message', {
-            ...message,
-            visitorId,
-            visitorName: visitorName || undefined,
+    // Update visitor name if provided
+    if (visitorName && message.chatId) {
+      void this.chatService
+        .renameVisitor(message.chatId, visitorName)
+        .then(() => {
+          this.logger.debug(`Updated visitor name to: ${visitorName}`);
         });
-
-        return message;
     }
 
-    @SubscribeMessage('admin:join')
-    handleAdminJoin(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { siteId: string },
-    ) {
-        const { siteId } = payload;
-        const adminRoom = `admin:${siteId}`;
-        client.join(adminRoom);
-        console.log(`Admin joined room ${adminRoom}`);
-        return { status: 'ok' };
+    const roomName = `chat:${siteId}:${visitorId}`;
+    const adminRoom = `admin:${siteId}`;
+
+    // Notify visitor (confirmation/sync across tabs)
+    this.server.to(roomName).emit('chat:message', message);
+
+    // Notify all admins of this site
+    this.server.to(adminRoom).emit('chat:new_message', {
+      ...message,
+      visitorId,
+      visitorName: visitorName || undefined,
+    });
+
+    return message;
+  }
+
+  @SubscribeMessage('admin:join')
+  handleAdminJoin(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { siteId: string },
+  ) {
+    const { siteId } = payload;
+    const adminRoom = `admin:${siteId}`;
+    client.join(adminRoom);
+    this.logger.log(`Admin joined room ${adminRoom}`);
+    return { status: 'ok' };
+  }
+
+  @SubscribeMessage('admin:message')
+  async handleAdminMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody()
+    payload: {
+      chatId: string;
+      text: string;
+      siteId: string;
+      attachment?: string;
+    },
+  ) {
+    const { chatId, text, siteId, attachment } = payload;
+
+    // Persist message
+    const message = await this.chatService.saveAdminMessage(
+      chatId,
+      text,
+      attachment,
+    );
+
+    // Get chat to find visitorId
+    const chat = await this.chatService.getChatById(chatId);
+    if (chat) {
+      const visitorRoom = `chat:${siteId}:${chat.visitorId}`;
+
+      // Notify visitor
+      this.server.to(visitorRoom).emit('admin:message', {
+        text: message.text,
+        createdAt: message.createdAt,
+        attachment: message.attachment,
+      });
+
+      // Sync other admins
+      const adminRoom = `admin:${siteId}`;
+      this.server.to(adminRoom).emit('chat:message', message);
     }
 
-    @SubscribeMessage('admin:message')
-    async handleAdminMessage(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { chatId: string; text: string; siteId: string; attachment?: string },
-    ) {
-        const { chatId, text, siteId, attachment } = payload;
+    return message;
+  }
 
-        // Persist message
-        const message = await this.chatService.saveAdminMessage(chatId, text, attachment);
+  @SubscribeMessage('admin:get_unread_count')
+  async handleGetUnreadCount(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { siteId: string },
+  ) {
+    const { siteId } = payload;
+    const unreadCount = await this.chatService.getUnreadCount(siteId);
+    client.emit('unread_count_update', unreadCount);
+    return unreadCount;
+  }
 
-        // Get chat to find visitorId
-        const chat = await this.chatService.getChatById(chatId);
-        if (chat) {
-            const visitorRoom = `chat:${siteId}:${chat.visitorId}`;
+  @SubscribeMessage('admin:mark_read')
+  async handleMarkAsRead(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { chatId: string },
+  ) {
+    const { chatId } = payload;
+    await this.chatService.markMessagesAsRead(chatId);
 
-            // Notify visitor
-            this.server.to(visitorRoom).emit('admin:message', {
-                text: message.text,
-                createdAt: message.createdAt,
-                attachment: message.attachment
-            });
-
-            // Sync other admins
-            const adminRoom = `admin:${siteId}`;
-            this.server.to(adminRoom).emit('chat:message', message);
-        }
-
-        return message;
+    // Update unread count for all admins
+    const chat = await this.chatService.getChatById(chatId);
+    if (chat) {
+      const adminRoom = `admin:${chat.siteId}`;
+      const unreadCount = await this.chatService.getUnreadCount(chat.siteId);
+      this.server.to(adminRoom).emit('unread_count_update', unreadCount);
     }
 
-    @SubscribeMessage('admin:get_unread_count')
-    async handleGetUnreadCount(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { siteId: string },
-    ) {
-        const { siteId } = payload;
-        const unreadCount = await this.chatService.getUnreadCount(siteId);
-        client.emit('unread_count_update', unreadCount);
-        return unreadCount;
+    return { status: 'ok' };
+  }
+
+  @SubscribeMessage('visitor:disconnect')
+  async handleVisitorDisconnect(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: { siteId: string; visitorId: string },
+  ) {
+    this.logger.log(
+      `Visitor ${payload.visitorId} disconnected from site ${payload.siteId}`,
+    );
+
+    // Find and update the chat status to closed
+    const chat = await this.chatService.findChatByVisitor(
+      payload.siteId,
+      payload.visitorId,
+    );
+    if (chat) {
+      await this.chatService.updateChatStatus(chat.id, 'closed');
+
+      // Notify admins that visitor has left
+      this.server.to(`admin:${payload.siteId}`).emit('visitor:offline', {
+        chatId: chat.id,
+        visitorId: payload.visitorId,
+      });
     }
-
-    @SubscribeMessage('admin:mark_read')
-    async handleMarkAsRead(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { chatId: string },
-    ) {
-        const { chatId } = payload;
-        await this.chatService.markMessagesAsRead(chatId);
-
-        // Update unread count for all admins
-        const chat = await this.chatService.getChatById(chatId);
-        if (chat) {
-            const adminRoom = `admin:${chat.siteId}`;
-            const unreadCount = await this.chatService.getUnreadCount(chat.siteId);
-            this.server.to(adminRoom).emit('unread_count_update', unreadCount);
-        }
-
-        return { status: 'ok' };
-    }
-
-    @SubscribeMessage('visitor:disconnect')
-    async handleVisitorDisconnect(
-        @ConnectedSocket() client: Socket,
-        @MessageBody() payload: { siteId: string; visitorId: string },
-    ) {
-        console.log(`Visitor ${payload.visitorId} disconnected from site ${payload.siteId}`);
-
-        // Find and update the chat status to closed
-        const chat = await this.chatService.findChatByVisitor(payload.siteId, payload.visitorId);
-        if (chat) {
-            await this.chatService.updateChatStatus(chat.id, 'closed');
-
-            // Notify admins that visitor has left
-            this.server.to(`admin:${payload.siteId}`).emit('visitor:offline', {
-                chatId: chat.id,
-                visitorId: payload.visitorId
-            });
-        }
-    }
+  }
 }

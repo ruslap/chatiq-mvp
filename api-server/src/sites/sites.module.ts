@@ -7,4 +7,4 @@ import { SitesController } from './sites.controller';
   controllers: [SitesController],
   exports: [SitesService],
 })
-export class SitesModule { }
+export class SitesModule {}

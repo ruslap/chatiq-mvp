@@ -10,6 +10,7 @@ import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileHeader, MobileBottomNav } from "@/components/mobile-nav";
 import { MessageSquare, Send } from "lucide-react";
 import { getMyOrganization } from "@/lib/organization";
+import { getApiUrl } from "@/lib/api-config";
 
 // Get organization ID from API or localStorage
 async function getOrgId(): Promise<string> {
@@ -77,10 +78,7 @@ export default function ChatsPage() {
     useEffect(() => {
         if (!session?.user || !siteId) return;
 
-        // Configurable API URL for flexibility between local/prod
-        const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
-            || process.env.NEXT_PUBLIC_API_URL
-            || "http://localhost:3000";
+        const apiUrl = getApiUrl();
 
         const queryParams = new URLSearchParams();
         if (debouncedSearchQuery) {
@@ -122,10 +120,7 @@ export default function ChatsPage() {
     useEffect(() => {
         if (!session?.user || socketRef.current || !siteId) return;
 
-        // Configurable API URL for flexibility between local/prod
-        const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
-            || process.env.NEXT_PUBLIC_API_URL
-            || "http://localhost:3000";
+        const apiUrl = getApiUrl();
 
         console.log(`[ChatsPage] Connecting to socket at ${apiUrl}`);
         const s = io(apiUrl);

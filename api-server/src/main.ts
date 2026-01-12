@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { json, urlencoded } from 'express';
 import { join } from 'path';
@@ -6,6 +7,15 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Enable global validation pipe
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   // Enable trust proxy for correct IP and Protocol detection behind Nginx
   app.set('trust proxy', 1);
@@ -20,12 +30,19 @@ async function bootstrap() {
   });
 
   // Serve uploaded files
-  app.use('/uploads', (req: unknown, res: { header: (name: string, value: string) => void }, next: () => void) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-  });
+  app.use(
+    '/uploads',
+    (
+      req: unknown,
+      res: { header: (name: string, value: string) => void },
+      next: () => void,
+    ) => {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET');
+      res.header('Access-Control-Allow-Headers', 'Content-Type');
+      next();
+    },
+  );
   app.useStaticAssets(join(__dirname, '..', '..', 'uploads'), {
     prefix: '/uploads/',
   });

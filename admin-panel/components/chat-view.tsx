@@ -8,6 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Settings, Paperclip, Smile, Send, Trash2, Eraser, X, Pencil, Check, ArrowLeft } from "lucide-react";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
+import { getApiUrl } from "@/lib/api-config";
+import type { Socket } from "socket.io-client";
 import dynamic from 'next/dynamic';
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -41,7 +43,7 @@ interface ChatViewProps {
         visitorId: string;
         status?: 'online' | 'offline';
     };
-    socket: any;
+    socket: Socket | null;
     siteId: string;
     searchQuery?: string;
     onBack?: () => void;
@@ -94,10 +96,7 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
 
     if (!chat) return null;
 
-    // Configurable API URL for flexibility between local/prod
-    const apiUrl = (typeof window !== 'undefined' && localStorage.getItem('chtq_api_url'))
-        || process.env.NEXT_PUBLIC_API_URL
-        || "http://localhost:3000";
+    const apiUrl = getApiUrl();
 
     // Fetch message history
     useEffect(() => {

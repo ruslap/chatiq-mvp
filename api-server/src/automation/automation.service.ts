@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
@@ -10,18 +10,21 @@ interface DaySchedule {
 
 @Injectable()
 export class AutomationService {
+  private readonly logger = new Logger(AutomationService.name);
   private pendingTimers = new Map<string, Map<string, NodeJS.Timeout>>();
 
   constructor(
     private prisma: PrismaService,
     private eventEmitter: EventEmitter2,
-  ) { }
+  ) {}
 
   @OnEvent('chat.admin_message')
   handleAdminMessage(payload: { siteId: string; chatId: string }) {
     const { chatId } = payload;
     if (this.pendingTimers.has(chatId)) {
-      console.log(`[AutoReply] Admin replied in chat ${chatId}, cancelling pending auto-replies`);
+      this.logger.debug(
+        `Admin replied in chat ${chatId}, cancelling pending auto-replies`,
+      );
       const chatTimers = this.pendingTimers.get(chatId);
       chatTimers?.forEach((timer) => clearTimeout(timer));
       this.pendingTimers.delete(chatId);
@@ -66,6 +69,7 @@ export class AutomationService {
   }
 
   async updateAutoReply(
+    siteId: string,
     id: string,
     data: {
       name?: string;
@@ -76,13 +80,29 @@ export class AutomationService {
       order?: number;
     },
   ) {
+    const existing = await this.prisma.autoReply.findFirst({
+      where: { id, siteId },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Auto-reply ${id} not found`);
+    }
+
     return this.prisma.autoReply.update({
       where: { id },
       data,
     });
   }
 
-  async deleteAutoReply(id: string) {
+  async deleteAutoReply(siteId: string, id: string) {
+    const existing = await this.prisma.autoReply.findFirst({
+      where: { id, siteId },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Auto-reply ${id} not found`);
+    }
+
     return this.prisma.autoReply.delete({
       where: { id },
     });
@@ -137,6 +157,7 @@ export class AutomationService {
   }
 
   async updateQuickTemplate(
+    siteId: string,
     id: string,
     data: {
       title?: string;
@@ -147,13 +168,29 @@ export class AutomationService {
       order?: number;
     },
   ) {
+    const existing = await this.prisma.quickTemplate.findFirst({
+      where: { id, siteId },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Quick template ${id} not found`);
+    }
+
     return this.prisma.quickTemplate.update({
       where: { id },
       data,
     });
   }
 
-  async deleteQuickTemplate(id: string) {
+  async deleteQuickTemplate(siteId: string, id: string) {
+    const existing = await this.prisma.quickTemplate.findFirst({
+      where: { id, siteId },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Quick template ${id} not found`);
+    }
+
     return this.prisma.quickTemplate.delete({
       where: { id },
     });
@@ -225,7 +262,8 @@ export class AutomationService {
       {
         title: 'Привітання',
         shortcut: '/hello',
-        message: 'Вітаємо! 👋 Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!',
+        message:
+          'Вітаємо! 👋 Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!',
         category: 'Загальні',
         order: 1,
       },
@@ -323,7 +361,12 @@ export class AutomationService {
         await this.seedDefaultQuickTemplates(siteId);
       } catch (error: unknown) {
         // If creation fails due to unique constraint, try to find it again
-        if (typeof error === 'object' && error !== null && 'code' in error && (error as { code: string }).code === 'P2002') {
+        if (
+          typeof error === 'object' &&
+          error !== null &&
+          'code' in error &&
+          (error as { code: string }).code === 'P2002'
+        ) {
           hours = await this.prisma.businessHours.findUnique({
             where: { siteId },
           });
@@ -404,12 +447,9 @@ export class AutomationService {
     };
     const dayName = now.toLocaleDateString('en-US', dayOptions).toLowerCase();
 
-    // Debug logging
-    console.log(`[BusinessHours] Checking for siteId: ${siteId}`);
-    console.log(
-      `[BusinessHours] Current time: ${now.toLocaleTimeString('en-US', { timeZone: hours.timezone })}`,
+    this.logger.debug(
+      `BusinessHours check for siteId: ${siteId}, time: ${now.toLocaleTimeString('en-US', { timeZone: hours.timezone })}, day: ${dayName}`,
     );
-    console.log(`[BusinessHours] Current day: ${dayName}`);
 
     // Get schedule for current day
     const daySchedules: Record<string, any> = {
@@ -422,12 +462,14 @@ export class AutomationService {
       sunday: hours.sunday,
     };
 
-    let schedule: DaySchedule | null = daySchedules[dayName] as DaySchedule | null;
+    let schedule: DaySchedule | null = daySchedules[
+      dayName
+    ] as DaySchedule | null;
     if (typeof schedule === 'string') {
       schedule = JSON.parse(schedule) as DaySchedule;
     }
 
-    console.log(`[BusinessHours] Schedule for ${dayName}:`, schedule);
+    this.logger.debug(`Schedule for ${dayName}: ${JSON.stringify(schedule)}`);
 
     if (!schedule || !schedule.isOpen) {
       return { isOpen: false, message: hours.offlineMessage };
@@ -504,11 +546,13 @@ export class AutomationService {
     message: string,
     from: 'admin' | 'visitor',
   ): Promise<void> {
-    console.log('[AutoReply] executeAutoReply called', { siteId, chatId, from });
+    this.logger.debug(
+      `executeAutoReply called: siteId=${siteId}, chatId=${chatId}, from=${from}`,
+    );
 
     // Don't execute auto-replies for admin messages
     if (from === 'admin') {
-      console.log('[AutoReply] Skipping - message from admin');
+      this.logger.debug('Skipping - message from admin');
       return;
     }
 
@@ -521,18 +565,18 @@ export class AutomationService {
 
     // Check business hours status first
     const businessStatus = await this.isWithinBusinessHours(siteId);
-    console.log('[AutoReply] Business status:', businessStatus);
+    this.logger.debug(`Business status: isOpen=${businessStatus.isOpen}`);
 
     // Check for first message trigger
     const messageCount = await this.prisma.message.count({
       where: { chatId },
     });
-    console.log('[AutoReply] Message count:', messageCount);
+    this.logger.debug(`Message count: ${messageCount}`);
 
     if (messageCount === 1) {
       // This is the first message
       if (businessStatus.isOpen) {
-        console.log('[AutoReply] ONLINE - sending welcome message');
+        this.logger.debug('ONLINE - sending welcome message');
         // Online: send welcome message
         const result = await this.checkAndExecuteAutoReply(
           siteId,
@@ -541,12 +585,14 @@ export class AutomationService {
         );
         if (result.shouldReply) {
           void (async () => {
-            await new Promise((resolve) => setTimeout(resolve, result.delay || 0));
+            await new Promise((resolve) =>
+              setTimeout(resolve, result.delay || 0),
+            );
             await this.sendAutoReply(siteId, chatId, result.message!);
           })();
         }
       } else {
-        console.log('[AutoReply] OFFLINE - checking offline message');
+        this.logger.debug('OFFLINE - checking offline message');
         // Offline: try offline message first
         let result = await this.checkAndExecuteAutoReply(
           siteId,
@@ -556,7 +602,9 @@ export class AutomationService {
 
         // Fallback: if no offline message, try welcome message
         if (!result.shouldReply) {
-          console.log('[AutoReply] No offline message, falling back to welcome message');
+          this.logger.debug(
+            'No offline message, falling back to welcome message',
+          );
           result = await this.checkAndExecuteAutoReply(
             siteId,
             'first_message',
@@ -566,7 +614,9 @@ export class AutomationService {
 
         if (result.shouldReply) {
           void (async () => {
-            await new Promise((resolve) => setTimeout(resolve, result.delay || 0));
+            await new Promise((resolve) =>
+              setTimeout(resolve, result.delay || 0),
+            );
             await this.sendAutoReply(siteId, chatId, result.message!);
           })();
         }
@@ -574,7 +624,7 @@ export class AutomationService {
     }
 
     // Schedule delayed "no_reply" messages if we are ONLINE
-    // (If offline, usually the offline message is enough, or we might want to schedule them anyway? 
+    // (If offline, usually the offline message is enough, or we might want to schedule them anyway?
     // Usually no_reply is "wait for operator". If offline, no operator is coming.)
     if (businessStatus.isOpen) {
       const delayedReplies = await this.prisma.autoReply.findMany({
@@ -586,15 +636,19 @@ export class AutomationService {
       });
 
       if (delayedReplies.length > 0) {
-        console.log(`[AutoReply] Found ${delayedReplies.length} delayed replies, scheduling...`);
+        this.logger.debug(
+          `Found ${delayedReplies.length} delayed replies, scheduling`,
+        );
         const chatTimers = new Map<string, NodeJS.Timeout>();
 
         for (const reply of delayedReplies) {
           // Verify delay > 0 to avoid immediate loops if misconfigured
           if (reply.delay > 0) {
-            console.log(`[AutoReply] Scheduling ${reply.trigger} in ${reply.delay}s`);
+            this.logger.debug(`Scheduling ${reply.trigger} in ${reply.delay}s`);
             const timer = setTimeout(async () => {
-              console.log(`[AutoReply] Executing delayed reply ${reply.trigger} for chat ${chatId}`);
+              this.logger.debug(
+                `Executing delayed reply ${reply.trigger} for chat ${chatId}`,
+              );
               await this.sendAutoReply(siteId, chatId, reply.message);
 
               // Remove this specific timer from map
@@ -649,9 +703,12 @@ export class AutomationService {
         });
       }
 
-      console.log(`Auto-reply sent to chat ${chatId}: ${message}`);
+      this.logger.log(`Auto-reply sent to chat ${chatId}: ${message}`);
     } catch (error) {
-      console.error('Failed to send auto-reply:', error);
+      this.logger.error(
+        'Failed to send auto-reply',
+        error instanceof Error ? error.stack : error,
+      );
     }
   }
 }
