@@ -15,8 +15,8 @@ model User {
   googleId       String?         @unique
   role           UserRole        @default(OPERATOR)
   createdAt      DateTime        @default(now())
-  password       String?
   organizationId String?         @unique
+  password       String?
   messages       Message[]
   ownedSites     Site[]          @relation("SiteOwner")
   sites          SiteUser[]
@@ -30,12 +30,12 @@ model Site {
   domain         String
   apiKey         String          @unique @default(cuid())
   createdAt      DateTime        @default(now())
+  autoReplies    AutoReply[]
+  businessHours  BusinessHours?
   chats          Chat[]
+  quickTemplates QuickTemplate[]
   owner          User            @relation("SiteOwner", fields: [ownerId], references: [id])
   operators      SiteUser[]
-  autoReplies    AutoReply[]
-  quickTemplates QuickTemplate[]
-  businessHours  BusinessHours?
 }
 
 model SiteUser {
@@ -51,9 +51,9 @@ model Chat {
   id          String    @id @default(uuid())
   siteId      String
   visitorId   String
-  visitorName String?
   status      String    @default("open")
   createdAt   DateTime  @default(now())
+  visitorName String?
   site        Site      @relation(fields: [siteId], references: [id])
   messages    Message[]
 
@@ -65,9 +65,9 @@ model Message {
   chatId     String
   from       String
   text       String
-  attachment Json?    // Store attachment info as JSON
   userId     String?
   createdAt  DateTime @default(now())
+  attachment Json?
   read       Boolean  @default(false)
   chat       Chat     @relation(fields: [chatId], references: [id])
   user       User?    @relation(fields: [userId], references: [id])
@@ -81,7 +81,7 @@ model WidgetSettings {
   color           String   @default("#6366F1")
   operatorName    String   @default("Support Team")
   operatorAvatar  String?
-  welcomeMessage  String   @default("Вітаємо! 👋 Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!")
+  welcomeMessage  String   @default("Вітаю! 👋 Чим можу допомогти?")
   showWelcome     Boolean  @default(true)
   position        String   @default("right")
   size            String   @default("standard")
@@ -93,61 +93,57 @@ model WidgetSettings {
   users           User?
 }
 
+model AutoReply {
+  id        String   @id @default(uuid())
+  siteId    String
+  name      String
+  trigger   String
+  message   String
+  isActive  Boolean  @default(true)
+  delay     Int      @default(0)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  site      Site     @relation(fields: [siteId], references: [id])
+
+  @@index([siteId])
+}
+
+model QuickTemplate {
+  id        String   @id @default(uuid())
+  siteId    String
+  title     String
+  shortcut  String?
+  message   String
+  category  String?
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  site      Site     @relation(fields: [siteId], references: [id])
+
+  @@index([siteId])
+}
+
+model BusinessHours {
+  id             String   @id @default(uuid())
+  siteId         String   @unique
+  timezone       String   @default("Europe/Kyiv")
+  isEnabled      Boolean  @default(true)
+  offlineMessage String   @default("Дякуємо за звернення! 🕐 Наразі ми не в мережі. Залиште свій email або телефон, і ми зв'яжемося з вами в робочий час.")
+  monday         Json     @default("{\"end\": \"18:00\", \"start\": \"09:00\", \"isOpen\": true}")
+  tuesday        Json     @default("{\"end\": \"18:00\", \"start\": \"09:00\", \"isOpen\": true}")
+  wednesday      Json     @default("{\"end\": \"18:00\", \"start\": \"09:00\", \"isOpen\": true}")
+  thursday       Json     @default("{\"end\": \"18:00\", \"start\": \"09:00\", \"isOpen\": true}")
+  friday         Json     @default("{\"end\": \"18:00\", \"start\": \"09:00\", \"isOpen\": true}")
+  saturday       Json     @default("{\"end\": \"15:00\", \"start\": \"10:00\", \"isOpen\": false}")
+  sunday         Json     @default("{\"end\": \"15:00\", \"start\": \"10:00\", \"isOpen\": false}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  site           Site     @relation(fields: [siteId], references: [id])
+}
+
 enum UserRole {
   OWNER
   OPERATOR
-}
-
-// Auto-reply rules - automatic messages sent based on triggers
-model AutoReply {
-  id          String   @id @default(uuid())
-  siteId      String
-  name        String   // e.g., "Welcome message", "Delay warning"
-  trigger     String   // "first_message", "no_reply_5min", "no_reply_10min", "offline"
-  message     String   // The auto-reply text
-  isActive    Boolean  @default(true)
-  delay       Int      @default(0) // Delay in seconds before sending
-  order       Int      @default(0) // Order of execution
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  site        Site     @relation(fields: [siteId], references: [id])
-
-  @@index([siteId])
-}
-
-// Quick response templates - for operators to quickly insert
-model QuickTemplate {
-  id          String   @id @default(uuid())
-  siteId      String
-  title       String   // Short name, e.g., "Greeting", "Phone request"
-  shortcut    String?  // Keyboard shortcut, e.g., "/hello", "/phone"
-  message     String   // Full message text
-  category    String?  // Optional category for grouping
-  isActive    Boolean  @default(true)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  site        Site     @relation(fields: [siteId], references: [id])
-
-  @@index([siteId])
-}
-
-// Business hours configuration
-model BusinessHours {
-  id              String   @id @default(uuid())
-  siteId          String   @unique
-  timezone        String   @default("Europe/Kyiv")
-  isEnabled       Boolean  @default(true)
-  offlineMessage  String   @default("Дякуємо за звернення! 🕐 Наразі ми не в мережі. Залиште свій email або телефон, і ми зв'яжемося з вами в робочий час.")
-  // Schedule for each day (JSON format: { start: "09:00", end: "18:00", isOpen: true })
-  monday          Json     @default("{\"start\": \"09:00\", \"end\": \"18:00\", \"isOpen\": true}")
-  tuesday         Json     @default("{\"start\": \"09:00\", \"end\": \"18:00\", \"isOpen\": true}")
-  wednesday       Json     @default("{\"start\": \"09:00\", \"end\": \"18:00\", \"isOpen\": true}")
-  thursday        Json     @default("{\"start\": \"09:00\", \"end\": \"18:00\", \"isOpen\": true}")
-  friday          Json     @default("{\"start\": \"09:00\", \"end\": \"18:00\", \"isOpen\": true}")
-  saturday        Json     @default("{\"start\": \"10:00\", \"end\": \"15:00\", \"isOpen\": false}")
-  sunday          Json     @default("{\"start\": \"10:00\", \"end\": \"15:00\", \"isOpen\": false}")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  site            Site     @relation(fields: [siteId], references: [id])
 }

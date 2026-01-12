@@ -4,6 +4,7 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -58,13 +59,34 @@ export class UploadController {
       size: number;
       mimetype: string;
     },
+    @Req() req: any,
   ) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
 
     // Return the file URL that can be accessed
-    const baseUrl = process.env.API_URL || 'http://localhost:3000';
+    // 1. Check API_URL from env
+    // 2. Fallback to current request protocol + host
+    let baseUrl = process.env.API_URL;
+
+    if (!baseUrl && req) {
+      const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+      const host = req.headers['host'];
+      if (host) {
+        baseUrl = `${protocol}://${host}`;
+      }
+    }
+
+    // Final fallback
+    if (!baseUrl) {
+      baseUrl = 'http://localhost:3000';
+    }
+
+    if (!process.env.API_URL && process.env.NODE_ENV === 'production') {
+      console.warn(`[Upload] API_URL not set. Using detected baseUrl: ${baseUrl}`);
+    }
+
     const fileUrl = `${baseUrl}/uploads/${file.filename}`;
 
     return {

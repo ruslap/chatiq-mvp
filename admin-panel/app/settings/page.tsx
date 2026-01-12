@@ -60,9 +60,10 @@ const LANGUAGES = [
     { id: 'de', label: 'Німецька' },
 ];
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+import { getApiUrl } from "@/lib/api-config";
 
 export default function SettingsPage() {
+    const API_URL = getApiUrl();
     const { data: session, status } = useSession();
     const [activeTab, setActiveTab] = useState('widget');
     const [isSaving, setIsSaving] = useState(false);
@@ -82,6 +83,8 @@ export default function SettingsPage() {
     const [welcomeMessage, setWelcomeMessage] = useState('Раді вас бачити 😊 Напишіть, будь ласка, чим можемо допомогти — ми на звʼязку!');
     const [operatorName, setOperatorName] = useState('Support Team');
     const [operatorAvatar, setOperatorAvatar] = useState('');
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
     useEffect(() => {
         const initSettings = async () => {
             if (!session) return;
@@ -116,15 +119,19 @@ export default function SettingsPage() {
                 }
             } catch (error) {
                 console.error('Failed to load settings:', error);
-            } finally {
+                // Even on error, we should stop loading to show the UI
                 setIsLoading(false);
+            } finally {
+                // Should only stop if we handled it or if session is missing
             }
         };
 
         if (session) {
             initSettings();
+        } else if (status !== "loading") {
+            setIsLoading(false);
         }
-    }, [session]);
+    }, [session, status]);
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -333,26 +340,53 @@ export default function SettingsPage() {
                                                 <input
                                                     type="file"
                                                     accept="image/*"
-                                                    onChange={(e) => {
+                                                    onChange={async (e) => {
                                                         const file = e.target.files?.[0];
-                                                        if (file) {
-                                                            const reader = new FileReader();
-                                                            reader.onloadend = () => {
-                                                                setOperatorAvatar(reader.result as string);
-                                                            };
-                                                            reader.readAsDataURL(file);
+                                                        if (file && orgId) {
+                                                            setIsUploadingAvatar(true);
+                                                            try {
+                                                                const formData = new FormData();
+                                                                formData.append('file', file);
+                                                                formData.append('siteId', orgId);
+
+                                                                const response = await fetch(`${API_URL}/upload`, {
+                                                                    method: 'POST',
+                                                                    body: formData,
+                                                                    headers: {
+                                                                        'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
+                                                                    }
+                                                                });
+
+                                                                if (!response.ok) throw new Error('Upload failed');
+
+                                                                const result = await response.json();
+                                                                setOperatorAvatar(result.url);
+                                                            } catch (error) {
+                                                                console.error('Avatar upload error:', error);
+                                                                alert('Не вдалося завантажити аватар. Спробуйте інший файл або менший розмір.');
+                                                            } finally {
+                                                                setIsUploadingAvatar(false);
+                                                            }
                                                         }
                                                     }}
                                                     className="hidden"
                                                     id="avatar-upload"
+                                                    disabled={isUploadingAvatar}
                                                 />
                                                 <label
                                                     htmlFor="avatar-upload"
-                                                    className="inline-flex items-center gap-2 px-4 py-2 bg-[rgb(var(--primary))] text-white rounded-xl cursor-pointer hover:bg-[rgb(var(--primary-600))] transition-smooth text-sm font-medium"
+                                                    className={`inline-flex items-center gap-2 px-4 py-2 bg-[rgb(var(--primary))] text-white rounded-xl cursor-pointer hover:bg-[rgb(var(--primary-600))] transition-smooth text-sm font-medium ${isUploadingAvatar ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 >
-                                                    Завантажити фото
+                                                    {isUploadingAvatar ? (
+                                                        <>
+                                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                                            Завантаження...
+                                                        </>
+                                                    ) : (
+                                                        'Завантажити фото'
+                                                    )}
                                                 </label>
-                                                {operatorAvatar && (
+                                                {operatorAvatar && !isUploadingAvatar && (
                                                     <button
                                                         onClick={() => setOperatorAvatar('')}
                                                         className="ml-3 px-4 py-2 text-sm text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--destructive))] transition-smooth"
