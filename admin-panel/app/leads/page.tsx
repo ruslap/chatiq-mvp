@@ -64,7 +64,7 @@ export default function LeadsPage() {
     }, [siteId, session, API_URL]);
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this lead?")) return;
+        if (!confirm(t.leads.deleteConfirm)) return;
 
         try {
             const response = await fetch(`${API_URL}/leads/${id}`, {
@@ -96,7 +96,7 @@ export default function LeadsPage() {
     if (status === "loading" || isLoading) {
         return (
             <div className="flex h-screen items-center justify-center">
-                <div className="text-[rgb(var(--foreground-secondary))]">Loading...</div>
+                <div className="text-[rgb(var(--foreground-secondary))]">{t.leads.loading}</div>
             </div>
         );
     }
@@ -112,10 +112,10 @@ export default function LeadsPage() {
                     <div className="mx-auto max-w-6xl">
                         <div className="mb-6">
                             <h1 className="text-2xl font-semibold text-[rgb(var(--foreground))]">
-                                Contact Leads
+                                {t.leads.title}
                             </h1>
                             <p className="text-[rgb(var(--foreground-secondary))] mt-1">
-                                Visitors who left their contact information while offline
+                                {t.leads.subtitle}
                             </p>
                         </div>
 
@@ -126,7 +126,7 @@ export default function LeadsPage() {
                                     strokeWidth={1.5}
                                 />
                                 <p className="text-[rgb(var(--foreground-secondary))]">
-                                    No contact leads yet
+                                    {t.leads.noLeads}
                                 </p>
                             </div>
                         ) : (
@@ -186,7 +186,7 @@ export default function LeadsPage() {
                                             <button
                                                 onClick={() => handleDelete(lead.id)}
                                                 className="ml-4 rounded-md p-2 text-[rgb(var(--foreground-tertiary))] hover:bg-[rgb(var(--background))] hover:text-red-500 transition-colors"
-                                                title="Delete lead"
+                                                title={t.leads.deleteLead}
                                             >
                                                 <Trash2 className="h-5 w-5" />
                                             </button>

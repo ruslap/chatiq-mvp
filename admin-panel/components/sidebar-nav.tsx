@@ -79,7 +79,7 @@ export function SidebarNav() {
 
     const navItems = [
         { icon: MessageSquare, label: t.nav.chats, href: "/chats" },
-        { icon: Mail, label: "Leads", href: "/leads" },
+        { icon: Mail, label: t.nav.leads, href: "/leads" },
         { icon: Globe, label: t.nav.sites, href: "/sites" },
         { icon: BarChart3, label: t.nav.analytics, href: "/analytics" },
         { icon: Settings, label: t.nav.settings, href: "/settings" },
