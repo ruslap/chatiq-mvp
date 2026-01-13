@@ -69,6 +69,14 @@
       offlineHint: 'Ми відповімо у робочий час',
       offlineBanner: 'Ми тимчасово офлайн. Залиште повідомлення і ми повернемось!',
       welcomeFallback: 'Дякуємо за звернення! Ми скоро відповімо.',
+      contactFormTitle: 'Залиште контакти',
+      contactFormDesc: 'Ми зараз офлайн. Залиште свої дані і ми звʼяжемося з вами.',
+      contactName: 'Імʼя',
+      contactEmail: 'Email',
+      contactPhone: 'Телефон',
+      contactMessage: 'Повідомлення (опціонально)',
+      contactSubmit: 'Відправити',
+      contactSuccess: 'Дякуємо! Ми звʼяжемося з вами найближчим часом.',
     },
     en: {
       online: 'Online',
@@ -76,6 +84,14 @@
       offlineHint: 'We will reply during business hours',
       offlineBanner: 'We are currently offline. Leave a message and we will get back to you!',
       welcomeFallback: 'Thanks for reaching out! We will respond shortly.',
+      contactFormTitle: 'Leave your contacts',
+      contactFormDesc: 'We are currently offline. Leave your details and we will contact you.',
+      contactName: 'Name',
+      contactEmail: 'Email',
+      contactPhone: 'Phone',
+      contactMessage: 'Message (optional)',
+      contactSubmit: 'Submit',
+      contactSuccess: 'Thank you! We will contact you soon.',
     },
   };
 
@@ -95,6 +111,7 @@
   let agentName = config.agentName;
   let agentAvatar = config.agentAvatar;
   let welcomeMessage = config.welcomeMessage || t('welcomeFallback');
+  let showContactForm = false;
   // Use saved secondaryColor from localStorage or config, fallback to accentColor instead of green
   const savedSecondaryColor = localStorage.getItem(`chtq_secondary_color_${organizationId}`);
   let secondaryColorValue = config.secondaryColor || chtqConfig.secondaryColor || savedSecondaryColor || accentColor;
@@ -140,6 +157,7 @@
         if (data.operatorName) agentName = data.operatorName;
         if (data.operatorAvatar) agentAvatar = data.operatorAvatar;
         if (data.welcomeMessage) welcomeMessage = data.welcomeMessage;
+        if (data.showContactForm !== undefined) showContactForm = data.showContactForm;
         if (data.color) {
           accentColor = data.color;
           localStorage.setItem(`chtq_color_${organizationId}`, data.color);
@@ -152,7 +170,7 @@
           secondaryColorValue = accentColor;
           localStorage.setItem(`chtq_secondary_color_${organizationId}`, accentColor);
         }
-        console.log('[Chtq] Loaded settings from API:', { agentName, agentAvatar, welcomeMessage, accentColor, secondaryColorValue });
+        console.log('[Chtq] Loaded settings from API:', { agentName, agentAvatar, welcomeMessage, accentColor, secondaryColorValue, showContactForm });
       }
     } catch (error) {
       console.warn('[Chtq] Failed to fetch settings:', error);
@@ -196,6 +214,19 @@
     // Show/hide offline banner
     if (offlineBanner) {
       offlineBanner.style.display = businessStatus.isOpen ? 'none' : 'flex';
+    }
+
+    // Toggle contact form / composer based on offline status and showContactForm setting
+    const shouldShowContactForm = !businessStatus.isOpen && showContactForm;
+    const composerEl = shadow.querySelector('#composer-container');
+    const contactFormEl = shadow.querySelector('#contact-form-container');
+
+    if (shouldShowContactForm && contactFormEl && composerEl) {
+      contactFormEl.style.display = 'flex';
+      composerEl.style.display = 'none';
+    } else if (composerEl && contactFormEl) {
+      contactFormEl.style.display = 'none';
+      composerEl.style.display = 'flex';
     }
 
     console.log('[ChatIQ] Business status updated:', businessStatus);
@@ -1905,6 +1936,128 @@
       color: var(--text-primary);
     }
 
+    /* ===== CONTACT FORM ===== */
+    .contact-form-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .contact-form {
+      padding: var(--space-6);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-form-header {
+      margin-bottom: var(--space-6);
+      text-align: center;
+    }
+
+    .contact-form-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      margin: 0 0 var(--space-2) 0;
+    }
+
+    .contact-form-desc {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .contact-form-fields {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .contact-form-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-input,
+    .contact-textarea {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-lg);
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      outline: none;
+      transition: all var(--duration-fast);
+    }
+
+    .contact-input::placeholder,
+    .contact-textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .contact-input:focus,
+    .contact-textarea:focus {
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px var(--accent-alpha);
+    }
+
+    .contact-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .contact-submit {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-lg);
+      font-family: var(--font-family);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      cursor: pointer;
+      transition: all var(--duration-fast);
+      margin-top: var(--space-2);
+    }
+
+    .contact-submit:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--accent-alpha);
+    }
+
+    .contact-submit:active {
+      transform: translateY(0);
+    }
+
+    .contact-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .contact-success {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-6);
+      color: var(--text-primary);
+    }
+
+    .contact-success p {
+      font-size: var(--font-size-base);
+      margin: 0;
+      line-height: 1.5;
+    }
+
     /* ===== POWERED BY ===== */
     .powered {
       display: flex;
@@ -2180,6 +2333,42 @@
         </div>
       </div>
 
+      <!-- Contact Form (shown when offline) -->
+      <div class="contact-form-container" style="display: none;" id="contact-form-container">
+        <div class="contact-form">
+          <div class="contact-form-header">
+            <h3 class="contact-form-title">${t('contactFormTitle')}</h3>
+            <p class="contact-form-desc">${t('contactFormDesc')}</p>
+          </div>
+          <form id="contact-form" class="contact-form-fields">
+            <div class="contact-form-field">
+              <input type="text" id="contact-name" class="contact-input" placeholder="${t('contactName')}" required />
+            </div>
+            <div class="contact-form-field">
+              <input type="email" id="contact-email" class="contact-input" placeholder="${t('contactEmail')}" />
+            </div>
+            <div class="contact-form-field">
+              <input type="tel" id="contact-phone" class="contact-input" placeholder="${t('contactPhone')}" />
+            </div>
+            <div class="contact-form-field">
+              <textarea id="contact-message" class="contact-textarea" placeholder="${t('contactMessage')}" rows="3"></textarea>
+            </div>
+            <button type="submit" class="contact-submit" id="contact-submit">
+              ${t('contactSubmit')}
+            </button>
+          </form>
+          <div class="contact-success" id="contact-success" style="display: none;">
+            <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; fill: var(--success-color, #10B981); margin-bottom: 12px;">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>
+            <p>${t('contactSuccess')}</p>
+          </div>
+        </div>
+        <div class="powered">
+          Powered by <a href="https://ruslan-lapiniak-cv.vercel.app/en" target="_blank" rel="noopener">Chatq © Ruslan Lap</a>
+        </div>
+      </div>
+
       <!-- Hidden file input -->
       <input type="file" id="file-input" accept="${ALLOWED_FILE_TYPES.join(',')}" style="display: none !important; visibility: hidden !important; position: absolute; left: -9999px;" />
     </div>
@@ -2224,6 +2413,9 @@
   const dropOverlay = shadow.getElementById('drop-overlay');
   const startBtn = shadow.getElementById('start-btn');
   const composerContainer = shadow.getElementById('composer-container');
+  const contactFormContainer = shadow.getElementById('contact-form-container');
+  const contactForm = shadow.getElementById('contact-form');
+  const contactSuccess = shadow.getElementById('contact-success');
   const visitorNameInput = shadow.getElementById('visitor-name-input');
   let visitorDisplayName = localStorage.getItem('chatiq_visitor_name') || '';
 
@@ -2530,6 +2722,8 @@
   // Toggle widget
   function openWidget() {
     console.log('[ChatIQ] Opening widget...');
+    console.log('[ChatIQ] businessStatus:', businessStatus);
+    console.log('[ChatIQ] showContactForm:', showContactForm);
     if (isOpen) return;
     isOpen = true;
     launcher.classList.add('open');
@@ -2537,10 +2731,27 @@
     panel.classList.add('open');
     panel.classList.remove('closing');
     launcher.setAttribute('aria-label', 'Close chat');
-    input.focus();
+
+    // Check if we should show contact form (offline + showContactForm enabled)
+    const shouldShowContactForm = !businessStatus.isOpen && showContactForm;
+    console.log('[ChatIQ] shouldShowContactForm:', shouldShowContactForm);
+
+    if (shouldShowContactForm) {
+      // Show contact form, hide composer
+      console.log('[ChatIQ] Showing contact form');
+      if (contactFormContainer) contactFormContainer.style.display = 'flex';
+      if (composerContainer) composerContainer.style.display = 'none';
+    } else {
+      // Show composer, hide contact form
+      console.log('[ChatIQ] Showing composer');
+      if (contactFormContainer) contactFormContainer.style.display = 'none';
+      if (composerContainer) composerContainer.style.display = 'flex';
+      input.focus();
+      loadDraft();
+    }
+
     updateBadge(0);
     scrollToBottom(false);
-    loadDraft();
     updateStatus();
   }
 
@@ -2778,6 +2989,76 @@
   function toggleTheme() {
     setTheme(currentTheme === 'light' ? 'dark' : 'light');
   }
+
+  // Contact form submit handler
+  contactForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nameInput = shadow.getElementById('contact-name');
+    const emailInput = shadow.getElementById('contact-email');
+    const phoneInput = shadow.getElementById('contact-phone');
+    const messageInput = shadow.getElementById('contact-message');
+    const submitBtn = shadow.getElementById('contact-submit');
+
+    const name = nameInput?.value.trim();
+    const email = emailInput?.value.trim();
+    const phone = phoneInput?.value.trim();
+    const message = messageInput?.value.trim();
+
+    if (!name) {
+      nameInput?.focus();
+      return;
+    }
+
+    if (!email && !phone) {
+      alert(t('contactEmail') + ' or ' + t('contactPhone') + ' is required');
+      return;
+    }
+
+    // Disable submit button
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/leads`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          siteId: resolvedSiteId,
+          name,
+          email: email || undefined,
+          phone: phone || undefined,
+          message: message || undefined,
+        }),
+      });
+
+      if (response.ok) {
+        // Show success message
+        contactForm.style.display = 'none';
+        contactSuccess.style.display = 'flex';
+
+        // Reset form
+        contactForm.reset();
+
+        console.log('[ChatIQ] Contact lead submitted successfully');
+      } else {
+        throw new Error('Failed to submit contact form');
+      }
+    } catch (error) {
+      console.error('[ChatIQ] Failed to submit contact form:', error);
+      alert('Failed to submit. Please try again.');
+    } finally {
+      // Re-enable submit button
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = t('contactSubmit');
+      }
+    }
+  });
 
   // Event listeners
   launcher.addEventListener('click', toggleWidget);

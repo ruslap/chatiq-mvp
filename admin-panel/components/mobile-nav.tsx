@@ -24,6 +24,7 @@ import {
     HelpCircle,
     LogOut,
     X,
+    Mail,
 } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
@@ -196,8 +197,8 @@ export function MobileBottomNav({ unreadCount = 0 }: MobileNavProps) {
 
     const navItems = [
         { icon: MessageSquare, label: t.nav.chats, href: "/chats", hasUnread: true },
+        { icon: Mail, label: "Leads", href: "/leads", hasUnread: false },
         { icon: Globe, label: t.nav.sites, href: "/sites", hasUnread: false },
-        { icon: BarChart3, label: t.nav.analytics, href: "/analytics", hasUnread: false },
         { icon: Settings, label: t.nav.settings, href: "/settings", hasUnread: false },
     ];
 

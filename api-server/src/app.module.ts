@@ -12,6 +12,7 @@ import { WidgetSettingsModule } from "./widget-settings/widget-settings.module";
 import { OrganizationModule } from "./organization/organization.module";
 import { UploadModule } from "./upload/upload.module";
 import { AutomationModule } from "./automation/automation.module";
+import { LeadsModule } from "./leads/leads.module";
 
 @Module({
 	imports: [
@@ -26,6 +27,7 @@ import { AutomationModule } from "./automation/automation.module";
 		OrganizationModule,
 		UploadModule,
 		AutomationModule,
+		LeadsModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

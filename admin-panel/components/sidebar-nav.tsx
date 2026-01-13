@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { MessageSquare, Globe, BarChart3, Settings, Server, Cloud, Laptop, HelpCircle, LogOut } from "lucide-react";
+import { MessageSquare, Globe, BarChart3, Settings, Server, Cloud, Laptop, HelpCircle, LogOut, Mail } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
 import { getMyOrganization } from "@/lib/organization";
@@ -79,6 +79,7 @@ export function SidebarNav() {
 
     const navItems = [
         { icon: MessageSquare, label: t.nav.chats, href: "/chats" },
+        { icon: Mail, label: "Leads", href: "/leads" },
         { icon: Globe, label: t.nav.sites, href: "/sites" },
         { icon: BarChart3, label: t.nav.analytics, href: "/analytics" },
         { icon: Settings, label: t.nav.settings, href: "/settings" },

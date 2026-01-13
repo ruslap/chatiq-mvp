@@ -4,6 +4,7 @@ export interface Translations {
   // Navigation
   nav: {
     chats: string;
+    leads: string;
     sites: string;
     analytics: string;
     settings: string;
@@ -65,12 +66,22 @@ export interface Translations {
     chooseChat: string;
     quickSearch: string;
   };
+  // Leads
+  leads: {
+    title: string;
+    subtitle: string;
+    noLeads: string;
+    loading: string;
+    deleteConfirm: string;
+    deleteLead: string;
+  };
 }
 
 export const translations: Record<Language, Translations> = {
   uk: {
     nav: {
       chats: 'Чати',
+      leads: 'Ліди',
       sites: 'Сайти',
       analytics: 'Аналітика',
       settings: 'Налаштування',
@@ -128,10 +139,19 @@ export const translations: Record<Language, Translations> = {
       chooseChat: 'Виберіть чат зі списку, щоб переглянути розмову та відповісти відвідувачам',
       quickSearch: 'Швидкий пошук',
     },
+    leads: {
+      title: 'Контактні ліди',
+      subtitle: 'Відвідувачі, які залишили свої контактні дані під час офлайн режиму',
+      noLeads: 'Поки що немає контактних лідів',
+      loading: 'Завантаження...',
+      deleteConfirm: 'Ви впевнені, що хочете видалити цього ліда?',
+      deleteLead: 'Видалити ліда',
+    },
   },
   en: {
     nav: {
       chats: 'Chats',
+      leads: 'Leads',
       sites: 'Sites',
       analytics: 'Analytics',
       settings: 'Settings',
@@ -188,6 +208,14 @@ export const translations: Record<Language, Translations> = {
       selectConversation: 'Select a Conversation',
       chooseChat: 'Choose a chat from the sidebar to view the conversation and reply to your visitors',
       quickSearch: 'Quick search',
+    },
+    leads: {
+      title: 'Contact Leads',
+      subtitle: 'Visitors who left their contact information while offline',
+      noLeads: 'No contact leads yet',
+      loading: 'Loading...',
+      deleteConfirm: 'Are you sure you want to delete this lead?',
+      deleteLead: 'Delete lead',
     },
   },
 };

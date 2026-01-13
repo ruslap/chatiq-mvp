@@ -34,6 +34,7 @@ model Site {
   businessHours  BusinessHours?
   chats          Chat[]
   quickTemplates QuickTemplate[]
+  contactLeads   ContactLead[]
   owner          User            @relation("SiteOwner", fields: [ownerId], references: [id])
   operators      SiteUser[]
 }
@@ -141,6 +142,19 @@ model BusinessHours {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   site           Site     @relation(fields: [siteId], references: [id])
+}
+
+model ContactLead {
+  id        String   @id @default(uuid())
+  siteId    String
+  name      String
+  email     String?
+  phone     String?
+  message   String?
+  createdAt DateTime @default(now())
+  site      Site     @relation(fields: [siteId], references: [id])
+
+  @@index([siteId])
 }
 
 enum UserRole {
