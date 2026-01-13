@@ -1,10 +1,10 @@
-import { IsString, IsEmail, IsUUID } from 'class-validator';
+import { IsString, IsEmail, IsUUID } from "class-validator";
 
 export class InviteOperatorDto {
-  @IsString()
-  @IsUUID()
-  siteId: string;
+	@IsString()
+	@IsUUID()
+	siteId: string;
 
-  @IsEmail()
-  email: string;
+	@IsEmail()
+	email: string;
 }

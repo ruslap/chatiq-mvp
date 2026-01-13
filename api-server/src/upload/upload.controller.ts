@@ -1,148 +1,142 @@
 import {
-  Controller,
-  Post,
-  UseInterceptors,
-  UploadedFile,
-  BadRequestException,
-  Req,
-  Body,
-  Delete,
-  UseGuards,
-  Logger,
-} from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname, join } from 'path';
-import { v4 as uuid } from 'uuid';
-import * as fs from 'fs';
+	Controller,
+	Post,
+	UseInterceptors,
+	UploadedFile,
+	BadRequestException,
+	Req,
+	Body,
+	Delete,
+	UseGuards,
+	Logger,
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import { extname, join } from "path";
+import { v4 as uuid } from "uuid";
+import * as fs from "fs";
 
-@Controller('upload')
+@Controller("upload")
 export class UploadController {
-  private readonly logger = new Logger(UploadController.name);
+	private readonly logger = new Logger(UploadController.name);
 
-  @Post()
-  @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: (_req, _file, cb) => {
-          const uploadPath = './uploads';
-          // Ensure directory exists
-          const fs = require('fs');
-          if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
-          }
-          cb(null, uploadPath);
-        },
-        filename: (_req, file, cb) => {
-          const uniqueName = uuid() + extname(file.originalname);
-          cb(null, uniqueName);
-        },
-      }),
-      limits: {
-        fileSize: 10 * 1024 * 1024, // 10MB
-      },
-      fileFilter: (_req, file, cb) => {
-        const allowedTypes = [
-          'image/jpeg',
-          'image/png',
-          'image/gif',
-          'image/webp',
-          'application/pdf',
-          '.doc',
-          '.docx',
-          '.txt',
-        ];
-        if (
-          allowedTypes.includes(file.mimetype) ||
-          allowedTypes.some((type) => file.originalname.endsWith(type))
-        ) {
-          cb(null, true);
-        } else {
-          cb(
-            new BadRequestException('Invalid file type') as unknown as Error,
-            false,
-          );
-        }
-      },
-    }),
-  )
-  uploadFile(
-    @UploadedFile()
-    file: {
-      filename: string;
-      originalname: string;
-      size: number;
-      mimetype: string;
-    },
-    @Req() req: any,
-  ) {
-    if (!file) {
-      this.logger.error('Upload failed: No file received');
-      throw new BadRequestException('No file uploaded');
-    }
+	@Post()
+	@UseGuards(AuthGuard("jwt"))
+	@UseInterceptors(
+		FileInterceptor("file", {
+			storage: diskStorage({
+				destination: (_req, _file, cb) => {
+					const uploadPath = "./uploads";
+					// Ensure directory exists
+					const fs = require("fs");
+					if (!fs.existsSync(uploadPath)) {
+						fs.mkdirSync(uploadPath, { recursive: true });
+					}
+					cb(null, uploadPath);
+				},
+				filename: (_req, file, cb) => {
+					const uniqueName = uuid() + extname(file.originalname);
+					cb(null, uniqueName);
+				},
+			}),
+			limits: {
+				fileSize: 10 * 1024 * 1024, // 10MB
+			},
+			fileFilter: (_req, file, cb) => {
+				const allowedTypes = [
+					"image/jpeg",
+					"image/png",
+					"image/gif",
+					"image/webp",
+					"application/pdf",
+					".doc",
+					".docx",
+					".txt",
+				];
+				if (allowedTypes.includes(file.mimetype) || allowedTypes.some(type => file.originalname.endsWith(type))) {
+					cb(null, true);
+				} else {
+					cb(new BadRequestException("Invalid file type") as unknown as Error, false);
+				}
+			},
+		}),
+	)
+	uploadFile(
+		@UploadedFile()
+		file: {
+			filename: string;
+			originalname: string;
+			size: number;
+			mimetype: string;
+		},
+		@Req() req: any,
+	) {
+		if (!file) {
+			this.logger.error("Upload failed: No file received");
+			throw new BadRequestException("No file uploaded");
+		}
 
-    this.logger.log(`File uploaded: ${file.originalname} (${file.size} bytes, ${file.mimetype})`);
+		this.logger.log(`File uploaded: ${file.originalname} (${file.size} bytes, ${file.mimetype})`);
 
-    // Return the file URL that can be accessed
-    // 1. Check API_URL from env
-    // 2. Fallback to current request protocol + host
-    let baseUrl = process.env.API_URL;
+		// Return the file URL that can be accessed
+		// 1. Check API_URL from env
+		// 2. Fallback to current request protocol + host
+		let baseUrl = process.env.API_URL;
 
-    if (!baseUrl && req) {
-      const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
-      const host = req.headers['host'];
-      if (host) {
-        baseUrl = `${protocol}://${host}`;
-      }
-    }
+		if (!baseUrl && req) {
+			const protocol = req.headers["x-forwarded-proto"] || req.protocol || "http";
+			const host = req.headers["host"];
+			if (host) {
+				baseUrl = `${protocol}://${host}`;
+			}
+		}
 
-    // Final fallback
-    if (!baseUrl) {
-      baseUrl = 'http://localhost:3000';
-    }
+		// Final fallback
+		if (!baseUrl) {
+			baseUrl = "http://localhost:3000";
+		}
 
-    if (!process.env.API_URL && process.env.NODE_ENV === 'production') {
-      this.logger.warn(`API_URL not set. Using detected baseUrl: ${baseUrl}`);
-    }
+		if (!process.env.API_URL && process.env.NODE_ENV === "production") {
+			this.logger.warn(`API_URL not set. Using detected baseUrl: ${baseUrl}`);
+		}
 
-    const fileUrl = `${baseUrl}/uploads/${file.filename}`;
-    this.logger.log(`File URL generated: ${fileUrl}`);
+		const fileUrl = `${baseUrl}/uploads/${file.filename}`;
+		this.logger.log(`File URL generated: ${fileUrl}`);
 
-    return {
-      url: fileUrl,
-      filename: file.filename, // Added to easily delete later
-      name: file.originalname,
-      size: file.size,
-      type: file.mimetype.startsWith('image/') ? 'image' : 'file',
-    };
-  }
+		return {
+			url: fileUrl,
+			filename: file.filename, // Added to easily delete later
+			name: file.originalname,
+			size: file.size,
+			type: file.mimetype.startsWith("image/") ? "image" : "file",
+		};
+	}
 
-  @Post('delete')
-  @UseGuards(AuthGuard('jwt'))
-  async deleteFile(@Body('url') url: string) {
-    if (!url) {
-      throw new BadRequestException('URL is required');
-    }
+	@Post("delete")
+	@UseGuards(AuthGuard("jwt"))
+	async deleteFile(@Body("url") url: string) {
+		if (!url) {
+			throw new BadRequestException("URL is required");
+		}
 
-    try {
-      // Extract filename from URL
-      const parts = url.split('/');
-      const filename = parts[parts.length - 1];
-      const filePath = join(process.cwd(), 'uploads', filename);
+		try {
+			// Extract filename from URL
+			const parts = url.split("/");
+			const filename = parts[parts.length - 1];
+			const filePath = join(process.cwd(), "uploads", filename);
 
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-        this.logger.log(`File deleted: ${filename}`);
-        return { success: true };
-      } else {
-        this.logger.warn(`File not found for deletion: ${filename}`);
-        return { success: false, message: 'File not found' };
-      }
-    } catch (error) {
-      this.logger.error(`Error deleting file: ${error.message}`);
-      throw new BadRequestException('Could not delete file');
-    }
-  }
+			if (fs.existsSync(filePath)) {
+				fs.unlinkSync(filePath);
+				this.logger.log(`File deleted: ${filename}`);
+				return { success: true };
+			} else {
+				this.logger.warn(`File not found for deletion: ${filename}`);
+				return { success: false, message: "File not found" };
+			}
+		} catch (error) {
+			this.logger.error(`Error deleting file: ${error.message}`);
+			throw new BadRequestException("Could not delete file");
+		}
+	}
 }
