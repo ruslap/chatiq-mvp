@@ -648,7 +648,7 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
             </ScrollArea>
 
             {/* Composer */}
-            <div className="px-3 md:px-6 pb-3 md:pb-6 pt-2 shrink-0 bg-[rgb(var(--surface-muted))] safe-area-bottom">
+            <div className="px-3 md:px-6 pb-20 md:pb-6 pt-2 shrink-0 bg-[rgb(var(--surface-muted))] safe-area-bottom">
                 <div className="max-w-2xl mx-auto">
                     {/* File Preview */}
                     {attachedFile && (

@@ -11,8 +11,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MessageSquare, Globe, BarChart3, Settings, Server, Cloud, Laptop, HelpCircle, LogOut } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
-import io from "socket.io-client";
 import { getMyOrganization } from "@/lib/organization";
+import { getSocket, releaseSocket } from "@/lib/socket";
 
 export function SidebarNav() {
     const pathname = usePathname();
@@ -21,7 +21,6 @@ export function SidebarNav() {
     const { language } = useLanguage();
     const t = useTranslation(language);
     const [unreadCount, setUnreadCount] = useState(0);
-    const [socket, setSocket] = useState<any>(null);
     const [siteId, setSiteId] = useState<string>('');
 
     useEffect(() => {
@@ -40,30 +39,31 @@ export function SidebarNav() {
     useEffect(() => {
         if (!session?.user || !siteId) return;
 
-        const apiUrl = localStorage.getItem('chtq_api_url')
-            || process.env.NEXT_PUBLIC_API_URL
-            || "http://localhost:3000";
-        const socket = io(apiUrl);
-
-        socket.on('connect', () => {
-            socket.emit('admin:join', { siteId });
-        });
+        // Use shared socket manager
+        const socket = getSocket({ siteId });
 
         // Listen for new messages to update unread count
         const updateUnreadCount = () => {
             socket.emit('admin:get_unread_count', { siteId });
         };
 
-        socket.on('chat:new_message', updateUnreadCount);
-        socket.on('unread_count_update', (count: number) => {
-            setUnreadCount(count);
-        });
+        const handleNewMessage = () => updateUnreadCount();
+        const handleUnreadUpdate = (count: number) => setUnreadCount(count);
 
-        // Fetch initial unread count
-        updateUnreadCount();
+        socket.on('chat:new_message', handleNewMessage);
+        socket.on('unread_count_update', handleUnreadUpdate);
+
+        // Fetch initial unread count (socket may already be connected)
+        if (socket.connected) {
+            updateUnreadCount();
+        } else {
+            socket.once('connect', updateUnreadCount);
+        }
 
         return () => {
-            socket.disconnect();
+            socket.off('chat:new_message', handleNewMessage);
+            socket.off('unread_count_update', handleUnreadUpdate);
+            releaseSocket();
         };
     }, [session, siteId]);
 

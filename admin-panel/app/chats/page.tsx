@@ -5,13 +5,13 @@ import { useSession } from "next-auth/react";
 import { ChatList } from "@/components/chat-list";
 import { ChatView } from "@/components/chat-view";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
-import { io } from "socket.io-client";
 import { SidebarNav } from "@/components/sidebar-nav";
 import { MobileHeader, MobileBottomNav } from "@/components/mobile-nav";
 import { MessageSquare, Send } from "lucide-react";
 import { getMyOrganization } from "@/lib/organization";
 import { getApiUrl } from "@/lib/api-config";
 import { sounds } from "@/lib/sounds";
+import { getSocket, releaseSocket } from "@/lib/socket";
 
 // Get organization ID from API or localStorage
 async function getOrgId(): Promise<string> {
@@ -120,19 +120,12 @@ export default function ChatsPage() {
     }, [session, siteId, debouncedSearchQuery]);
 
     useEffect(() => {
-        if (!session?.user || socketRef.current || !siteId) return;
+        if (!session?.user || !siteId) return;
 
-        const apiUrl = getApiUrl();
-
-        console.log(`[ChatsPage] Connecting to socket at ${apiUrl}`);
-        const s = io(apiUrl);
+        // Use shared socket manager
+        const s = getSocket({ siteId });
         socketRef.current = s;
         setSocket(s);
-
-        s.on("connect", () => {
-            console.log("[ChatsPage] Socket connected");
-            s.emit("admin:join", { siteId });
-        });
 
         const updateChatsWithNewMessage = (msg: any) => {
             console.log("[ChatsPage] Updating chat list with message:", msg);
@@ -186,13 +179,15 @@ export default function ChatsPage() {
         // Handle unread count updates from server (when messages are marked as read)
         s.on("unread_count_update", (totalUnreadCount: number) => {
             console.log(`[ChatsPage] Received unread_count_update: ${totalUnreadCount}`);
-            // This event tells us the total unread count has changed
-            // We could use this to update a global badge, but individual chat counts are already synced
         });
 
         return () => {
-            console.log("[ChatsPage] Cleaning up socket");
-            s.disconnect();
+            console.log("[ChatsPage] Releasing socket");
+            s.off("chat:new_message", updateChatsWithNewMessage);
+            s.off("chat:message", updateChatsWithNewMessage);
+            s.off("visitor:offline");
+            s.off("unread_count_update");
+            releaseSocket();
             socketRef.current = null;
         };
     }, [session, siteId]);
