@@ -87,13 +87,17 @@
   // Store organizationId
   const organizationId = config.organizationId;
   let resolvedSiteId = null; // Will be resolved from API
-  let accentColor = config.color;
+  // Use saved color from localStorage for faster initial render
+  const savedColor = organizationId ? localStorage.getItem(`chtq_color_${organizationId}`) : null;
+  let accentColor = config.color || savedColor || '#6366F1';
   const position = config.position;
   const widgetSize = config.size;
   let agentName = config.agentName;
   let agentAvatar = config.agentAvatar;
   let welcomeMessage = config.welcomeMessage || t('welcomeFallback');
-  let secondaryColorValue = config.secondaryColor || '#B6FF00';
+  // Use saved secondaryColor from localStorage or config, fallback to accentColor instead of green
+  const savedSecondaryColor = localStorage.getItem(`chtq_secondary_color_${organizationId}`);
+  let secondaryColorValue = config.secondaryColor || chtqConfig.secondaryColor || savedSecondaryColor || accentColor;
   let soundEnabled = localStorage.getItem('chatiq_sound_enabled') !== 'false';
   let businessStatus = { isOpen: true, message: '' };
 
@@ -136,8 +140,18 @@
         if (data.operatorName) agentName = data.operatorName;
         if (data.operatorAvatar) agentAvatar = data.operatorAvatar;
         if (data.welcomeMessage) welcomeMessage = data.welcomeMessage;
-        if (data.color) accentColor = data.color;
-        if (data.secondaryColor) secondaryColorValue = data.secondaryColor;
+        if (data.color) {
+          accentColor = data.color;
+          localStorage.setItem(`chtq_color_${organizationId}`, data.color);
+        }
+        if (data.secondaryColor) {
+          secondaryColorValue = data.secondaryColor;
+          localStorage.setItem(`chtq_secondary_color_${organizationId}`, data.secondaryColor);
+        } else {
+          // If no secondaryColor from API, use accentColor and save it
+          secondaryColorValue = accentColor;
+          localStorage.setItem(`chtq_secondary_color_${organizationId}`, accentColor);
+        }
         console.log('[Chtq] Loaded settings from API:', { agentName, agentAvatar, welcomeMessage, accentColor, secondaryColorValue });
       }
     } catch (error) {
