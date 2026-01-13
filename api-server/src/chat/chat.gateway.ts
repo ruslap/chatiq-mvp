@@ -32,6 +32,10 @@ interface MessageData {
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(ChatGateway.name);
 
+  // In-memory store for active visitors per site
+  // Map<siteId, Map<visitorId, chatId>>
+  private activeVisitors = new Map<string, Map<string, string>>();
+
   @WebSocketServer()
   server: Server;
 
@@ -80,6 +84,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (siteId && visitorId) {
       this.logger.log(`Visitor ${visitorId} disconnected from site ${siteId}`);
 
+      // Remove from active visitors
+      this.activeVisitors.get(siteId)?.delete(visitorId);
+
       // Find and update the chat status to closed
       void this.chatService
         .findChatByVisitor(siteId, visitorId)
@@ -114,7 +121,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('visitor:join')
-  handleVisitorJoin(
+  async handleVisitorJoin(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: { siteId: string; visitorId: string },
   ) {
@@ -123,6 +130,31 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const roomName = `chat:${siteId}:${visitorId}`;
     client.join(roomName);
     this.logger.log(`Visitor ${visitorId} joined room ${roomName}`);
+
+    // Track active visitor in memory
+    if (!this.activeVisitors.has(siteId)) {
+      this.activeVisitors.set(siteId, new Map());
+    }
+
+    // Find or create chat to get chatId
+    const chat = await this.chatService.findChatByVisitor(siteId, visitorId);
+    const chatId = chat?.id || null;
+
+    // Store visitor as active
+    if (chatId) {
+      this.activeVisitors.get(siteId)!.set(visitorId, chatId);
+
+      // Update chat status to open
+      await this.chatService.updateChatStatus(chatId, 'open');
+
+      // Notify admins that visitor is online
+      this.server.to(`admin:${siteId}`).emit('visitor:online', {
+        chatId,
+        visitorId,
+      });
+      this.logger.log(`Emitted visitor:online for ${visitorId} (chat: ${chatId})`);
+    }
+
     return { status: 'ok', room: roomName };
   }
 
@@ -182,6 +214,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const adminRoom = `admin:${siteId}`;
     client.join(adminRoom);
     this.logger.log(`Admin joined room ${adminRoom}`);
+
+    // Send current online visitors to this admin
+    const siteVisitors = this.activeVisitors.get(siteId);
+    const onlineVisitors: Array<{ visitorId: string; chatId: string }> = [];
+
+    if (siteVisitors) {
+      siteVisitors.forEach((chatId, visitorId) => {
+        onlineVisitors.push({ visitorId, chatId });
+      });
+    }
+
+    client.emit('visitors:status', { onlineVisitors });
+    this.logger.log(`Sent visitors:status to admin with ${onlineVisitors.length} online visitors`);
+
     return { status: 'ok' };
   }
 
@@ -263,6 +309,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.logger.log(
       `Visitor ${payload.visitorId} disconnected from site ${payload.siteId}`,
     );
+
+    // Remove from active visitors
+    this.activeVisitors.get(payload.siteId)?.delete(payload.visitorId);
 
     // Find and update the chat status to closed
     const chat = await this.chatService.findChatByVisitor(

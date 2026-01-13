@@ -23,3 +23,17 @@ All notable changes to this project will be documented in this file.
 ### Infrastructure
 - Added `dotenv` as a dev dependency in `api-server`.
 - Added `REDIS_URL` to environment variables.
+┌─────────────┐                    ┌─────────────────────┐
+│   Widget    │ ──visitor:join──▶  │     API Server      │
+│  (Visitor)  │                    │                     │
+│             │ ◀──ack────────────│ activeVisitors Map  │
+└─────────────┘                    │  siteId → Set<vId>  │
+      │                            └──────────┬──────────┘
+      │                                       │
+  disconnect                         visitor:online
+      │                                       │
+      ▼                                       ▼
+  visitor:offline ─────────────────▶ ┌─────────────────┐
+                                     │   Admin Panel   │
+  admin:join ◀────visitors:status────│                 │
+                                     └─────────────────┘

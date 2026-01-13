@@ -160,20 +160,42 @@ export default function ChatsPage() {
         s.on("chat:new_message", updateChatsWithNewMessage);
         s.on("chat:message", updateChatsWithNewMessage);
 
+        // Handle initial visitors status sync (received on admin:join)
+        s.on("visitors:status", (data: { onlineVisitors: Array<{ visitorId: string; chatId: string }> }) => {
+            console.log("[ChatsPage] 🔄 Received visitors:status:", data.onlineVisitors);
+            const onlineChatIds = new Set(data.onlineVisitors.map(v => v.chatId));
+            const onlineVisitorIds = new Set(data.onlineVisitors.map(v => v.visitorId));
+
+            setChats(prev => prev.map(chat => ({
+                ...chat,
+                status: (onlineChatIds.has(chat.id) || onlineVisitorIds.has(chat.visitorId))
+                    ? 'online' as const
+                    : 'offline' as const
+            })));
+        });
+
+        // Handle visitor coming online
+        s.on("visitor:online", (data: { chatId: string; visitorId: string }) => {
+            console.log("[ChatsPage] 🟢 Received visitor:online event:", data);
+            setChats(prev => prev.map(chat => {
+                if (chat.id === data.chatId || chat.visitorId === data.visitorId) {
+                    console.log(`[ChatsPage] 🟢 Setting chat ${chat.id} status to online`);
+                    return { ...chat, status: 'online' as const };
+                }
+                return chat;
+            }));
+        });
+
         // Handle visitor going offline
-        s.on("visitor:offline", (data: any) => {
-            console.log("[ChatsPage] ✅ Received visitor:offline event:", data);
-            setChats(prev => {
-                const updated = prev.map(chat => {
-                    if (chat.id === data.chatId) {
-                        console.log(`[ChatsPage] 🔴 Setting chat ${chat.id} status to offline`);
-                        return { ...chat, status: 'offline' as const };
-                    }
-                    return chat;
-                });
-                console.log("[ChatsPage] Updated chats:", updated.map(c => ({ id: c.id, status: c.status })));
-                return updated;
-            });
+        s.on("visitor:offline", (data: { chatId: string; visitorId: string }) => {
+            console.log("[ChatsPage] 🔴 Received visitor:offline event:", data);
+            setChats(prev => prev.map(chat => {
+                if (chat.id === data.chatId || chat.visitorId === data.visitorId) {
+                    console.log(`[ChatsPage] 🔴 Setting chat ${chat.id} status to offline`);
+                    return { ...chat, status: 'offline' as const };
+                }
+                return chat;
+            }));
         });
 
         // Handle unread count updates from server (when messages are marked as read)
@@ -185,6 +207,8 @@ export default function ChatsPage() {
             console.log("[ChatsPage] Releasing socket");
             s.off("chat:new_message", updateChatsWithNewMessage);
             s.off("chat:message", updateChatsWithNewMessage);
+            s.off("visitors:status");
+            s.off("visitor:online");
             s.off("visitor:offline");
             s.off("unread_count_update");
             releaseSocket();
