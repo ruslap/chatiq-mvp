@@ -220,13 +220,16 @@
     const shouldShowContactForm = !businessStatus.isOpen && showContactForm;
     const composerEl = shadow.querySelector('#composer-container');
     const contactFormEl = shadow.querySelector('#contact-form-container');
+    const messagesEl = shadow.querySelector('#messages');
 
     if (shouldShowContactForm && contactFormEl && composerEl) {
       contactFormEl.style.display = 'flex';
       composerEl.style.display = 'none';
+      if (messagesEl) messagesEl.style.display = 'none';
     } else if (composerEl && contactFormEl) {
       contactFormEl.style.display = 'none';
       composerEl.style.display = 'flex';
+      if (messagesEl) messagesEl.style.display = 'flex';
     }
 
     console.log('[ChatIQ] Business status updated:', businessStatus);
@@ -2737,15 +2740,17 @@
     console.log('[ChatIQ] shouldShowContactForm:', shouldShowContactForm);
 
     if (shouldShowContactForm) {
-      // Show contact form, hide composer
+      // Show contact form, hide composer and messages
       console.log('[ChatIQ] Showing contact form');
       if (contactFormContainer) contactFormContainer.style.display = 'flex';
       if (composerContainer) composerContainer.style.display = 'none';
+      if (messages) messages.style.display = 'none';
     } else {
-      // Show composer, hide contact form
+      // Show composer and messages, hide contact form
       console.log('[ChatIQ] Showing composer');
       if (contactFormContainer) contactFormContainer.style.display = 'none';
       if (composerContainer) composerContainer.style.display = 'flex';
+      if (messages) messages.style.display = 'flex';
       input.focus();
       loadDraft();
     }
