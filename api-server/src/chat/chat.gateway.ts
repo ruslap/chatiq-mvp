@@ -42,7 +42,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(private readonly chatService: ChatService) {}
 
 	@OnEvent("auto-reply.sent")
-	handleAutoReplySent(payload: { siteId: string; chatId: string; visitorId: string; message: MessageData }) {
+	handleAutoReplySent(payload: {
+		siteId: string;
+		chatId: string;
+		visitorId: string;
+		message: MessageData;
+	}) {
 		const { siteId, visitorId, message } = payload;
 
 		// Send to visitor's room
@@ -57,7 +62,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const adminRoom = `admin:${siteId}`;
 		this.server.to(adminRoom).emit("chat:message", message);
 
-		this.logger.log(`Auto-reply delivered via WebSocket to room ${visitorRoom}`);
+		this.logger.log(
+			`Auto-reply delivered via WebSocket to room ${visitorRoom}`,
+		);
 	}
 
 	handleConnection(client: Socket) {
@@ -85,16 +92,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				.findChatByVisitor(siteId, visitorId)
 				.then(chat => {
 					if (chat) {
-						this.logger.debug(`Found chat ${chat.id}, updating status to closed`);
-						void this.chatService.updateChatStatus(chat.id, "closed").then(() => {
-							this.logger.debug(`Status updated, emitting visitor:offline to admin:${siteId}`);
-							// Notify admins that visitor has left
-							this.server.to(`admin:${siteId}`).emit("visitor:offline", {
-								chatId: chat.id,
-								visitorId: visitorId,
+						this.logger.debug(
+							`Found chat ${chat.id}, updating status to closed`,
+						);
+						void this.chatService
+							.updateChatStatus(chat.id, "closed")
+							.then(() => {
+								this.logger.debug(
+									`Status updated, emitting visitor:offline to admin:${siteId}`,
+								);
+								// Notify admins that visitor has left
+								this.server.to(`admin:${siteId}`).emit("visitor:offline", {
+									chatId: chat.id,
+									visitorId: visitorId,
+								});
+								this.logger.debug("visitor:offline event emitted");
 							});
-							this.logger.debug("visitor:offline event emitted");
-						});
 					} else {
 						this.logger.debug(`No chat found for visitor ${visitorId}`);
 					}
@@ -139,7 +152,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				chatId,
 				visitorId,
 			});
-			this.logger.log(`Emitted visitor:online for ${visitorId} (chat: ${chatId})`);
+			this.logger.log(
+				`Emitted visitor:online for ${visitorId} (chat: ${chatId})`,
+			);
 		}
 
 		return { status: "ok", room: roomName };
@@ -160,13 +175,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const { siteId, visitorId, text, attachment, visitorName } = payload;
 
 		// Persist message
-		const message = await this.chatService.saveVisitorMessage(siteId, visitorId, text, attachment);
+		const message = await this.chatService.saveVisitorMessage(
+			siteId,
+			visitorId,
+			text,
+			attachment,
+		);
 
 		// Update visitor name if provided
 		if (visitorName && message.chatId) {
-			void this.chatService.renameVisitor(message.chatId, visitorName).then(() => {
-				this.logger.debug(`Updated visitor name to: ${visitorName}`);
-			});
+			void this.chatService
+				.renameVisitor(message.chatId, visitorName)
+				.then(() => {
+					this.logger.debug(`Updated visitor name to: ${visitorName}`);
+				});
 		}
 
 		const roomName = `chat:${siteId}:${visitorId}`;
@@ -186,7 +208,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("admin:join")
-	handleAdminJoin(@ConnectedSocket() client: Socket, @MessageBody() payload: { siteId: string }) {
+	handleAdminJoin(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() payload: { siteId: string },
+	) {
 		const { siteId } = payload;
 		const adminRoom = `admin:${siteId}`;
 		client.join(adminRoom);
@@ -203,7 +228,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 
 		client.emit("visitors:status", { onlineVisitors });
-		this.logger.log(`Sent visitors:status to admin with ${onlineVisitors.length} online visitors`);
+		this.logger.log(
+			`Sent visitors:status to admin with ${onlineVisitors.length} online visitors`,
+		);
 
 		return { status: "ok" };
 	}
@@ -222,7 +249,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		const { chatId, text, siteId, attachment } = payload;
 
 		// Persist message
-		const message = await this.chatService.saveAdminMessage(chatId, text, attachment);
+		const message = await this.chatService.saveAdminMessage(
+			chatId,
+			text,
+			attachment,
+		);
 
 		// Get chat to find visitorId
 		const chat = await this.chatService.getChatById(chatId);
@@ -245,7 +276,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("admin:get_unread_count")
-	async handleGetUnreadCount(@ConnectedSocket() client: Socket, @MessageBody() payload: { siteId: string }) {
+	async handleGetUnreadCount(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() payload: { siteId: string },
+	) {
 		const { siteId } = payload;
 		const unreadCount = await this.chatService.getUnreadCount(siteId);
 		client.emit("unread_count_update", unreadCount);
@@ -253,7 +287,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("admin:mark_read")
-	async handleMarkAsRead(@ConnectedSocket() client: Socket, @MessageBody() payload: { chatId: string }) {
+	async handleMarkAsRead(
+		@ConnectedSocket() client: Socket,
+		@MessageBody() payload: { chatId: string },
+	) {
 		const { chatId } = payload;
 		await this.chatService.markMessagesAsRead(chatId);
 
@@ -273,13 +310,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@ConnectedSocket() client: Socket,
 		@MessageBody() payload: { siteId: string; visitorId: string },
 	) {
-		this.logger.log(`Visitor ${payload.visitorId} disconnected from site ${payload.siteId}`);
+		this.logger.log(
+			`Visitor ${payload.visitorId} disconnected from site ${payload.siteId}`,
+		);
 
 		// Remove from active visitors
 		this.activeVisitors.get(payload.siteId)?.delete(payload.visitorId);
 
 		// Find and update the chat status to closed
-		const chat = await this.chatService.findChatByVisitor(payload.siteId, payload.visitorId);
+		const chat = await this.chatService.findChatByVisitor(
+			payload.siteId,
+			payload.visitorId,
+		);
 		if (chat) {
 			await this.chatService.updateChatStatus(chat.id, "closed");
 
