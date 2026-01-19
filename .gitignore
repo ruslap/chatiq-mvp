@@ -89,3 +89,6 @@ tmp/
 temp/
 *.spec.ts
 *.e2e-spec.ts
+
+# Git worktrees
+.worktrees/
