@@ -13,6 +13,7 @@ import { OrganizationModule } from "./organization/organization.module";
 import { UploadModule } from "./upload/upload.module";
 import { AutomationModule } from "./automation/automation.module";
 import { LeadsModule } from "./leads/leads.module";
+import { TelegramModule } from "./telegram/telegram.module";
 
 @Module({
 	imports: [
@@ -28,6 +29,7 @@ import { LeadsModule } from "./leads/leads.module";
 		UploadModule,
 		AutomationModule,
 		LeadsModule,
+		TelegramModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
