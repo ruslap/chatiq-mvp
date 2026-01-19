@@ -11,6 +11,7 @@ import { Logger } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { OnEvent } from "@nestjs/event-emitter";
+import { TelegramNotificationService } from "../telegram/telegram-notification.service";
 
 interface MessageData {
 	text: string;
@@ -39,7 +40,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server: Server;
 
-	constructor(private readonly chatService: ChatService) {}
+	constructor(
+		private readonly chatService: ChatService,
+		private readonly telegramNotificationService: TelegramNotificationService,
+	) {}
 
 	@OnEvent("auto-reply.sent")
 	handleAutoReplySent(payload: {
@@ -189,6 +193,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 				.then(() => {
 					this.logger.debug(`Updated visitor name to: ${visitorName}`);
 				});
+		}
+
+		// Check if this is the first message and send Telegram notification
+		const chat = await this.chatService.getChatById(message.chatId);
+		if (chat) {
+			const messageCount = await this.chatService.getMessageCount(chat.id);
+			if (messageCount === 1) {
+				void this.telegramNotificationService
+					.notifyNewLead(chat, message)
+					.catch((error) =>
+						this.logger.error('Failed to send Telegram notification', error.stack),
+					);
+			}
 		}
 
 		const roomName = `chat:${siteId}:${visitorId}`;

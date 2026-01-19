@@ -235,4 +235,10 @@ export class ChatService {
 			data: { status },
 		});
 	}
+
+	async getMessageCount(chatId: string): Promise<number> {
+		return this.prisma.message.count({
+			where: { chatId },
+		});
+	}
 }

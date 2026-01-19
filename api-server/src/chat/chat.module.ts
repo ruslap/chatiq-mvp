@@ -3,9 +3,10 @@ import { ChatGateway } from "./chat.gateway";
 import { ChatService } from "./chat.service";
 import { ChatController } from "./chat.controller";
 import { AutomationModule } from "../automation/automation.module";
+import { TelegramModule } from "../telegram/telegram.module";
 
 @Module({
-	imports: [AutomationModule],
+	imports: [AutomationModule, TelegramModule],
 	controllers: [ChatController],
 	providers: [ChatGateway, ChatService],
 })
