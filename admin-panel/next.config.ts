@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         source: '/api/:path((?!auth/).*)',
         destination: 'http://api-server:3000/:path*',
       },
+      {
+        source: '/chats/:id',
+        destination: '/chats?id=:id',
+      },
     ];
   },
 };

@@ -49,17 +49,20 @@ export default function LoginPage() {
                 setMode("login");
             }
 
+            const searchParams = new URLSearchParams(window.location.search);
+            const callbackUrl = searchParams.get("callbackUrl") || "/chats";
+
             const result = await signIn("credentials", {
                 email: formData.email,
                 password: formData.password,
                 redirect: false,
-                callbackUrl: "/chats",
+                callbackUrl,
             });
 
             if (result?.error) {
                 setError("Invalid email or password");
             } else {
-                router.push("/chats");
+                router.push(callbackUrl);
             }
         } catch (err: any) {
             setError(err.message || "Something went wrong");

@@ -48,6 +48,8 @@ function ChatsContent() {
     const [siteId, setSiteId] = useState<string>('');
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+    const [isLoadingChats, setIsLoadingChats] = useState(true);
+    const [initialFetched, setInitialFetched] = useState(false);
 
     // Debounce search query
     useEffect(() => {
@@ -105,8 +107,7 @@ function ChatsContent() {
             queryParams.append('search', debouncedSearchQuery);
         }
 
-        console.log(`[ChatsPage] Fetching chats with search: "${debouncedSearchQuery}"`);
-
+        setIsLoadingChats(true);
         fetch(`${apiUrl}/chats/site/${siteId}?${queryParams.toString()}`, {
             headers: {
                 'Authorization': `Bearer ${(session as any).accessToken}`
@@ -133,8 +134,14 @@ function ChatsContent() {
                         });
                     });
                 }
+                setInitialFetched(true);
             })
-            .catch(err => console.error("[ChatsPage] Fetch error:", err));
+            .catch(err => {
+                console.error("[ChatsPage] Fetch error:", err);
+            })
+            .finally(() => {
+                setIsLoadingChats(false);
+            });
     }, [session, siteId, debouncedSearchQuery]);
 
     useEffect(() => {
@@ -254,7 +261,7 @@ function ChatsContent() {
                 <h3 className="text-lg font-semibold text-[rgb(var(--foreground))] mb-2">Welcome to Chtq</h3>
                 <p className="text-[rgb(var(--foreground-secondary))] text-sm mb-6">Sign in to access your chat dashboard and start connecting with visitors.</p>
                 <a
-                    href="/login"
+                    href={`/login?callbackUrl=${typeof window !== 'undefined' ? encodeURIComponent(window.location.pathname + window.location.search) : '/chats'}`}
                     className="inline-flex h-10 items-center justify-center rounded-xl bg-[rgb(var(--primary))] px-6 text-sm font-medium text-white transition-smooth hover:bg-[rgb(var(--primary-600))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--primary))]/50"
                 >
                     Sign In
@@ -303,9 +310,20 @@ function ChatsContent() {
                     {(() => {
                         const selectedChat = selectedChatId ? chats.find(c => c.id === selectedChatId) : null;
 
-                        // If a chat was selected but is now filtered out, deselect it
-                        if (selectedChatId && !selectedChat) {
+                        // If a chat was selected but is now filtered out (or not found in initial load), deselect it
+                        // Only do this after initial fetch is complete to avoid race conditions when loading from URL
+                        if (initialFetched && selectedChatId && !selectedChat && !isLoadingChats) {
                             setTimeout(() => setSelectedChatId(null), 0);
+                        }
+
+                        if (selectedChatId && !selectedChat && (isLoadingChats || !initialFetched)) {
+                            return (
+                                <div className="flex-1 flex flex-col items-center justify-center p-8 text-center animate-fade-in">
+                                    <div className="w-10 h-10 border-3 border-[rgb(var(--primary))] border-t-transparent rounded-full animate-spin mb-4"></div>
+                                    <h3 className="text-lg font-medium text-[rgb(var(--foreground))]">Loading conversation...</h3>
+                                    <p className="text-sm text-[rgb(var(--foreground-secondary))] mt-1">Please wait a moment</p>
+                                </div>
+                            );
                         }
 
                         return selectedChat ? (

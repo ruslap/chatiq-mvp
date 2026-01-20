@@ -68,7 +68,7 @@ export class TelegramNotificationService {
 
   private createInlineButton(chatId: string) {
     const adminUrl = process.env.ADMIN_PANEL_URL || 'http://localhost:3001';
-    const chatUrl = `${adminUrl}/chats?id=${chatId}`;
+    const chatUrl = `${adminUrl}/chats/${chatId}`;
 
     return {
       inline_keyboard: [
