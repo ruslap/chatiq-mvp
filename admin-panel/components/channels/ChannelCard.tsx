@@ -20,31 +20,32 @@ export function ChannelCard({
   children,
 }: ChannelCardProps) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md">
+    <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] p-4 transition-all hover:shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+          <div className="w-10 h-10 bg-[rgb(var(--accent))] rounded-xl flex items-center justify-center">
             {icon}
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">{title}</h3>
-            <p className="text-sm text-gray-600">{description}</p>
+            <h3 className="font-semibold text-[rgb(var(--foreground))]">{title}</h3>
+            <p className="text-sm text-[rgb(var(--foreground-secondary))]">{description}</p>
           </div>
         </div>
 
-        <label className="relative inline-flex cursor-pointer items-center">
-          <input
-            type="checkbox"
-            className="peer sr-only"
-            checked={enabled}
-            onChange={(e) => onToggle(e.target.checked)}
+        <button
+          onClick={() => onToggle(!enabled)}
+          className={`relative w-11 h-6 rounded-full transition-colors ${enabled ? 'bg-[rgb(var(--primary))]' : 'bg-[rgb(var(--border))]'
+            }`}
+        >
+          <div
+            className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all ${enabled ? 'left-5' : 'left-0.5'
+              }`}
           />
-          <div className="peer h-6 w-11 rounded-full bg-gray-300 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-500 peer-checked:after:translate-x-5 peer-focus:ring-2 peer-focus:ring-blue-400"></div>
-        </label>
+        </button>
       </div>
 
       {enabled && children && (
-        <div className="mt-4 space-y-4 border-t border-gray-100 pt-4">
+        <div className="mt-4 space-y-4 border-t border-[rgb(var(--border))] pt-4">
           {children}
         </div>
       )}
