@@ -92,3 +92,40 @@ temp/
 
 # Git worktrees
 .worktrees/
+
+# Dev-only documentation (not needed on VPS)
+LOCAL-DEV-SETUP.md
+README-dev.md
+QUICK-TEST.md
+INSTRUCTIONS.md
+TASKS-DID.md
+simplify.md
+.LOCAL-DEV-WARNING.txt
+
+# Dev-only scripts
+check-avatars.js
+set-org-id.js
+remove_specs.sh
+
+# Local backups (VPS has its own backup system)
+
+
+# API server dev files
+api-server/check-db.ts
+api-server/fix-user-org.ts
+api-server/seed-test-data.ts
+api-server/get-site-id.js
+api-server/get-user-site.js
+api-server/test-default-templates.sh
+api-server/test-telegram-notification.js
+api-server/DEFAULT_TEMPLATES.md
+api-server/test/
+
+# Admin panel dev files
+admin-panel/MOBILE_RESPONSIVE.md
+admin-panel/Telegram_integr.md
+admin-panel/tsconfig.tsbuildinfo
+admin-panel/.vercel/
+
+# Docs planning files
+docs/plans/
