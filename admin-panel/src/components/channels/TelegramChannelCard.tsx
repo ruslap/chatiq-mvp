@@ -13,12 +13,18 @@ export function TelegramChannelCard({ siteId }: TelegramChannelCardProps) {
   const { status, loading, setup, disconnect } = useTelegramIntegration(siteId);
   const [botToken, setBotToken] = useState('');
   const [error, setError] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
 
-  const enabled = status?.enabled || false;
+  const enabled = status?.enabled || isExpanded;
 
   const handleToggle = async (newEnabled: boolean) => {
-    if (!newEnabled && status?.enabled) {
+    if (newEnabled) {
+      setIsExpanded(true);
+    } else if (status?.enabled) {
       await disconnect();
+      setIsExpanded(false);
+    } else {
+      setIsExpanded(false);
     }
   };
 
@@ -36,6 +42,7 @@ export function TelegramChannelCard({ siteId }: TelegramChannelCardProps) {
       setError(result.error || 'Не вдалося підключити бота');
     } else {
       setBotToken('');
+      setIsExpanded(false);
     }
   };
 

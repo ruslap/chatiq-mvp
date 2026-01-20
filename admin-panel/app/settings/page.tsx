@@ -16,6 +16,7 @@ import {
 import { AutomationSettings } from "@/components/automation-settings";
 import { TemplatesSettings } from "@/components/templates-settings";
 import { BusinessHoursSettings } from "@/components/business-hours-settings";
+import { ChannelsSettings } from "@/components/channels/ChannelsSettings";
 import { MobileHeader, MobileBottomNav } from "@/components/mobile-nav";
 
 import { getMyOrganization } from "@/lib/organization";
@@ -65,7 +66,7 @@ import { getApiUrl } from "@/lib/api-config";
 export default function SettingsPage() {
     const API_URL = getApiUrl();
     const { data: session, status } = useSession();
-    const [activeTab, setActiveTab] = useState('widget');
+    const [activeTab, setActiveTab] = useState('channels');
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [saveSuccess, setSaveSuccess] = useState(false);
@@ -722,8 +723,15 @@ export default function SettingsPage() {
                         </div>
                     )}
 
+                    {/* Channels Tab */}
+                    {activeTab === 'channels' && (
+                        <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
+                            <ChannelsSettings siteId={siteId || orgId} />
+                        </div>
+                    )}
+
                     {/* Other tabs placeholder */}
-                    {!['widget', 'automation', 'templates', 'hours'].includes(activeTab) && (
+                    {!['widget', 'automation', 'templates', 'hours', 'channels'].includes(activeTab) && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-12 text-center animate-fade-in">
                             <div className="w-16 h-16 bg-[rgb(var(--accent))] rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <Palette className="w-7 h-7 text-[rgb(var(--primary))]" />
