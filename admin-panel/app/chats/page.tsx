@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ChatList } from "@/components/chat-list";
 import { ChatView } from "@/components/chat-view";
 import { useLanguage, useTranslation } from "@/contexts/LanguageContext";
@@ -21,10 +22,27 @@ async function getOrgId(): Promise<string> {
 }
 
 export default function ChatsPage() {
+    return (
+        <Suspense fallback={
+            <div className="h-screen w-full flex items-center justify-center bg-[rgb(var(--surface-muted))]">
+                <div className="flex flex-col items-center gap-4 animate-fade-in">
+                    <div className="w-10 h-10 border-3 border-[rgb(var(--primary))] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="text-sm font-medium text-[rgb(var(--foreground-secondary))]">Loading...</div>
+                </div>
+            </div>
+        }>
+            <ChatsContent />
+        </Suspense>
+    );
+}
+
+function ChatsContent() {
     const { language } = useLanguage();
     const t = useTranslation(language);
     const { data: session, status } = useSession();
-    const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+    const searchParams = useSearchParams();
+    const chatIdFromUrl = searchParams.get('id');
+    const [selectedChatId, setSelectedChatId] = useState<string | null>(chatIdFromUrl);
     const [chats, setChats] = useState<any[]>([]);
     const [socket, setSocket] = useState<any>(null);
     const [siteId, setSiteId] = useState<string>('');

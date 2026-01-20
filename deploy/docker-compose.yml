@@ -77,6 +77,8 @@ services:
       - GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
       - FRONTEND_URL=${FRONTEND_URL}
       - PUBLIC_API_URL=${PUBLIC_API_URL}
+      - TELEGRAM_WEBHOOK_DOMAIN=${TELEGRAM_WEBHOOK_DOMAIN}
+      - ADMIN_PANEL_URL=${ADMIN_PANEL_URL:-https://admin.chtq.ink}
       - PORT=3000
     volumes:
       - ./data/uploads:/app/uploads

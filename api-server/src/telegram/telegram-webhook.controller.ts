@@ -36,13 +36,25 @@ export class TelegramWebhookController {
     text: string,
     message: any
   ) {
+    // 1. First get the integration by siteId to have the botToken for replies
+    const integrationBySite = await this.prisma.telegramIntegration.findUnique({
+      where: { siteId },
+    });
+
+    if (!integrationBySite) {
+      this.logger.warn(`No integration found for siteId: ${siteId}`);
+      return;
+    }
+
+    const botToken = integrationBySite.botToken;
     const parts = text.split(' ');
     const connectCode = parts[1]?.trim();
 
     if (!connectCode) {
       await this.sendMessage(
         chatId,
-        '❌ Використовуйте команду у форматі: /start CONNECT_CODE'
+        '❌ Використовуйте команду у форматі: /start [ВАШ_КОД]',
+        botToken
       );
       return;
     }
@@ -51,13 +63,8 @@ export class TelegramWebhookController {
       where: { connectCode },
     });
 
-    if (!integration) {
-      await this.sendMessage(chatId, '❌ Невірний код підключення');
-      return;
-    }
-
-    if (integration.siteId !== siteId) {
-      await this.sendMessage(chatId, '❌ Невірний код підключення');
+    if (!integration || integration.siteId !== siteId) {
+      await this.sendMessage(chatId, '❌ Невірний код підключення', botToken);
       return;
     }
 
@@ -80,8 +87,8 @@ export class TelegramWebhookController {
 
     await this.sendMessage(
       chatId,
-      '✅ Ви успішно підписані на сповіщення!',
-      integration.botToken
+      '✅ Ви успішно підписані на сповіщення для цього сайту!',
+      botToken
     );
 
     this.logger.log(`Subscription created: chatId=${chatId}, siteId=${siteId}`);

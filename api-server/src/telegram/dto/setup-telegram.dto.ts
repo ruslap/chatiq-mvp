@@ -1,7 +1,8 @@
-import { IsString, IsUUID, MinLength } from 'class-validator';
+import { IsString, MinLength } from 'class-validator';
 
 export class SetupTelegramDto {
-  @IsUUID()
+  @IsString()
+  @MinLength(20)
   siteId: string;
 
   @IsString()

@@ -188,11 +188,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 		// Update visitor name if provided
 		if (visitorName && message.chatId) {
-			void this.chatService
-				.renameVisitor(message.chatId, visitorName)
-				.then(() => {
-					this.logger.debug(`Updated visitor name to: ${visitorName}`);
-				});
+			await this.chatService.renameVisitor(message.chatId, visitorName);
+			this.logger.debug(`Updated visitor name to: ${visitorName}`);
 		}
 
 		// Check if this is the first message and send Telegram notification

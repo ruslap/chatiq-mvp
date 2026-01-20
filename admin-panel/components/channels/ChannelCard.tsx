@@ -44,7 +44,7 @@ export function ChannelCard({
         </button>
       </div>
 
-      {enabled && children && (
+      {children && (
         <div className="mt-4 space-y-4 border-t border-[rgb(var(--border))] pt-4">
           {children}
         </div>

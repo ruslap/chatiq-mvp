@@ -7,8 +7,9 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/telegram/:path*',
-        destination: 'http://localhost:3000/telegram/:path*',
+        // Proxy all /api/* except /api/auth/* (handled by NextAuth)
+        source: '/api/:path((?!auth/).*)',
+        destination: 'http://api-server:3000/:path*',
       },
     ];
   },
