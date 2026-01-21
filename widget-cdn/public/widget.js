@@ -39,7 +39,8 @@
 
   // Configuration
   // Configuration
-  const WIDGET_VERSION = '3.2.0';
+  const WIDGET_VERSION = '3.2.1';
+
   const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
   const ALLOWED_FILE_TYPES = ['image/*', 'application/pdf', '.doc', '.docx', '.txt'];
 
@@ -228,8 +229,11 @@
       if (messagesEl) messagesEl.style.display = 'none';
     } else if (composerEl && contactFormEl) {
       contactFormEl.style.display = 'none';
-      composerEl.style.display = 'flex';
       if (messagesEl) messagesEl.style.display = 'flex';
+      // Only show composer if welcome screen is hidden (user entered name)
+      const welcomeEl = shadow.querySelector('#welcome');
+      const isChatStarted = welcomeEl && (welcomeEl.style.display === 'none' || getComputedStyle(welcomeEl).display === 'none');
+      composerEl.style.display = isChatStarted ? 'flex' : 'none';
     }
 
     console.log('[ChatIQ] Business status updated:', businessStatus);
@@ -2075,15 +2079,17 @@
       justify-content: center;
       gap: var(--space-1);
       padding: var(--space-2) var(--space-3);
-      background: var(--bg-secondary);
+      background: var(--bg-primary);
       border-top: 1px solid var(--border-light);
       font-family: var(--font-family);
       font-size: 10px;
       color: var(--text-tertiary);
       position: relative;
-      z-index: 1;
+      z-index: 10;
       white-space: nowrap;
-      opacity: 0.7;
+      opacity: 0.8;
+      width: 100%;
+      flex-shrink: 0;
     }
 
     .powered a {
@@ -2267,7 +2273,7 @@
             <div class="welcome-text welcome-msg">${welcomeMessage}</div>
             <div class="welcome-name-form">
               <label class="welcome-name-label">Як до вас звертатися?</label>
-              <input type="text" id="visitor-name-input" class="welcome-name-input" placeholder="Прізвище та ім'я" autocomplete="name" />
+              <input type="text" id="visitor-name-input" class="welcome-name-input" placeholder="Ваше ім'я" autocomplete="name" />
             </div>
             <div class="welcome-action">
               <button class="btn-start" id="start-btn">
@@ -2338,12 +2344,8 @@
             </button>
           </div>
         </div>
-        
-        <!-- Powered by -->
-        <div class="powered">
-          Powered by <a href="https://ruslan-lapiniak-cv.vercel.app/en" target="_blank" rel="noopener">Chatq © Ruslan Lap</a>
-        </div>
       </div>
+
 
       <!-- Contact Form (shown when offline) -->
       <div class="contact-form-container" style="display: none;" id="contact-form-container">
@@ -2374,12 +2376,15 @@
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
             </svg>
             <p>${t('contactSuccess')}</p>
-          </div>
-        </div>
-        <div class="powered">
-          Powered by <a href="https://ruslan-lapiniak-cv.vercel.app/en" target="_blank" rel="noopener">Chatq © Ruslan Lap</a>
-        </div>
+            </div>
       </div>
+      </div>
+
+      <!-- Powered by -->
+      <div class="powered">
+        Powered by <a href="https://ruslan-lapiniak-cv.vercel.app/en" target="_blank" rel="noopener">Chatq © Ruslan Lap</a>
+      </div>
+
 
       <!-- Hidden file input -->
       <input type="file" id="file-input" accept="${ALLOWED_FILE_TYPES.join(',')}" style="display: none !important; visibility: hidden !important; position: absolute; left: -9999px;" />
@@ -2451,11 +2456,30 @@
   });
 
   startBtn?.addEventListener('click', async () => {
-    // Get visitor name from input - make it optional
+    // Get visitor name from input
     const enteredName = visitorNameInput?.value?.trim();
 
-    // Fallback name if none entered
-    const displayNameToUse = enteredName || 'Гість';
+    if (!enteredName) {
+      if (visitorNameInput) {
+        visitorNameInput.style.borderColor = '#EF4444';
+        visitorNameInput.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.2)';
+        visitorNameInput.focus();
+
+        // Add shake animation
+        visitorNameInput.animate([
+          { transform: 'translateX(0)' },
+          { transform: 'translateX(-4px)' },
+          { transform: 'translateX(4px)' },
+          { transform: 'translateX(0)' }
+        ], {
+          duration: 300,
+          iterations: 1
+        });
+      }
+      return;
+    }
+
+    const displayNameToUse = enteredName;
 
     // Create unique display name with date/time
     const now = new Date();
@@ -2758,10 +2782,19 @@
       // Show composer and messages, hide contact form
       console.log('[ChatIQ] Showing composer');
       if (contactFormContainer) contactFormContainer.style.display = 'none';
-      if (composerContainer) composerContainer.style.display = 'flex';
       if (messages) messages.style.display = 'flex';
-      input.focus();
-      loadDraft();
+
+      // Only show composer if welcome screen is hidden (chat started)
+      const isChatStarted = (welcome && (welcome.style.display === 'none' || getComputedStyle(welcome).display === 'none'));
+
+      if (composerContainer) {
+        composerContainer.style.display = isChatStarted ? 'flex' : 'none';
+      }
+
+      if (isChatStarted) {
+        input.focus();
+        loadDraft();
+      }
     }
 
     updateBadge(0);
@@ -2794,8 +2827,12 @@
     if (isTyping) return;
     isTyping = true;
 
-    if (welcome) welcome.style.display = 'none';
+    // Only hide welcome screen if we actually have a name/started chat
+    const isChatStarted = welcome && welcome.style.display === 'none';
+    if (!isChatStarted) return;
+
     if (composerContainer) composerContainer.style.display = 'flex';
+
 
     const typing = document.createElement('div');
     typing.className = 'typing';
@@ -2835,8 +2872,17 @@
   function addMessage(text, from = 'user', attachment = null) {
     hideTyping();
 
-    if (welcome) welcome.style.display = 'none';
-    if (composerContainer) composerContainer.style.display = 'flex';
+    // If chat hasn't started yet, only show messages if they are bot messages
+    // but don't hide the welcome screen unless we have a name.
+    const hasName = !!(window._chatiqPendingVisitorName || localStorage.getItem('chatiq_visitor_name'));
+
+    if (from === 'bot' || hasName) {
+      // Allow showing message, but only hide welcome/show composer if chat really started
+      if (welcome && welcome.style.display === 'none') {
+        if (composerContainer) composerContainer.style.display = 'flex';
+      }
+    }
+
 
     const now = new Date();
     const msg = document.createElement('div');
