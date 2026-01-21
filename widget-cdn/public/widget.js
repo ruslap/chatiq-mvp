@@ -1940,6 +1940,13 @@
     }
 
     /* ===== CONTACT FORM ===== */
+    .composer-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
     .contact-form-container {
       display: flex;
       flex-direction: column;
@@ -2006,7 +2013,7 @@
     .contact-input:focus,
     .contact-textarea:focus {
       border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px var(--accent-alpha);
+      box-shadow: 0 0 0 3px hsla(var(--accent-h), 70%, 60%, 0.15);
     }
 
     .contact-textarea {
@@ -2032,7 +2039,7 @@
     .contact-submit:hover {
       background: var(--accent-hover);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px var(--accent-alpha);
+      box-shadow: 0 4px 12px hsla(var(--accent-h), 70%, 60%, 0.2);
     }
 
     .contact-submit:active {
@@ -2066,15 +2073,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: var(--space-2);
-      padding: var(--space-3);
+      gap: var(--space-1);
+      padding: var(--space-2) var(--space-3);
       background: var(--bg-secondary);
       border-top: 1px solid var(--border-light);
       font-family: var(--font-family);
-      font-size: var(--font-size-xs);
-      color: var(--text-secondary);
+      font-size: 10px;
+      color: var(--text-tertiary);
       position: relative;
       z-index: 1;
+      white-space: nowrap;
+      opacity: 0.7;
     }
 
     .powered a {
@@ -2465,7 +2474,7 @@
     window._chatiqVisitorFirstName = displayNameToUse; // For personalized greeting
 
     welcome.style.display = 'none';
-    composerContainer.style.display = 'block';
+    composerContainer.style.display = 'flex';
     input.focus();
     showWelcomeMessageIfNeeded();
   });
@@ -2786,7 +2795,7 @@
     isTyping = true;
 
     if (welcome) welcome.style.display = 'none';
-    if (composerContainer) composerContainer.style.display = 'block';
+    if (composerContainer) composerContainer.style.display = 'flex';
 
     const typing = document.createElement('div');
     typing.className = 'typing';
@@ -2827,7 +2836,7 @@
     hideTyping();
 
     if (welcome) welcome.style.display = 'none';
-    if (composerContainer) composerContainer.style.display = 'block';
+    if (composerContainer) composerContainer.style.display = 'flex';
 
     const now = new Date();
     const msg = document.createElement('div');
