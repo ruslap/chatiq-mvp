@@ -2520,6 +2520,9 @@
     window._chatiqPendingVisitorName = uniqueDisplayName;
     window._chatiqVisitorFirstName = displayNameToUse; // For personalized greeting
 
+    // Persist chat started state
+    localStorage.setItem(`chatiq_chat_started_${organizationId}`, 'true');
+
     welcome.style.display = 'none';
     composerContainer.style.display = 'flex';
     input.focus();
@@ -2573,6 +2576,110 @@
       if (messageToShow) {
         addMessage(messageToShow, 'bot');
       }
+    }
+  }
+
+  // Restore chat session after page reload
+  async function restoreChatSession() {
+    console.log('[ChatIQ] restoreChatSession called, resolvedSiteId:', resolvedSiteId, 'visitorId:', visitorId);
+    if (!resolvedSiteId) {
+      console.log('[ChatIQ] restoreChatSession: no resolvedSiteId, skipping');
+      return;
+    }
+
+    const savedName = localStorage.getItem('chatiq_visitor_name');
+
+    try {
+      // Always check server for existing chat history
+      const url = `${API_URL}/chat/visitor-history/${resolvedSiteId}/${visitorId}`;
+      console.log('[ChatIQ] Fetching visitor history:', url);
+      const res = await fetch(url);
+      console.log('[ChatIQ] History response status:', res.status);
+      if (!res.ok) {
+        console.warn('[ChatIQ] History fetch failed with status:', res.status);
+        return;
+      }
+
+      const historyMessages = await res.json();
+      console.log('[ChatIQ] History messages count:', historyMessages.length);
+      if (historyMessages.length === 0) {
+        // No history — new visitor, keep welcome screen visible
+        return;
+      }
+
+      // We have history — hide welcome, show composer
+      welcome.style.display = 'none';
+      if (composerContainer) composerContainer.style.display = 'flex';
+
+      // Persist chat started flag for future reloads
+      localStorage.setItem(`chatiq_chat_started_${organizationId}`, 'true');
+
+      // Set visitor name for personalized greeting context
+      if (savedName) {
+        window._chatiqVisitorFirstName = savedName;
+      }
+
+      // Mark welcome message as shown since we have history
+      welcomeMessageShown = true;
+
+      // Render each message from history
+      historyMessages.forEach((msg) => {
+        const from = msg.from === 'visitor' ? 'user' : 'bot';
+        const time = new Date(msg.createdAt);
+
+        const msgEl = document.createElement('div');
+        msgEl.className = `message ${from}`;
+        if (msg.id) msgEl.setAttribute('data-message-id', msg.id);
+
+        const avatarHTML = from === 'bot' ? `
+          <div class="message-avatar">
+            ${agentAvatar
+              ? `<img src="${agentAvatar}" alt="${agentName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" />`
+              : `<svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>`
+            }
+          </div>
+        ` : '';
+
+        let attachmentHTML = '';
+        if (msg.attachment) {
+          try {
+            const att = typeof msg.attachment === 'string' ? JSON.parse(msg.attachment) : msg.attachment;
+            if (att.type === 'image') {
+              attachmentHTML = `<div class="message-attachment"><img src="${att.url}" alt="${att.name || 'image'}" class="attachment-image"></div>`;
+            } else if (att.url) {
+              attachmentHTML = `<div class="message-attachment"><div class="attachment-file"><div class="attachment-icon"><svg viewBox="0 0 24 24"><path d="M6 2c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6H6zm7 7V3.5L18.5 9H13z"/></svg></div><div class="attachment-info"><div class="attachment-name">${att.name || 'File'}</div></div></div></div>`;
+            }
+          } catch (e) { /* ignore parse errors */ }
+        }
+
+        const statusHTML = from === 'user' ? `
+          <div class="message-status">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+        ` : '';
+
+        const displayText = from === 'bot' ? (msg.text || '') : escapeHtml(msg.text || '');
+
+        msgEl.innerHTML = `
+          ${avatarHTML}
+          <div class="message-content">
+            <div class="message-bubble">${displayText}${attachmentHTML}</div>
+            <div class="message-meta">
+              <span class="message-time">${formatTime(time)}</span>
+              ${statusHTML}
+            </div>
+          </div>
+        `;
+
+        messages.appendChild(msgEl);
+        messageHistory.push({ text: msg.text, from, timestamp: new Date(msg.createdAt).getTime(), attachment: msg.attachment });
+      });
+
+      scrollToBottom(false);
+      console.log(`[ChatIQ] Restored ${historyMessages.length} messages from history`);
+    } catch (error) {
+      console.warn('[ChatIQ] Failed to restore chat history:', error);
     }
   }
 
@@ -3232,11 +3339,14 @@
       await resolveSiteId();
       await fetchSettings();
 
-      // 3. Setup Socket and Status
+      // 3. Restore chat session if previously started
+      await restoreChatSession();
+
+      // 4. Setup Socket and Status
       initSocket();
       await updateStatus();
 
-      // 4. Periodic updates
+      // 5. Periodic updates
       setInterval(updateStatus, 60000);
 
       console.log('[ChatIQ] Initialization complete');
