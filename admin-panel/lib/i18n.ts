@@ -42,6 +42,12 @@ export interface Translations {
     enterNewName: string;
     save: string;
     cancel: string;
+    editMessage: string;
+    deleteMessage: string;
+    edited: string;
+    confirmDeleteMessage: string;
+    messageDeleted: string;
+    editMessagePlaceholder: string;
   };
   // Settings
   settings: {
@@ -117,6 +123,12 @@ export const translations: Record<Language, Translations> = {
       enterNewName: 'Введіть нове ім\'я',
       save: 'Зберегти',
       cancel: 'Скасувати',
+      editMessage: 'Редагувати',
+      deleteMessage: 'Видалити',
+      edited: 'змінено',
+      confirmDeleteMessage: 'Видалити це повідомлення?',
+      messageDeleted: 'Повідомлення видалено',
+      editMessagePlaceholder: 'Редагувати повідомлення...',
     },
     settings: {
       title: 'Налаштування',
@@ -187,6 +199,12 @@ export const translations: Record<Language, Translations> = {
       enterNewName: 'Enter new name',
       save: 'Save',
       cancel: 'Cancel',
+      editMessage: 'Edit',
+      deleteMessage: 'Delete',
+      edited: 'edited',
+      confirmDeleteMessage: 'Delete this message?',
+      messageDeleted: 'Message deleted',
+      editMessagePlaceholder: 'Edit message...',
     },
     settings: {
       title: 'Settings',

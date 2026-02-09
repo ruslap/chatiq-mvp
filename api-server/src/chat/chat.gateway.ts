@@ -276,6 +276,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
 			// Notify visitor
 			this.server.to(visitorRoom).emit("admin:message", {
+				messageId: message.id,
 				text: message.text,
 				createdAt: message.createdAt,
 				attachment: message.attachment,
@@ -287,6 +288,80 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		}
 
 		return message;
+	}
+
+	@SubscribeMessage("admin:edit_message")
+	async handleEditMessage(
+		@ConnectedSocket() client: Socket,
+		@MessageBody()
+		payload: {
+			messageId: string;
+			text: string;
+			siteId: string;
+		},
+	) {
+		const { messageId, text, siteId } = payload;
+
+		const message = await this.chatService.getMessageById(messageId);
+		if (!message) return { error: "Message not found" };
+
+		const updated = await this.chatService.editMessage(messageId, text);
+
+		const chat = await this.chatService.getChatById(message.chatId);
+		if (chat) {
+			const visitorRoom = `chat:${siteId}:${chat.visitorId}`;
+			const adminRoom = `admin:${siteId}`;
+
+			this.server.to(visitorRoom).emit("message:edited", {
+				messageId: updated.id,
+				text: updated.text,
+				editedAt: updated.editedAt,
+			});
+
+			this.server.to(adminRoom).emit("message:edited", {
+				messageId: updated.id,
+				chatId: updated.chatId,
+				text: updated.text,
+				editedAt: updated.editedAt,
+			});
+		}
+
+		return updated;
+	}
+
+	@SubscribeMessage("admin:delete_message")
+	async handleDeleteMessage(
+		@ConnectedSocket() client: Socket,
+		@MessageBody()
+		payload: {
+			messageId: string;
+			siteId: string;
+		},
+	) {
+		const { messageId, siteId } = payload;
+
+		const message = await this.chatService.getMessageById(messageId);
+		if (!message) return { error: "Message not found" };
+
+		const chatId = message.chatId;
+		await this.chatService.deleteMessage(messageId);
+
+		const chat = await this.chatService.getChatById(chatId);
+		if (chat) {
+			const visitorRoom = `chat:${siteId}:${chat.visitorId}`;
+			const adminRoom = `admin:${siteId}`;
+
+			this.server.to(visitorRoom).emit("message:deleted", {
+				messageId,
+			});
+
+			this.server.to(adminRoom).emit("message:deleted", {
+				messageId,
+				chatId,
+			});
+		}
+
+		return { status: "ok" };
 	}
 
 	@SubscribeMessage("admin:get_unread_count")

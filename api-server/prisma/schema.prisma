@@ -63,16 +63,17 @@ model Chat {
 }
 
 model Message {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   chatId     String
   from       String
   text       String
   userId     String?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  editedAt   DateTime?
   attachment Json?
-  read       Boolean  @default(false)
-  chat       Chat     @relation(fields: [chatId], references: [id])
-  user       User?    @relation(fields: [userId], references: [id])
+  read       Boolean   @default(false)
+  chat       Chat      @relation(fields: [chatId], references: [id])
+  user       User?     @relation(fields: [userId], references: [id])
 
   @@index([chatId])
 }

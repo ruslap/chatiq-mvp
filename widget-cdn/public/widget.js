@@ -346,13 +346,36 @@
     socket.on('admin:message', (msg) => {
       showTyping();
       setTimeout(() => {
-        addMessage(msg.text, 'bot');
+        addMessage(msg.text, 'bot', null, msg.messageId || null);
       }, 800);
     });
 
     socket.on('chat:message', (msg) => {
       if (msg.from === 'visitor' && msg.visitorId !== visitorId) {
         // Handle sync across tabs if needed
+      }
+    });
+
+    socket.on('message:edited', (data) => {
+      const msgEl = shadow.querySelector(`[data-message-id="${data.messageId}"]`);
+      if (msgEl) {
+        const bubble = msgEl.querySelector('.message-bubble');
+        if (bubble) {
+          // Preserve attachment HTML, update text only
+          const attachmentEl = bubble.querySelector('.message-attachment');
+          const attachmentHTML = attachmentEl ? attachmentEl.outerHTML : '';
+          bubble.innerHTML = escapeHtml(data.text) + attachmentHTML;
+        }
+      }
+    });
+
+    socket.on('message:deleted', (data) => {
+      const msgEl = shadow.querySelector(`[data-message-id="${data.messageId}"]`);
+      if (msgEl) {
+        msgEl.style.transition = 'opacity 0.3s, transform 0.3s';
+        msgEl.style.opacity = '0';
+        msgEl.style.transform = 'scale(0.95)';
+        setTimeout(() => msgEl.remove(), 300);
       }
     });
   }
@@ -2869,7 +2892,7 @@
   }
 
   // Add message
-  function addMessage(text, from = 'user', attachment = null) {
+  function addMessage(text, from = 'user', attachment = null, messageId = null) {
     hideTyping();
 
     // If chat hasn't started yet, only show messages if they are bot messages
@@ -2887,6 +2910,7 @@
     const now = new Date();
     const msg = document.createElement('div');
     msg.className = `message ${from}`;
+    if (messageId) msg.setAttribute('data-message-id', messageId);
 
     const avatarHTML = from === 'bot' ? `
           <div class="message-avatar">

@@ -241,4 +241,35 @@ export class ChatService {
 			where: { chatId },
 		});
 	}
+
+	async deleteMessage(messageId: string) {
+		return this.prisma.message.delete({
+			where: { id: messageId },
+		});
+	}
+
+	async editMessage(messageId: string, newText: string) {
+		return this.prisma.message.update({
+			where: { id: messageId },
+			data: {
+				text: newText,
+				editedAt: new Date(),
+			},
+		});
+	}
+
+	async getMessageById(messageId: string) {
+		return this.prisma.message.findUnique({
+			where: { id: messageId },
+		});
+	}
+
+	async getVisitorChatHistory(siteId: string, visitorId: string) {
+		const chat = await this.findChatByVisitor(siteId, visitorId);
+		if (!chat) return [];
+		return this.prisma.message.findMany({
+			where: { chatId: chat.id },
+			orderBy: { createdAt: "asc" },
+		});
+	}
 }

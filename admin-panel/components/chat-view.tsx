@@ -21,6 +21,7 @@ interface Message {
     text: string;
     from: 'admin' | 'visitor';
     createdAt: string;
+    editedAt?: string | null;
     attachment?: {
         url: string;
         name: string;
@@ -88,6 +89,9 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
     const [templateFilter, setTemplateFilter] = useState("");
     const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(0);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+    const [editingText, setEditingText] = useState("");
+    const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
     // Initialize soundEnabled based on MUTED status (inverted logic)
     const [soundEnabled, setSoundEnabledState] = useState(() => !isChatMuted(chat?.id));
 
@@ -181,14 +185,30 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
             }
         };
 
+        const handleMessageEdited = (data: { messageId: string; chatId?: string; text: string; editedAt: string }) => {
+            if (data.chatId && data.chatId !== chatId) return;
+            setMessages(prev =>
+                prev.map(m => m.id === data.messageId ? { ...m, text: data.text, editedAt: data.editedAt } : m)
+            );
+        };
+
+        const handleMessageDeleted = (data: { messageId: string; chatId?: string }) => {
+            if (data.chatId && data.chatId !== chatId) return;
+            setMessages(prev => prev.filter(m => m.id !== data.messageId));
+        };
+
         socket.on("chat:message", handleIncomingMessage);
         socket.on("admin:message", handleIncomingMessage);
         socket.on("chat:new_message", handleIncomingMessage);
+        socket.on("message:edited", handleMessageEdited);
+        socket.on("message:deleted", handleMessageDeleted);
 
         return () => {
             socket.off("chat:message", handleIncomingMessage);
             socket.off("admin:message", handleIncomingMessage);
             socket.off("chat:new_message", handleIncomingMessage);
+            socket.off("message:edited", handleMessageEdited);
+            socket.off("message:deleted", handleMessageDeleted);
         };
     }, [chatId, socket]);
 
@@ -362,6 +382,46 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
             console.error("Failed to rename visitor:", err);
             alert("Network error. Please check if the API server is reachable.");
         }
+    };
+
+    const handleEditMessage = (msgId: string, currentText: string) => {
+        setEditingMessageId(msgId);
+        setEditingText(currentText);
+    };
+
+    const handleSaveEdit = () => {
+        if (!editingMessageId || !editingText.trim() || !socket) return;
+        socket.emit("admin:edit_message", {
+            messageId: editingMessageId,
+            text: editingText.trim(),
+            siteId,
+        });
+        // Optimistic update
+        setMessages(prev =>
+            prev.map(m => m.id === editingMessageId ? { ...m, text: editingText.trim(), editedAt: new Date().toISOString() } : m)
+        );
+        setEditingMessageId(null);
+        setEditingText("");
+    };
+
+    const handleCancelEdit = () => {
+        setEditingMessageId(null);
+        setEditingText("");
+    };
+
+    const handleDeleteMessage = (msgId: string) => {
+        setDeletingMessageId(msgId);
+    };
+
+    const handleConfirmDeleteMessage = () => {
+        if (!deletingMessageId || !socket) return;
+        socket.emit("admin:delete_message", {
+            messageId: deletingMessageId,
+            siteId,
+        });
+        // Optimistic update
+        setMessages(prev => prev.filter(m => m.id !== deletingMessageId));
+        setDeletingMessageId(null);
     };
 
     // Filter templates based on input
@@ -565,11 +625,12 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                     {safeMessages.map((msg, idx) => {
                         const isPrevFromSame = idx > 0 && safeMessages[idx - 1].from === msg.from;
                         const isAdmin = msg.from === 'admin';
+                        const isEditing = editingMessageId === msg.id;
 
                         return (
                             <div
                                 key={msg.id}
-                                className={`flex flex-col ${isAdmin ? 'items-end' : 'items-start'} ${isPrevFromSame ? '-mt-1.5' : 'mt-1'} ${isAdmin ? 'animate-slide-in-left' : 'animate-slide-in-right'}`}
+                                className={`group/msg flex flex-col ${isAdmin ? 'items-end' : 'items-start'} ${isPrevFromSame ? '-mt-1.5' : 'mt-1'} ${isAdmin ? 'animate-slide-in-left' : 'animate-slide-in-right'}`}
                             >
                                 {!isPrevFromSame && (
                                     <div className="mb-2 px-1">
@@ -580,52 +641,110 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                                         )}
                                     </div>
                                 )}
-                                <div className={`relative px-3 py-2 max-w-[82%] ${isAdmin
-                                    ? 'chat-admin-message'
-                                    : 'chat-visitor-message'
-                                    }`}>
-                                    {msg.attachment && (
-                                        <div className="mb-2">
-                                            {msg.attachment.type === 'image' ? (
-                                                <img
-                                                    src={msg.attachment.url}
-                                                    alt={msg.attachment.name}
-                                                    className="rounded-lg max-w-sm cursor-pointer hover:opacity-90 transition-opacity"
-                                                    onClick={() => window.open(msg.attachment?.url, '_blank')}
-                                                />
-                                            ) : (
-                                                <div className="flex items-center gap-2 p-2 bg-[rgb(var(--muted))]/50 rounded-lg">
-                                                    <Paperclip className="w-4 h-4" />
-                                                    <a
-                                                        href={msg.attachment?.url}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="text-sm hover:underline"
-                                                    >
-                                                        {msg.attachment?.name}
-                                                    </a>
-                                                    <span className="text-xs text-[rgb(var(--foreground-secondary))]">
-                                                        ({msg.attachment?.size})
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                    {msg.text && (
-                                        <div className="whitespace-pre-wrap break-words text-[14px] leading-[1.5] pr-12 mb-0.5">
-                                            {highlightText(msg.text, searchQuery)}
-                                        </div>
-                                    )}
-                                    <div className={`flex items-center justify-end gap-1 text-[11px] tabular-nums font-normal mt-1 ${isAdmin ? 'text-green-800/60 dark:text-green-200/50' : 'text-gray-500/70 dark:text-gray-400/60'
+                                <div className="relative flex items-center gap-1 max-w-[82%]" style={{ flexDirection: isAdmin ? 'row-reverse' : 'row' }}>
+                                    <div className={`relative px-3 py-2 flex-1 min-w-0 ${isAdmin
+                                        ? 'chat-admin-message'
+                                        : 'chat-visitor-message'
                                         }`}>
-                                        <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                                        {isAdmin && (
-                                            <svg width="16" height="11" viewBox="0 0 16 11" fill="none" className="opacity-60">
-                                                <path d="M5.5 9.5L1.5 5.5L2.91 4.09L5.5 6.67L5.5 6.67L13.59 -1.42L15 -0.01L5.5 9.5Z" fill="currentColor" transform="translate(0, 2)" />
-                                                <path d="M10.5 9.5L6.5 5.5L7.91 4.09L10.5 6.67L10.5 6.67L18.59 -1.42L20 -0.01L10.5 9.5Z" fill="currentColor" transform="translate(0, 2)" />
-                                            </svg>
+                                        {msg.attachment && (
+                                            <div className="mb-2">
+                                                {msg.attachment.type === 'image' ? (
+                                                    <img
+                                                        src={msg.attachment.url}
+                                                        alt={msg.attachment.name}
+                                                        className="rounded-lg max-w-sm cursor-pointer hover:opacity-90 transition-opacity"
+                                                        onClick={() => window.open(msg.attachment?.url, '_blank')}
+                                                    />
+                                                ) : (
+                                                    <div className="flex items-center gap-2 p-2 bg-[rgb(var(--muted))]/50 rounded-lg">
+                                                        <Paperclip className="w-4 h-4" />
+                                                        <a
+                                                            href={msg.attachment?.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-sm hover:underline"
+                                                        >
+                                                            {msg.attachment?.name}
+                                                        </a>
+                                                        <span className="text-xs text-[rgb(var(--foreground-secondary))]">
+                                                            ({msg.attachment?.size})
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                        {isEditing ? (
+                                            <div className="flex flex-col gap-2">
+                                                <textarea
+                                                    value={editingText}
+                                                    onChange={(e) => setEditingText(e.target.value)}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSaveEdit(); }
+                                                        if (e.key === 'Escape') handleCancelEdit();
+                                                    }}
+                                                    className="w-full p-2 text-[14px] leading-[1.5] bg-transparent border border-[rgb(var(--border))] rounded-lg resize-none outline-none focus:ring-2 focus:ring-[rgb(var(--primary))]/20"
+                                                    rows={Math.min(editingText.split('\n').length + 1, 6)}
+                                                    autoFocus
+                                                />
+                                                <div className="flex items-center gap-1.5 justify-end">
+                                                    <button
+                                                        onClick={handleCancelEdit}
+                                                        className="px-2.5 py-1 text-xs rounded-lg text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--surface-muted))] transition-colors"
+                                                    >
+                                                        {t.chatView.cancel}
+                                                    </button>
+                                                    <button
+                                                        onClick={handleSaveEdit}
+                                                        className="px-2.5 py-1 text-xs rounded-lg bg-[rgb(var(--primary))] text-white hover:bg-[rgb(var(--primary-600))] transition-colors"
+                                                    >
+                                                        {t.chatView.save}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {msg.text && (
+                                                    <div className="whitespace-pre-wrap break-words text-[14px] leading-[1.5] pr-12 mb-0.5">
+                                                        {highlightText(msg.text, searchQuery)}
+                                                    </div>
+                                                )}
+                                                <div className={`flex items-center justify-end gap-1 text-[11px] tabular-nums font-normal mt-1 ${isAdmin ? 'text-green-800/60 dark:text-green-200/50' : 'text-gray-500/70 dark:text-gray-400/60'
+                                                    }`}>
+                                                    {msg.editedAt && (
+                                                        <span className="italic opacity-70">{t.chatView.edited}</span>
+                                                    )}
+                                                    <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    {isAdmin && (
+                                                        <svg width="16" height="11" viewBox="0 0 16 11" fill="none" className="opacity-60">
+                                                            <path d="M5.5 9.5L1.5 5.5L2.91 4.09L5.5 6.67L5.5 6.67L13.59 -1.42L15 -0.01L5.5 9.5Z" fill="currentColor" transform="translate(0, 2)" />
+                                                            <path d="M10.5 9.5L6.5 5.5L7.91 4.09L10.5 6.67L10.5 6.67L18.59 -1.42L20 -0.01L10.5 9.5Z" fill="currentColor" transform="translate(0, 2)" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </>
                                         )}
                                     </div>
+                                    {/* Hover action buttons */}
+                                    {!isEditing && (
+                                        <div className={`flex items-center gap-0.5 opacity-0 group-hover/msg:opacity-100 transition-opacity ${isAdmin ? 'flex-row-reverse' : 'flex-row'}`}>
+                                            {isAdmin && (
+                                                <button
+                                                    onClick={() => handleEditMessage(msg.id, msg.text)}
+                                                    className="p-1.5 rounded-lg text-[rgb(var(--foreground-secondary))] hover:text-[rgb(var(--primary))] hover:bg-[rgb(var(--surface))] transition-all"
+                                                    title={t.chatView.editMessage}
+                                                >
+                                                    <Pencil className="w-3.5 h-3.5" />
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => handleDeleteMessage(msg.id)}
+                                                className="p-1.5 rounded-lg text-[rgb(var(--foreground-secondary))] hover:text-red-500 hover:bg-[rgb(var(--surface))] transition-all"
+                                                title={t.chatView.deleteMessage}
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         );
@@ -808,6 +927,35 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                                 className={`h-10 px-4 rounded-xl text-white ${showConfirm === 'clear' ? 'bg-amber-500 hover:bg-amber-600' : 'bg-red-500 hover:bg-red-600'}`}
                             >
                                 {showConfirm === 'clear' ? 'Clear History' : 'Delete'}
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Message Confirmation Dialog */}
+            {deletingMessageId && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fade-in" onClick={() => setDeletingMessageId(null)}>
+                    <div className="bg-[rgb(var(--surface))] rounded-2xl border border-[rgb(var(--border))] p-6 max-w-sm mx-4 shadow-2xl animate-scale-in" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-lg font-semibold text-[rgb(var(--foreground))] mb-2">
+                            {t.chatView.confirmDeleteMessage}
+                        </h3>
+                        <p className="text-sm text-[rgb(var(--foreground-secondary))] mb-6">
+                            {t.chatView.messageDeleted}
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                            <Button
+                                variant="ghost"
+                                onClick={() => setDeletingMessageId(null)}
+                                className="h-10 px-4 rounded-xl hover:bg-[rgb(var(--surface-muted))]"
+                            >
+                                {t.chatView.cancel}
+                            </Button>
+                            <Button
+                                onClick={handleConfirmDeleteMessage}
+                                className="h-10 px-4 rounded-xl text-white bg-red-500 hover:bg-red-600"
+                            >
+                                {t.chatView.deleteMessage}
                             </Button>
                         </div>
                     </div>
