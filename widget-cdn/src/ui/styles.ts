@@ -855,11 +855,11 @@ export function getStyles(accentColor: string, secondaryColorValue: string, acce
       justify-content: center;
       text-align: center;
       padding: var(--space-8) var(--space-6);
-      flex: 1;
       background: var(--bg-primary);
       pointer-events: auto;
-      position: relative;
-      z-index: 2;
+      position: absolute;
+      inset: 0;
+      z-index: 10;
     }
 
     .welcome-card {

@@ -268,8 +268,55 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     
     initEmojiPicker(shadow);
     
+    // Onboarding logic
+    initOnboarding(shadow);
+
     // Load saved draft
     loadDraft();
+  }
+
+  function initOnboarding(shadow: ShadowRoot): void {
+    const welcome = shadow.getElementById("welcome");
+    const startBtn = shadow.getElementById("start-btn");
+    const nameInput = shadow.getElementById("visitor-name-input") as HTMLInputElement;
+    const composerContainer = shadow.getElementById("composer-container");
+
+    if (!welcome || !startBtn || !nameInput || !composerContainer) return;
+
+    const savedName = localStorage.getItem("chatiq_visitor_name");
+
+    const startChat = (name: string) => {
+      localStorage.setItem("chatiq_visitor_name", name);
+      welcome.style.display = "none";
+      composerContainer.style.display = "flex";
+      const messages = shadow.getElementById("messages");
+      if (messages) {
+        setTimeout(() => scrollToBottom(messages), 100);
+      }
+    };
+
+    onboardingControls = { startChat };
+
+    if (savedName) {
+      startChat(savedName);
+    } else {
+      welcome.style.display = "flex";
+      composerContainer.style.display = "none";
+    }
+
+    startBtn.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      if (name) {
+        startChat(name);
+      } else {
+        nameInput.style.borderColor = "#ef4444";
+        setTimeout(() => (nameInput.style.borderColor = ""), 2000);
+      }
+    });
+
+    nameInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") startBtn.click();
+    });
   }
 
   // Expose API
@@ -361,11 +408,18 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     }
   }
 
+  // Onboarding controls
+  let onboardingControls: { startChat: (name: string) => void } | null = null;
+
   async function restoreHistory(): Promise<void> {
     if (!resolvedSiteId) return;
     const result = await fetchVisitorHistory(resolvedSiteId, visitorId);
     if (!shadow) return;
     
+    if (result.data.length > 0 && onboardingControls) {
+        onboardingControls.startChat(localStorage.getItem("chatiq_visitor_name") || "Guest");
+    }
+
     for (const msg of result.data) {
       addMessageToUI(shadow, {
         text: msg.text as string,
