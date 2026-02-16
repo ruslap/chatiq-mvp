@@ -48,6 +48,8 @@ import {
   scrollToBottom,
 } from "./ui/messages";
 
+import { initDrafts } from "./ui/drafts";
+import { showQuickReplies } from "./ui/messages";
 import { initComposer } from "./ui/composer";
 import { initEmojiPicker } from "./ui/emoji";
 import { initFileUpload, clearUploadUI } from "./ui/file-upload";
@@ -209,11 +211,12 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     shadow.innerHTML = html;
     
     // Initialize interactive elements
-    initLauncher(shadow, () => toggleWidget());
-    initPanel(shadow, () => toggleWidget());
     // Initialize interactive elements
     initLauncher(shadow, () => toggleWidget());
     initPanel(shadow, () => toggleWidget());
+    
+    // Drafts
+    const { saveDraft, loadDraft, clearDraft } = initDrafts(shadow, organizationId!);
     
     let currentFile: File | null = null;
     
@@ -238,21 +241,18 @@ import type { BusinessStatus, WidgetSettings } from "./types";
             }
         }
         
-        const msgText = text || (attachment ? (attachment as any).name : ""); // Fallback text?
-        
         // Optimistic UI update
-        addMessage(text, "user", attachment as any); // Type cast for now as formatting differs?
+        addMessage(text, "user", attachment as any); 
         sounds.send();
         
         if (resolvedSiteId) {
-            // Need visitorName? define it or get it
             const visitorName = localStorage.getItem("chatiq_visitor_name") || "Guest"; 
             sendVisitorMessage(
                 resolvedSiteId, 
                 visitorId, 
                 text, 
                 visitorName, 
-                attachment ? JSON.stringify(attachment) : undefined // Socket expects string? Or object? 
+                attachment ? JSON.stringify(attachment) : undefined 
             );
         }
         
@@ -262,11 +262,46 @@ import type { BusinessStatus, WidgetSettings } from "./types";
         }
         
         composerControls?.clear();
+        clearDraft(); // Clear draft on send
         composerControls?.setLoading(false);
     });
     
     initEmojiPicker(shadow);
+    
+    // Load saved draft
+    loadDraft();
   }
+
+  // Expose API
+  (globalThis as any).ChatIQ = {
+      version: WIDGET_VERSION,
+      siteId: resolvedSiteId,
+      visitorId,
+      open: () => {
+          if (!isOpen && shadow) toggleWidget();
+      },
+      close: () => {
+          if (isOpen && shadow) toggleWidget();
+      },
+      toggle: toggleWidget,
+      sendMessage: (text: string, attachment?: any) => addMessage(text, "user", attachment),
+      showQuickReplies: (replies: string[]) => {
+          if (shadow) {
+              showQuickReplies(shadow, replies, (text) => {
+                  if (shadow) {
+                      const input = shadow.getElementById("input") as HTMLInputElement;
+                      if (input) {
+                          input.value = text;
+                          input.dispatchEvent(new Event("input"));
+                          const sendBtn = shadow.getElementById("send-btn");
+                          if (sendBtn) sendBtn.click();
+                      }
+                  }
+              });
+          }
+      },
+  };
+
 
   function toggleWidget(): void {
     isOpen = !isOpen;

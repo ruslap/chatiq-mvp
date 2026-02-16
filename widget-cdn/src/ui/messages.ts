@@ -156,3 +156,30 @@ export function hideTypingIndicator(shadow: ShadowRoot): void {
     typing.remove();
   }
 }
+
+export function showQuickReplies(
+  shadow: ShadowRoot,
+  replies: string[],
+  onReply: (text: string) => void
+): void {
+  const messagesContainer = shadow.getElementById("messages");
+  if (!messagesContainer) return;
+
+  const quickReplies = document.createElement("div");
+  quickReplies.className = "quick-replies";
+  quickReplies.innerHTML = replies.map(reply =>
+    `<button class="quick-reply" data-text="${escapeHtml(reply)}">${escapeHtml(reply)}</button>`
+  ).join("");
+
+  messagesContainer.appendChild(quickReplies);
+  scrollToBottom(messagesContainer);
+
+  quickReplies.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest(".quick-reply") as HTMLElement;
+    if (btn && btn.dataset.text) {
+      onReply(btn.dataset.text);
+      quickReplies.remove();
+    }
+  });
+}
