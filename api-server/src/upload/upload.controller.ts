@@ -17,83 +17,93 @@ import { extname, join } from "path";
 import { v4 as uuid } from "uuid";
 import type { Request } from "express";
 import * as fs from "fs";
+import { PrismaService } from "../prisma/prisma.service";
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_MIME_TYPES = [
+	"image/jpeg",
+	"image/png",
+	"image/gif",
+	"image/webp",
+	"application/pdf",
+];
+const ALLOWED_EXTENSIONS = [".doc", ".docx", ".txt", ".pdf"];
+
+const uploadInterceptorOptions = {
+	storage: diskStorage({
+		destination: (_req: Request, _file: unknown, cb: (error: Error | null, destination: string) => void) => {
+			const uploadPath = "./uploads";
+			if (!fs.existsSync(uploadPath)) {
+				fs.mkdirSync(uploadPath, { recursive: true });
+			}
+			cb(null, uploadPath);
+		},
+		filename: (
+			_req: Request,
+			file: { originalname: string },
+			cb: (error: Error | null, filename: string) => void,
+		) => {
+			const uniqueName = uuid() + extname(file.originalname);
+			cb(null, uniqueName);
+		},
+	}),
+	limits: {
+		fileSize: MAX_FILE_SIZE,
+	},
+	fileFilter: (
+		_req: Request,
+		file: { originalname: string; mimetype: string },
+		cb: (error: Error | null, acceptFile: boolean) => void,
+	) => {
+		const originalName = file.originalname.toLowerCase();
+		const hasAllowedExtension = ALLOWED_EXTENSIONS.some(ext =>
+			originalName.endsWith(ext),
+		);
+		const isAllowedMimeType = ALLOWED_MIME_TYPES.includes(file.mimetype.toLowerCase());
+
+		if (isAllowedMimeType || hasAllowedExtension) {
+			cb(null, true);
+			return;
+		}
+
+		cb(new BadRequestException("Invalid file type") as unknown as Error, false);
+	},
+};
 
 @Controller("upload")
 export class UploadController {
 	private readonly logger = new Logger(UploadController.name);
 
-	@Post()
-	@UseGuards(AuthGuard("jwt"))
-	@UseInterceptors(
-		FileInterceptor("file", {
-			storage: diskStorage({
-				destination: (_req, _file, cb) => {
-					const uploadPath = "./uploads";
-					// Ensure directory exists
-					const fs = require("fs");
-					if (!fs.existsSync(uploadPath)) {
-						fs.mkdirSync(uploadPath, { recursive: true });
-					}
-					cb(null, uploadPath);
-				},
-				filename: (_req, file, cb) => {
-					const uniqueName = uuid() + extname(file.originalname);
-					cb(null, uniqueName);
-				},
-			}),
-			limits: {
-				fileSize: 10 * 1024 * 1024, // 10MB
-			},
-			fileFilter: (_req, file, cb) => {
-				const allowedTypes = [
-					"image/jpeg",
-					"image/png",
-					"image/gif",
-					"image/webp",
-					"application/pdf",
-					".doc",
-					".docx",
-					".txt",
-				];
-				if (allowedTypes.includes(file.mimetype) || allowedTypes.some(type => file.originalname.endsWith(type))) {
-					cb(null, true);
-				} else {
-					cb(new BadRequestException("Invalid file type") as unknown as Error, false);
-				}
-			},
-		}),
-	)
-	uploadFile(
-		@UploadedFile()
+	constructor(private readonly prisma: PrismaService) {}
+
+	private buildUploadResponse(
 		file: {
 			filename: string;
 			originalname: string;
 			size: number;
 			mimetype: string;
 		},
-		@Req() req: Request,
+		req: Request,
 	) {
 		if (!file) {
 			this.logger.error("Upload failed: No file received");
 			throw new BadRequestException("No file uploaded");
 		}
 
-		this.logger.log(`File uploaded: ${file.originalname} (${file.size} bytes, ${file.mimetype})`);
+		this.logger.log(
+			`File uploaded: ${file.originalname} (${file.size} bytes, ${file.mimetype})`,
+		);
 
-		// Return the file URL that can be accessed
-		// 1. Check API_URL from env
-		// 2. Fallback to current request protocol + host
 		let baseUrl = process.env.API_URL;
 
-		if (!baseUrl && req) {
+		if (!baseUrl) {
 			const protocol = req.headers["x-forwarded-proto"] || req.protocol || "http";
-			const host = req.headers["host"];
+			const host = req.headers.host;
 			if (host) {
 				baseUrl = `${protocol}://${host}`;
 			}
 		}
 
-		// Final fallback
 		if (!baseUrl) {
 			baseUrl = "http://localhost:3000";
 		}
@@ -107,11 +117,59 @@ export class UploadController {
 
 		return {
 			url: fileUrl,
-			filename: file.filename, // Added to easily delete later
+			filename: file.filename,
 			name: file.originalname,
 			size: file.size,
 			type: file.mimetype.startsWith("image/") ? "image" : "file",
 		};
+	}
+
+	private async assertSiteExists(siteId: string): Promise<void> {
+		const site = await this.prisma.site.findUnique({
+			where: { id: siteId },
+			select: { id: true },
+		});
+
+		if (!site) {
+			throw new BadRequestException("Invalid siteId");
+		}
+	}
+
+	@Post("public")
+	@UseInterceptors(FileInterceptor("file", uploadInterceptorOptions))
+	async uploadPublicFile(
+		@UploadedFile()
+		file: {
+			filename: string;
+			originalname: string;
+			size: number;
+			mimetype: string;
+		},
+		@Body("siteId") siteId: string,
+		@Req() req: Request,
+	) {
+		if (!siteId) {
+			throw new BadRequestException("siteId is required");
+		}
+
+		await this.assertSiteExists(siteId);
+		return this.buildUploadResponse(file, req);
+	}
+
+	@Post()
+	@UseGuards(AuthGuard("jwt"))
+	@UseInterceptors(FileInterceptor("file", uploadInterceptorOptions))
+	uploadFile(
+		@UploadedFile()
+		file: {
+			filename: string;
+			originalname: string;
+			size: number;
+			mimetype: string;
+		},
+		@Req() req: Request,
+	) {
+		return this.buildUploadResponse(file, req);
 	}
 
 	@Post("delete")

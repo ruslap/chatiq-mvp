@@ -105,7 +105,7 @@ export async function uploadFile(
     formData.append("siteId", siteId);
 
     try {
-        const res = await fetch(`${API_URL}/upload`, {
+        const res = await fetch(`${API_URL}/upload/public`, {
             method: "POST",
             body: formData,
         });

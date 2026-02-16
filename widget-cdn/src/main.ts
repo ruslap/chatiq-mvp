@@ -1,5 +1,5 @@
 /**
- * ChatIQ Widget - TypeScript Entry Point
+ * ChatQ Widget - TypeScript Entry Point
  *
  * This is the modular TypeScript source for the widget SDK.
  * Build with: npm run build
@@ -54,7 +54,7 @@ import { initComposer } from "./ui/composer";
 import { initEmojiPicker } from "./ui/emoji";
 import { initFileUpload, clearUploadUI } from "./ui/file-upload";
 import { uploadFile } from "./api";
-import type { BusinessStatus, WidgetSettings } from "./types";
+import type { BusinessStatus, MessageAttachment, WidgetSettings } from "./types";
 
 (function () {
   "use strict";
@@ -114,7 +114,8 @@ import type { BusinessStatus, WidgetSettings } from "./types";
       onAdminMessage: (data) => {
         showTypingIndicator();
         setTimeout(() => {
-          addMessage(data.text, "bot", data.attachment, data.messageId);
+          const parsedAttachment = parseAttachment(data.attachment);
+          addMessage(data.text, "bot", parsedAttachment, data.messageId);
           if (isOpen) sounds.receive();
           hideTypingIndicator();
         }, 800);
@@ -177,6 +178,35 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     }
   }
 
+  function parseAttachment(rawAttachment: unknown): MessageAttachment | string | null {
+    if (!rawAttachment) return null;
+
+    if (typeof rawAttachment === "string") {
+      const trimmed = rawAttachment.trim();
+      if (!trimmed) return null;
+
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (typeof parsed === "string") {
+          return parsed;
+        }
+        if (parsed && typeof parsed === "object") {
+          return parsed as MessageAttachment;
+        }
+      } catch {
+        // Not a JSON string attachment, treat as plain URL/string payload
+      }
+
+      return rawAttachment;
+    }
+
+    if (typeof rawAttachment === "object") {
+      return rawAttachment as MessageAttachment;
+    }
+
+    return null;
+  }
+
 
   function mountWidget(): void {
     widgetContainer = document.createElement("div");
@@ -219,16 +249,25 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     const { saveDraft, loadDraft, clearDraft } = initDrafts(shadow, organizationId!);
     
     let currentFile: File | null = null;
+    let composerControls: ReturnType<typeof initComposer> | undefined;
+
+    const updateSendState = (): void => {
+      const input = shadow?.getElementById("input") as HTMLTextAreaElement | null;
+      const hasText = Boolean(input?.value.trim());
+      const hasFile = Boolean(currentFile);
+      composerControls?.setSendDisabled(!(hasText || hasFile));
+    };
     
     initFileUpload(shadow, (file) => {
         currentFile = file;
-        composerControls?.setSendDisabled(!file && !((shadow?.getElementById("input") as HTMLInputElement)?.value.trim()));
+        updateSendState();
     });
 
-    const composerControls = initComposer(shadow, async (text) => {
-        if (!text && !currentFile) return;
+    composerControls = initComposer(shadow, async (text) => {
+        const hasText = text.trim().length > 0;
+        if (!hasText && !currentFile) return;
         
-        let attachment = null;
+        let attachment: MessageAttachment | null = null;
         if (currentFile && resolvedSiteId) {
             composerControls?.setLoading(true);
             const result = await uploadFile(resolvedSiteId, currentFile);
@@ -237,6 +276,7 @@ import type { BusinessStatus, WidgetSettings } from "./types";
             } else {
                 // Upload failed
                 composerControls?.setLoading(false);
+                updateSendState();
                 return; // Stop sending
             }
         }
@@ -252,7 +292,7 @@ import type { BusinessStatus, WidgetSettings } from "./types";
                 visitorId, 
                 text, 
                 visitorName, 
-                attachment ? JSON.stringify(attachment) : undefined 
+                attachment || undefined
             );
         }
         
@@ -264,7 +304,13 @@ import type { BusinessStatus, WidgetSettings } from "./types";
         composerControls?.clear();
         clearDraft(); // Clear draft on send
         composerControls?.setLoading(false);
+        updateSendState();
     });
+
+    const input = shadow.getElementById("input") as HTMLTextAreaElement | null;
+    if (input) {
+      input.addEventListener("input", updateSendState);
+    }
     
     initEmojiPicker(shadow);
     
@@ -273,6 +319,7 @@ import type { BusinessStatus, WidgetSettings } from "./types";
 
     // Load saved draft
     loadDraft();
+    updateSendState();
   }
 
   function initOnboarding(shadow: ShadowRoot): void {
@@ -415,17 +462,21 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     if (!resolvedSiteId) return;
     const result = await fetchVisitorHistory(resolvedSiteId, visitorId);
     if (!shadow) return;
+
+    const history = Array.isArray(result.data) ? result.data : [];
     
-    if (result.data.length > 0 && onboardingControls) {
+    if (history.length > 0 && onboardingControls) {
         onboardingControls.startChat(localStorage.getItem("chatiq_visitor_name") || "Guest");
     }
 
-    for (const msg of result.data) {
+    for (const msg of history) {
+      const parsedAttachment = parseAttachment(msg.attachment);
+
       addMessageToUI(shadow, {
-        text: msg.text as string,
+        text: typeof msg.text === "string" ? msg.text : "",
         from: msg.from === "visitor" ? "user" : "bot",
-        attachment: msg.attachment as string | null,
-        messageId: msg.id as string,
+        attachment: parsedAttachment,
+        messageId: typeof msg.id === "string" ? msg.id : undefined,
         agentAvatar
       });
     }
