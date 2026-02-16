@@ -16,7 +16,7 @@ COPY api-server/package*.json ./
 COPY api-server/prisma ./prisma/
 
 # Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 # Stage 2: Builder
 FROM node:20-alpine AS builder

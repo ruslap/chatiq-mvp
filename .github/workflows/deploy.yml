@@ -39,6 +39,7 @@ jobs:
           cache-dependency-path: |
             api-server/package-lock.json
             admin-panel/package-lock.json
+            widget-cdn/package-lock.json
 
       - name: Install API dependencies
         working-directory: ./api-server
@@ -71,6 +72,18 @@ jobs:
       - name: Run Admin type-check
         working-directory: ./admin-panel
         run: npx tsc --noEmit
+
+      - name: Install Widget CDN dependencies
+        working-directory: ./widget-cdn
+        run: npm ci
+
+      - name: Run Widget type-check
+        working-directory: ./widget-cdn
+        run: npm run typecheck
+
+      - name: Build Widget
+        working-directory: ./widget-cdn
+        run: npm run build
 
   # ==========================================
   # Deploy to VPS

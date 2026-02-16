@@ -84,9 +84,40 @@ else
     echo -e "${YELLOW}⚠️  Не вдалося перевірити підключення (nc може бути відсутнім)${NC}"
 fi
 
-# 9. Логи Redis
+# 9. Socket.IO Redis adapter
 echo ""
-echo -e "${BLUE}9. Останні логи Redis:${NC}"
+echo -e "${BLUE}9. Socket.IO Redis adapter:${NC}"
+SIO_KEYS=$(docker exec chtq-redis redis-cli KEYS "socket.io*" 2>/dev/null | wc -l)
+if [ "$SIO_KEYS" -gt 0 ]; then
+    echo -e "${GREEN}✅ Socket.IO adapter активний ($SIO_KEYS ключів)${NC}"
+else
+    echo -e "${YELLOW}⚠️  Socket.IO adapter ключів не знайдено (можливо немає активних з'єднань)${NC}"
+fi
+
+# 10. BullMQ черги
+echo ""
+echo -e "${BLUE}10. BullMQ черги:${NC}"
+BULL_KEYS=$(docker exec chtq-redis redis-cli KEYS "bull:*" 2>/dev/null | wc -l)
+if [ "$BULL_KEYS" -gt 0 ]; then
+    echo -e "${GREEN}✅ BullMQ активний ($BULL_KEYS ключів)${NC}"
+    docker exec chtq-redis redis-cli KEYS "bull:*" 2>/dev/null | head -5
+else
+    echo -e "${YELLOW}⚠️  BullMQ ключів не знайдено (черга порожня або ще не використовувалась)${NC}"
+fi
+
+# 11. Presence (shared visitor state)
+echo ""
+echo -e "${BLUE}11. Shared presence:${NC}"
+PRESENCE_KEYS=$(docker exec chtq-redis redis-cli KEYS "presence:*" 2>/dev/null | wc -l)
+if [ "$PRESENCE_KEYS" -gt 0 ]; then
+    echo -e "${GREEN}✅ Presence store активний ($PRESENCE_KEYS ключів)${NC}"
+else
+    echo -e "${YELLOW}⚠️  Presence ключів не знайдено (немає активних відвідувачів)${NC}"
+fi
+
+# 12. Логи Redis
+echo ""
+echo -e "${BLUE}12. Останні логи Redis:${NC}"
 docker logs chtq-redis --tail 10
 
 echo ""

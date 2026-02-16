@@ -78,6 +78,7 @@ services:
       - FRONTEND_URL=${FRONTEND_URL}
       - PUBLIC_API_URL=${PUBLIC_API_URL}
       - TELEGRAM_WEBHOOK_DOMAIN=${TELEGRAM_WEBHOOK_DOMAIN}
+      - CORS_ORIGINS=${CORS_ORIGINS}
       - ADMIN_PANEL_URL=${ADMIN_PANEL_URL:-https://admin.chtq.ink}
       - PORT=3000
     volumes:

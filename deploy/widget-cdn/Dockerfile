@@ -1,8 +1,19 @@
 # ============================================
 # CHTQ Widget CDN (NGINX Static) Dockerfile
-# Serves widget.js and static assets
+# Builds TypeScript widget via Vite, serves static assets
 # ============================================
 
+# Stage 1: Build widget from TypeScript sources
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY widget-cdn/package*.json ./
+RUN npm ci && npm cache clean --force
+
+COPY widget-cdn/ ./
+RUN npm run build
+
+# Stage 2: Serve with NGINX
 FROM nginx:1.25-alpine
 
 # Remove default nginx config
@@ -65,11 +76,11 @@ server {
 }
 EOF
 
-# Copy widget files
+# Copy public assets (index.html, test pages, icons, etc.)
 COPY widget-cdn/public/ /usr/share/nginx/html/
 
-# Replace API_URL in widget.js with production URL
-RUN sed -i 's|http://localhost:3000|https://api.chtq.ink|g' /usr/share/nginx/html/widget.js
+# Copy Vite-built widget.js over the legacy public/widget.js
+COPY --from=builder /app/dist/widget.js /usr/share/nginx/html/widget.js
 
 # Create non-root user (nginx runs as nginx user by default in alpine)
 RUN chown -R nginx:nginx /usr/share/nginx/html
