@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Logger } from "@nestjs/common";
+import { Controller, Get, Param, Query, Logger } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 
 @Controller("chat")
@@ -11,10 +11,15 @@ export class ChatPublicController {
 	async getVisitorHistory(
 		@Param("siteId") siteId: string,
 		@Param("visitorId") visitorId: string,
+		@Query("cursor") cursor?: string,
+		@Query("limit") limit?: string,
 	) {
 		this.logger.debug(`Fetching visitor history for site=${siteId}, visitor=${visitorId}`);
-		const messages = await this.chatService.getVisitorChatHistory(siteId, visitorId);
-		this.logger.debug(`Found ${messages.length} messages`);
-		return messages;
+		const result = await this.chatService.getVisitorChatHistory(siteId, visitorId, {
+			cursor,
+			limit: limit ? parseInt(limit, 10) : undefined,
+		});
+		this.logger.debug(`Found ${result.data.length} messages`);
+		return result;
 	}
 }

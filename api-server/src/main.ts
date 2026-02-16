@@ -1,12 +1,24 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { AppModule } from "./app.module";
 import { json, urlencoded } from "express";
 import { join } from "path";
 import { NestExpressApplication } from "@nestjs/platform-express";
+import { RedisIoAdapter } from "./redis/redis-io.adapter";
+import { StructuredLogger } from "./common/structured-logger.service";
+import { CorrelationIdMiddleware } from "./common/correlation-id.middleware";
+import { RequestMetricsInterceptor } from "./common/request-metrics.interceptor";
 
 async function bootstrap() {
-	const app = await NestFactory.create<NestExpressApplication>(AppModule);
+	const logger = new StructuredLogger();
+	const app = await NestFactory.create<NestExpressApplication>(AppModule, { logger });
+
+	// Set up Redis adapter for Socket.IO (enables multi-instance broadcasting)
+	const configService = app.get(ConfigService);
+	const redisIoAdapter = new RedisIoAdapter(app, configService);
+	await redisIoAdapter.connectToRedis();
+	app.useWebSocketAdapter(redisIoAdapter);
 
 	// Enable global validation pipe
 	app.useGlobalPipes(
@@ -17,6 +29,10 @@ async function bootstrap() {
 		}),
 	);
 
+	// Observability: correlation ID + request metrics
+	app.use(new CorrelationIdMiddleware().use.bind(new CorrelationIdMiddleware()));
+	app.useGlobalInterceptors(new RequestMetricsInterceptor());
+
 	// Enable trust proxy for correct IP and Protocol detection behind Nginx
 	app.set("trust proxy", 1);
 
@@ -24,12 +40,21 @@ async function bootstrap() {
 	app.use(json({ limit: "10mb" }));
 	app.use(urlencoded({ extended: true, limit: "10mb" }));
 
+	// CORS: allow origins from env (comma-separated), fall back to permissive in dev
+	const allowedOrigins = configService
+		.get<string>("CORS_ORIGINS", "")
+		.split(",")
+		.map(o => o.trim())
+		.filter(Boolean);
+
 	app.enableCors({
 		origin: (origin, callback) => {
-			// Allow requests with no origin (like mobile apps or curl requests)
+			// Allow requests with no origin (mobile apps, curl, server-to-server)
 			if (!origin) return callback(null, true);
-			// Allow any origin
-			callback(null, true);
+			// If no allowlist configured, allow all (dev mode)
+			if (allowedOrigins.length === 0) return callback(null, true);
+			if (allowedOrigins.includes(origin)) return callback(null, true);
+			callback(new Error(`Origin ${origin} not allowed by CORS`));
 		},
 		credentials: true,
 	});

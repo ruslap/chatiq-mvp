@@ -5,6 +5,7 @@ import {
 	Delete,
 	Param,
 	Body,
+	Query,
 	UseGuards,
 	Logger,
 	Req,
@@ -32,9 +33,16 @@ export class LeadsController {
 	// Protected endpoints for admin panel
 	@Get("site/:siteId")
 	@UseGuards(AuthGuard("jwt"), SiteAccessGuard)
-	async getLeads(@Param("siteId") siteId: string) {
+	async getLeads(
+		@Param("siteId") siteId: string,
+		@Query("cursor") cursor?: string,
+		@Query("limit") limit?: string,
+	) {
 		this.logger.debug(`Fetching leads for site: ${siteId}`);
-		return this.leadsService.getLeadsBySite(siteId);
+		return this.leadsService.getLeadsBySite(siteId, {
+			cursor,
+			limit: limit ? parseInt(limit, 10) : undefined,
+		});
 	}
 
 	@Delete(":id")

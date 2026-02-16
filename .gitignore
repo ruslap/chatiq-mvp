@@ -105,10 +105,10 @@ check-avatars.js
 set-org-id.js
 remove_specs.sh
 
-docs/auditsecrets.md
+docs/issuetests.md
 draft.md
 # Local backups (VPS has its own backup system)
-deploy/
+# deploy/
 
 # API server dev files
 

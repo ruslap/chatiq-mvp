@@ -8,12 +8,12 @@
 
 name: Deploy to VPS
 
-# on:
-#   push:
-#     branches:
-#       # - main
-#       # - staging
-#   workflow_dispatch:  # Allow manual trigger
+on:
+  push:
+    branches:
+      - main
+      - staging
+  workflow_dispatch:  # Allow manual trigger
 
 env:
   DOCKER_BUILDKIT: 1
@@ -44,9 +44,21 @@ jobs:
         working-directory: ./api-server
         run: npm ci
 
+      - name: Generate Prisma client
+        working-directory: ./api-server
+        run: npx prisma generate
+
       - name: Run API linting
         working-directory: ./api-server
-        run: npm run lint || true  # Don't fail on lint warnings
+        run: npm run lint
+
+      - name: Run API type-check
+        working-directory: ./api-server
+        run: npx tsc --noEmit
+
+      - name: Run API tests
+        working-directory: ./api-server
+        run: npm test -- --passWithNoTests
 
       - name: Install Admin dependencies
         working-directory: ./admin-panel
@@ -54,7 +66,11 @@ jobs:
 
       - name: Run Admin linting
         working-directory: ./admin-panel
-        run: npm run lint || true
+        run: npm run lint
+
+      - name: Run Admin type-check
+        working-directory: ./admin-panel
+        run: npx tsc --noEmit
 
   # ==========================================
   # Deploy to VPS

@@ -17,17 +17,19 @@ export class OrganizationService {
 			return user.organization;
 		}
 
-		// Check if there's an existing organization we can connect to
-		// or create a new one
+		// Create a new organization and link the user
 		const organizationId = uuidv4();
 
 		const organization = await this.prisma.widgetSettings.create({
 			data: {
 				organizationId,
-				users: {
-					connect: { id: userId },
-				},
 			},
+		});
+
+		// Link user to the new organization
+		await this.prisma.user.update({
+			where: { id: userId },
+			data: { organizationId },
 		});
 
 		return organization;

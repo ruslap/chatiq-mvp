@@ -21,36 +21,38 @@ export class OrganizationController {
 	// Public endpoint for widget to resolve organizationId → siteId
 	@Get("resolve/:organizationId")
 	async resolveOrganizationToSite(@Param("organizationId") organizationId: string) {
-		try {
-			// Find widget settings by organizationId
-			const widgetSettings = await this.prisma.widgetSettings.findUnique({
-				where: { organizationId },
-				include: {
-					users: {
-						include: {
-							ownedSites: {
-								take: 1,
-								orderBy: { createdAt: "asc" }, // Get the first (primary) site
-							},
+		// Find widget settings by organizationId
+		const widgetSettings = await this.prisma.widgetSettings.findUnique({
+			where: { organizationId },
+			include: {
+				users: {
+					include: {
+						ownedSites: {
+							take: 1,
+							orderBy: { createdAt: "asc" },
 						},
 					},
 				},
-			});
+			},
+		});
 
-			// Get the primary site ID
-			const siteId = widgetSettings?.users?.ownedSites?.[0]?.id;
-
-			return {
-				organizationId,
-				siteId: siteId || organizationId, // Fallback to organizationId if no site found
-			};
-		} catch (error) {
-			// If anything fails, return organizationId as fallback
-			return {
-				organizationId,
-				siteId: organizationId,
-			};
+		if (!widgetSettings) {
+			throw new NotFoundException(`Organization ${organizationId} not found`);
 		}
+
+		// Find the first user who owns a site
+		const siteId = widgetSettings.users
+			.map(u => u.ownedSites[0]?.id)
+			.find(Boolean);
+
+		if (!siteId) {
+			throw new NotFoundException(`No site found for organization ${organizationId}`);
+		}
+
+		return {
+			organizationId,
+			siteId,
+		};
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -74,6 +76,7 @@ export class OrganizationController {
 		};
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Get("settings")
 	async getOrganizationSettings(@Request() req: AuthRequest) {
 		const userId = req.user.userId;
@@ -88,6 +91,7 @@ export class OrganizationController {
 		return organization;
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Put("settings")
 	async updateOrganizationSettings(@Request() req: AuthRequest, @Body() settings: Record<string, unknown>) {
 		const userId = req.user.userId;
@@ -100,6 +104,7 @@ export class OrganizationController {
 		return this.organizationService.updateOrganizationSettings(organization.organizationId, settings);
 	}
 
+	@UseGuards(JwtAuthGuard)
 	@Post("add-user")
 	async addUserToOrganization(@Request() req: AuthRequest, @Body() body: { userId: string }) {
 		const userId = req.user.userId;

@@ -1,11 +1,14 @@
 {
     "name": "chatiq-widget-cdn",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "ChatIQ - Embeddable chat widget for websites",
     "private": true,
     "scripts": {
         "dev": "npx serve public -l 3002",
-        "serve": "npx serve public"
+        "serve": "npx serve public",
+        "build": "vite build",
+        "build:watch": "vite build --watch",
+        "typecheck": "tsc --noEmit"
     },
     "keywords": [
         "chat",
@@ -14,5 +17,11 @@
         "live-chat"
     ],
     "author": "ChatIQ",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^25.2.3",
+        "terser": "^5.46.0",
+        "typescript": "^5.9.3",
+        "vite": "^7.3.1"
+    }
 }

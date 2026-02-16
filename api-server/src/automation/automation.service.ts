@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException, Logger } from "@nestjs/common";
+import { InjectQueue } from "@nestjs/bullmq";
+import { Queue } from "bullmq";
 import { PrismaService } from "../prisma/prisma.service";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+import { AUTO_REPLY_QUEUE, AutoReplyJobData } from "./auto-reply.processor";
 
 interface DaySchedule {
 	start: string;
@@ -11,21 +14,30 @@ interface DaySchedule {
 @Injectable()
 export class AutomationService {
 	private readonly logger = new Logger(AutomationService.name);
-	private pendingTimers = new Map<string, Map<string, NodeJS.Timeout>>();
 
 	constructor(
 		private prisma: PrismaService,
 		private eventEmitter: EventEmitter2,
+		@InjectQueue(AUTO_REPLY_QUEUE) private autoReplyQueue: Queue<AutoReplyJobData>,
 	) {}
 
 	@OnEvent("chat.admin_message")
-	handleAdminMessage(payload: { siteId: string; chatId: string }) {
+	async handleAdminMessage(payload: { siteId: string; chatId: string }) {
 		const { chatId } = payload;
-		if (this.pendingTimers.has(chatId)) {
-			this.logger.debug(`Admin replied in chat ${chatId}, cancelling pending auto-replies`);
-			const chatTimers = this.pendingTimers.get(chatId);
-			chatTimers?.forEach(timer => clearTimeout(timer));
-			this.pendingTimers.delete(chatId);
+		try {
+			const delayed = await this.autoReplyQueue.getDelayed();
+			let cancelled = 0;
+			for (const job of delayed) {
+				if (job.data.chatId === chatId) {
+					await job.remove();
+					cancelled++;
+				}
+			}
+			if (cancelled > 0) {
+				this.logger.debug(`Admin replied in chat ${chatId}, cancelled ${cancelled} pending auto-reply jobs`);
+			}
+		} catch (error) {
+			this.logger.warn(`Failed to cancel queued auto-replies for chat ${chatId}: ${error instanceof Error ? error.message : error}`);
 		}
 	}
 
@@ -442,13 +454,13 @@ export class AutomationService {
 				timezone: data.timezone,
 				isEnabled: data.isEnabled,
 				offlineMessage: data.offlineMessage,
-				monday: data.monday ? JSON.stringify(data.monday) : undefined,
-				tuesday: data.tuesday ? JSON.stringify(data.tuesday) : undefined,
-				wednesday: data.wednesday ? JSON.stringify(data.wednesday) : undefined,
-				thursday: data.thursday ? JSON.stringify(data.thursday) : undefined,
-				friday: data.friday ? JSON.stringify(data.friday) : undefined,
-				saturday: data.saturday ? JSON.stringify(data.saturday) : undefined,
-				sunday: data.sunday ? JSON.stringify(data.sunday) : undefined,
+				monday: data.monday ?? undefined,
+				tuesday: data.tuesday ?? undefined,
+				wednesday: data.wednesday ?? undefined,
+				thursday: data.thursday ?? undefined,
+				friday: data.friday ?? undefined,
+				saturday: data.saturday ?? undefined,
+				sunday: data.sunday ?? undefined,
 			},
 		});
 	}
@@ -489,7 +501,7 @@ export class AutomationService {
 		);
 
 		// Get schedule for current day
-		const daySchedules: Record<string, any> = {
+		const daySchedules: Record<string, unknown> = {
 			monday: hours.monday,
 			tuesday: hours.tuesday,
 			wednesday: hours.wednesday,
@@ -499,10 +511,9 @@ export class AutomationService {
 			sunday: hours.sunday,
 		};
 
-		let schedule: DaySchedule | null = daySchedules[dayName] as DaySchedule | null;
-		if (typeof schedule === "string") {
-			schedule = JSON.parse(schedule) as DaySchedule;
-		}
+		const raw = daySchedules[dayName];
+		const schedule: DaySchedule | null =
+			typeof raw === "string" ? (JSON.parse(raw) as DaySchedule) : (raw as DaySchedule | null);
 
 		this.logger.debug(`Schedule for ${dayName}: ${JSON.stringify(schedule)}`);
 
@@ -584,11 +595,16 @@ export class AutomationService {
 			return;
 		}
 
-		// Cancel existing timers for this chat (reset clock on visitor message)
-		if (this.pendingTimers.has(chatId)) {
-			const chatTimers = this.pendingTimers.get(chatId);
-			chatTimers?.forEach(timer => clearTimeout(timer));
-			this.pendingTimers.delete(chatId);
+		// Cancel existing queued jobs for this chat (reset clock on visitor message)
+		try {
+			const delayed = await this.autoReplyQueue.getDelayed();
+			for (const job of delayed) {
+				if (job.data.chatId === chatId) {
+					await job.remove();
+				}
+			}
+		} catch (error) {
+			this.logger.warn(`Failed to cancel queued jobs for chat ${chatId}: ${error instanceof Error ? error.message : error}`);
 		}
 
 		// Check business hours status first
@@ -605,30 +621,21 @@ export class AutomationService {
 			// This is the first message
 			if (businessStatus.isOpen) {
 				this.logger.debug("ONLINE - sending welcome message");
-				// Online: send welcome message
 				const result = await this.checkAndExecuteAutoReply(siteId, "first_message", chatId);
 				if (result.shouldReply) {
-					void (async () => {
-						await new Promise(resolve => setTimeout(resolve, result.delay || 0));
-						await this.sendAutoReply(siteId, chatId, result.message!);
-					})();
+					await this.enqueueAutoReply(siteId, chatId, "first_message", result.message!, (result.delay || 0) * 1000);
 				}
 			} else {
 				this.logger.debug("OFFLINE - checking offline message");
-				// Offline: try offline message first
 				let result = await this.checkAndExecuteAutoReply(siteId, "offline", chatId);
 
-				// Fallback: if no offline message, try welcome message
 				if (!result.shouldReply) {
 					this.logger.debug("No offline message, falling back to welcome message");
 					result = await this.checkAndExecuteAutoReply(siteId, "first_message", chatId);
 				}
 
 				if (result.shouldReply) {
-					void (async () => {
-						await new Promise(resolve => setTimeout(resolve, result.delay || 0));
-						await this.sendAutoReply(siteId, chatId, result.message!);
-					})();
+					await this.enqueueAutoReply(siteId, chatId, "offline", result.message!, (result.delay || 0) * 1000);
 				}
 			}
 		}
@@ -646,35 +653,39 @@ export class AutomationService {
 			});
 
 			if (delayedReplies.length > 0) {
-				this.logger.debug(`Found ${delayedReplies.length} delayed replies, scheduling`);
-				const chatTimers = new Map<string, NodeJS.Timeout>();
+				this.logger.debug(`Found ${delayedReplies.length} delayed replies, scheduling via queue`);
 
 				for (const reply of delayedReplies) {
-					// Verify delay > 0 to avoid immediate loops if misconfigured
 					if (reply.delay > 0) {
-						this.logger.debug(`Scheduling ${reply.trigger} in ${reply.delay}s`);
-						const timer = setTimeout(async () => {
-							this.logger.debug(`Executing delayed reply ${reply.trigger} for chat ${chatId}`);
-							await this.sendAutoReply(siteId, chatId, reply.message);
-
-							// Remove this specific timer from map
-							const currentTimers = this.pendingTimers.get(chatId);
-							if (currentTimers) {
-								currentTimers.delete(reply.trigger);
-								if (currentTimers.size === 0) {
-									this.pendingTimers.delete(chatId);
-								}
-							}
-						}, reply.delay * 1000);
-
-						chatTimers.set(reply.trigger, timer);
+						await this.enqueueAutoReply(siteId, chatId, reply.trigger, reply.message, reply.delay * 1000);
 					}
 				}
-
-				if (chatTimers.size > 0) {
-					this.pendingTimers.set(chatId, chatTimers);
-				}
 			}
+		}
+	}
+
+	private async enqueueAutoReply(
+		siteId: string,
+		chatId: string,
+		trigger: string,
+		message: string,
+		delayMs: number,
+	): Promise<void> {
+		try {
+			await this.autoReplyQueue.add(
+				trigger,
+				{ siteId, chatId, trigger, message },
+				{
+					delay: delayMs,
+					removeOnComplete: true,
+					removeOnFail: { count: 5 },
+					attempts: 2,
+					backoff: { type: "exponential", delay: 3000 },
+				},
+			);
+			this.logger.debug(`Enqueued auto-reply "${trigger}" for chat ${chatId} with ${delayMs}ms delay`);
+		} catch (error) {
+			this.logger.error(`Failed to enqueue auto-reply: ${error instanceof Error ? error.message : error}`);
 		}
 	}
 

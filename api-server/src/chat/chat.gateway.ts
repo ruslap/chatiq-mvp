@@ -15,6 +15,7 @@ import { OnEvent } from "@nestjs/event-emitter";
 import { TelegramNotificationService } from "../telegram/telegram-notification.service";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "../prisma/prisma.service";
+import { RedisService } from "../redis/redis.service";
 
 interface MessageData {
 	text: string;
@@ -42,9 +43,8 @@ interface SocketJwtPayload {
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	private readonly logger = new Logger(ChatGateway.name);
 
-	// In-memory store for active visitors per site
-	// Map<siteId, Map<visitorId, chatId>>
-	private activeVisitors = new Map<string, Map<string, string>>();
+	private readonly PRESENCE_KEY_PREFIX = "presence:visitors:";
+	private readonly PRESENCE_TTL = 3600; // 1 hour
 
 	@WebSocketServer()
 	server: Server;
@@ -54,7 +54,42 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		private readonly telegramNotificationService: TelegramNotificationService,
 		private readonly jwtService: JwtService,
 		private readonly prisma: PrismaService,
+		private readonly redisService: RedisService,
 	) {}
+
+	// --- Shared presence helpers (Redis-backed, fallback to noop) ---
+
+	private async setVisitorPresence(siteId: string, visitorId: string, chatId: string): Promise<void> {
+		const client = this.redisService.getClient();
+		if (!this.redisService.isAvailable()) return;
+		try {
+			const key = `${this.PRESENCE_KEY_PREFIX}${siteId}`;
+			await client.hset(key, visitorId, chatId);
+			await client.expire(key, this.PRESENCE_TTL);
+		} catch {
+			this.logger.warn("Failed to set visitor presence in Redis");
+		}
+	}
+
+	private async removeVisitorPresence(siteId: string, visitorId: string): Promise<void> {
+		if (!this.redisService.isAvailable()) return;
+		try {
+			await this.redisService.getClient().hdel(`${this.PRESENCE_KEY_PREFIX}${siteId}`, visitorId);
+		} catch {
+			this.logger.warn("Failed to remove visitor presence from Redis");
+		}
+	}
+
+	private async getOnlineVisitors(siteId: string): Promise<Array<{ visitorId: string; chatId: string }>> {
+		if (!this.redisService.isAvailable()) return [];
+		try {
+			const data = await this.redisService.getClient().hgetall(`${this.PRESENCE_KEY_PREFIX}${siteId}`);
+			if (!data) return [];
+			return Object.entries(data).map(([visitorId, chatId]) => ({ visitorId, chatId }));
+		} catch {
+			return [];
+		}
+	}
 
 	private getSocketToken(client: Socket): string | null {
 		const authToken = client.handshake.auth?.token;
@@ -155,8 +190,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		if (siteId && visitorId) {
 			this.logger.log(`Visitor ${visitorId} disconnected from site ${siteId}`);
 
-			// Remove from active visitors
-			this.activeVisitors.get(siteId)?.delete(visitorId);
+			// Remove from shared presence store
+			void this.removeVisitorPresence(siteId, visitorId);
 
 			// Find and update the chat status to closed
 			void this.chatService
@@ -202,18 +237,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		client.join(roomName);
 		this.logger.log(`Visitor ${visitorId} joined room ${roomName}`);
 
-		// Track active visitor in memory
-		if (!this.activeVisitors.has(siteId)) {
-			this.activeVisitors.set(siteId, new Map());
-		}
-
 		// Find or create chat to get chatId
 		const chat = await this.chatService.findChatByVisitor(siteId, visitorId);
 		const chatId = chat?.id || null;
 
-		// Store visitor as active
+		// Store visitor in shared presence store
 		if (chatId) {
-			this.activeVisitors.get(siteId)!.set(visitorId, chatId);
+			await this.setVisitorPresence(siteId, visitorId, chatId);
 
 			// Update chat status to open
 			await this.chatService.updateChatStatus(chatId, "open");
@@ -300,15 +330,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		client.join(adminRoom);
 		this.logger.log(`Admin joined room ${adminRoom}`);
 
-		// Send current online visitors to this admin
-		const siteVisitors = this.activeVisitors.get(siteId);
-		const onlineVisitors: Array<{ visitorId: string; chatId: string }> = [];
-
-		if (siteVisitors) {
-			siteVisitors.forEach((chatId, visitorId) => {
-				onlineVisitors.push({ visitorId, chatId });
-			});
-		}
+		// Send current online visitors to this admin (from shared Redis store)
+		const onlineVisitors = await this.getOnlineVisitors(siteId);
 
 		client.emit("visitors:status", { onlineVisitors });
 		this.logger.log(
@@ -481,8 +504,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			`Visitor ${payload.visitorId} disconnected from site ${payload.siteId}`,
 		);
 
-		// Remove from active visitors
-		this.activeVisitors.get(payload.siteId)?.delete(payload.visitorId);
+		// Remove from shared presence store
+		await this.removeVisitorPresence(payload.siteId, payload.visitorId);
 
 		// Find and update the chat status to closed
 		const chat = await this.chatService.findChatByVisitor(

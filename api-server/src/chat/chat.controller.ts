@@ -13,20 +13,34 @@ export class ChatController {
 
 	@Get("site/:siteId")
 	@UseGuards(SiteAccessGuard)
-	getSiteChats(@Param("siteId") siteId: string, @Query("search") search?: string) {
-		return this.chatService.getChatsBySite(siteId, search);
+	getSiteChats(
+		@Param("siteId") siteId: string,
+		@Query("search") search?: string,
+		@Query("cursor") cursor?: string,
+		@Query("limit") limit?: string,
+	) {
+		return this.chatService.getChatsBySite(siteId, {
+			search,
+			cursor,
+			limit: limit ? parseInt(limit, 10) : undefined,
+		});
 	}
 
 	@Get(":chatId/history")
 	async getChatMessages(
 		@Req() request: { user: { userId: string } },
 		@Param("chatId") chatId: string,
+		@Query("cursor") cursor?: string,
+		@Query("limit") limit?: string,
 	) {
 		await this.chatService.assertUserChatAccess(request.user.userId, chatId);
 		this.logger.debug(`Fetching history for chatId: ${chatId}`);
-		const messages = await this.chatService.getMessagesByChat(chatId);
-		this.logger.debug(`Found ${messages.length} messages`);
-		return messages;
+		const result = await this.chatService.getMessagesByChat(chatId, {
+			cursor,
+			limit: limit ? parseInt(limit, 10) : undefined,
+		});
+		this.logger.debug(`Found ${result.data.length} messages`);
+		return result;
 	}
 
 	@Delete(":chatId/clear")

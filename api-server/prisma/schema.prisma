@@ -15,7 +15,7 @@ model User {
   googleId       String?         @unique
   role           UserRole        @default(OPERATOR)
   createdAt      DateTime        @default(now())
-  organizationId String?         @unique
+  organizationId String?
   password       String?
   messages       Message[]
   ownedSites     Site[]          @relation("SiteOwner")
@@ -93,7 +93,7 @@ model WidgetSettings {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   secondaryColor  String   @default("#B6FF00")
-  users           User?
+  users           User[]
 }
 
 model AutoReply {

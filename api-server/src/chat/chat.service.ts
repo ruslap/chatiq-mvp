@@ -124,7 +124,7 @@ export class ChatService {
 				chatId,
 				from: "admin",
 				text,
-				attachment: attachment ? JSON.stringify(attachment) : undefined,
+				attachment: attachment ? attachment : undefined,
 			},
 		});
 
@@ -137,7 +137,14 @@ export class ChatService {
 		return message;
 	}
 
-	async getChatsBySite(siteId: string, search?: string) {
+	async getChatsBySite(
+		siteId: string,
+		options?: { search?: string; cursor?: string; limit?: number },
+	) {
+		const limit = Math.min(options?.limit ?? 50, 100);
+		const cursor = options?.cursor;
+		const search = options?.search;
+
 		const chats = await this.prisma.chat.findMany({
 			where: {
 				siteId,
@@ -155,6 +162,8 @@ export class ChatService {
 					: {}),
 			},
 			orderBy: { createdAt: "desc" },
+			take: limit + 1,
+			...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
 			include: {
 				messages: {
 					take: 1,
@@ -163,31 +172,53 @@ export class ChatService {
 			},
 		});
 
-		// Add unreadCount for each chat
-		const chatsWithUnreadCount = await Promise.all(
-			chats.map(async chat => {
-				const unreadCount = await this.prisma.message.count({
+		const hasMore = chats.length > limit;
+		const items = hasMore ? chats.slice(0, limit) : chats;
+		const nextCursor = hasMore ? items[items.length - 1].id : undefined;
+
+		// Batch unread counts with groupBy instead of N+1 queries
+		const chatIds = items.map(c => c.id);
+		const unreadGroups = chatIds.length > 0
+			? await this.prisma.message.groupBy({
+					by: ["chatId"],
 					where: {
-						chatId: chat.id,
+						chatId: { in: chatIds },
 						from: "visitor",
 						read: false,
 					},
-				});
-				return {
-					...chat,
-					unreadCount,
-				};
-			}),
-		);
+					_count: { id: true },
+				})
+			: [];
 
-		return chatsWithUnreadCount;
+		const unreadMap = new Map(unreadGroups.map(g => [g.chatId, g._count.id]));
+
+		const data = items.map(chat => ({
+			...chat,
+			unreadCount: unreadMap.get(chat.id) ?? 0,
+		}));
+
+		return { data, nextCursor };
 	}
 
-	async getMessagesByChat(chatId: string) {
-		return this.prisma.message.findMany({
+	async getMessagesByChat(
+		chatId: string,
+		options?: { cursor?: string; limit?: number },
+	) {
+		const limit = Math.min(options?.limit ?? 50, 200);
+		const cursor = options?.cursor;
+
+		const messages = await this.prisma.message.findMany({
 			where: { chatId },
 			orderBy: { createdAt: "asc" },
+			take: limit + 1,
+			...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
 		});
+
+		const hasMore = messages.length > limit;
+		const data = hasMore ? messages.slice(0, limit) : messages;
+		const nextCursor = hasMore ? data[data.length - 1].id : undefined;
+
+		return { data, nextCursor };
 	}
 
 	async clearChatMessages(chatId: string) {
@@ -291,12 +322,13 @@ export class ChatService {
 		});
 	}
 
-	async getVisitorChatHistory(siteId: string, visitorId: string) {
+	async getVisitorChatHistory(
+		siteId: string,
+		visitorId: string,
+		options?: { cursor?: string; limit?: number },
+	) {
 		const chat = await this.findChatByVisitor(siteId, visitorId);
-		if (!chat) return [];
-		return this.prisma.message.findMany({
-			where: { chatId: chat.id },
-			orderBy: { createdAt: "asc" },
-		});
+		if (!chat) return { data: [], nextCursor: undefined };
+		return this.getMessagesByChat(chat.id, options);
 	}
 }

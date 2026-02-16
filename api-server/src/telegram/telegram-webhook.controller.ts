@@ -2,6 +2,8 @@ import { Controller, Post, Param, Body, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import type { TelegramUpdate } from './dto/telegram-webhook.dto';
 
+type TelegramMessage = NonNullable<TelegramUpdate['message']>;
+
 @Controller('telegram/webhook')
 export class TelegramWebhookController {
   private readonly logger = new Logger(TelegramWebhookController.name);
@@ -34,7 +36,7 @@ export class TelegramWebhookController {
     siteId: string,
     chatId: string,
     text: string,
-    message: any
+    message: TelegramMessage
   ) {
     // 1. First get the integration by siteId to have the botToken for replies
     const integrationBySite = await this.prisma.telegramIntegration.findUnique({

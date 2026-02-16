@@ -8,11 +8,13 @@ import { TelegramModule } from "../telegram/telegram.module";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { SiteAccessGuard } from "../auth/site-access.guard";
+import { RedisModule } from "../redis/redis.module";
 
 @Module({
 	imports: [
 		AutomationModule,
 		TelegramModule,
+		RedisModule,
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],

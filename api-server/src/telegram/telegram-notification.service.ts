@@ -1,13 +1,51 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
+interface LeadChatNotificationInput {
+  id: string;
+  siteId: string;
+  visitorName?: string | null;
+}
+
+interface LeadMessageNotificationInput {
+  text: string;
+  createdAt: Date;
+}
+
+interface ContactLeadNotificationInput {
+  id: string;
+  siteId: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  message?: string | null;
+  createdAt: Date;
+}
+
+interface NotificationSite {
+  name?: string | null;
+  domain?: string | null;
+}
+
+interface TelegramReplyMarkup {
+  inline_keyboard: Array<
+    Array<{
+      text: string;
+      url: string;
+    }>
+  >;
+}
+
 @Injectable()
 export class TelegramNotificationService {
   private readonly logger = new Logger(TelegramNotificationService.name);
 
   constructor(private prisma: PrismaService) {}
 
-  async notifyNewLead(chat: any, message: any) {
+  async notifyNewLead(
+    chat: LeadChatNotificationInput,
+    message: LeadMessageNotificationInput
+  ) {
     const integration = await this.prisma.telegramIntegration.findUnique({
       where: { siteId: chat.siteId },
       include: {
@@ -43,13 +81,17 @@ export class TelegramNotificationService {
       } catch (error) {
         this.logger.error(
           `Failed to send notification to ${subscription.chatId}`,
-          error.stack
+          this.formatError(error)
         );
       }
     }
   }
 
-  private formatLeadMessage(chat: any, message: any, site: any): string {
+  private formatLeadMessage(
+    chat: LeadChatNotificationInput,
+    message: LeadMessageNotificationInput,
+    site: NotificationSite
+  ): string {
     const visitorName = chat.visitorName || 'Анонім';
     const messageText = message.text || '(без тексту)';
     const siteName = site.domain || site.name || 'Невідомий сайт';
@@ -66,7 +108,7 @@ export class TelegramNotificationService {
 ⏰ ${time}`;
   }
 
-  private createInlineButton(chatId: string) {
+  private createInlineButton(chatId: string): TelegramReplyMarkup {
     const adminUrl = process.env.ADMIN_PANEL_URL || 'http://localhost:3001';
     const chatUrl = `${adminUrl}/chats/${chatId}`;
 
@@ -82,15 +124,7 @@ export class TelegramNotificationService {
     };
   }
 
-  async notifyNewContactLead(lead: {
-    id: string;
-    siteId: string;
-    name: string;
-    email?: string | null;
-    phone?: string | null;
-    message?: string | null;
-    createdAt: Date;
-  }) {
+  async notifyNewContactLead(lead: ContactLeadNotificationInput) {
     const integration = await this.prisma.telegramIntegration.findUnique({
       where: { siteId: lead.siteId },
       include: {
@@ -126,13 +160,16 @@ export class TelegramNotificationService {
       } catch (error) {
         this.logger.error(
           `Failed to send lead notification to ${subscription.chatId}`,
-          error.stack
+          this.formatError(error)
         );
       }
     }
   }
 
-  private formatContactLeadMessage(lead: any, site: any): string {
+  private formatContactLeadMessage(
+    lead: ContactLeadNotificationInput,
+    site: NotificationSite
+  ): string {
     const siteName = site.domain || site.name || 'Невідомий сайт';
     const time = new Date(lead.createdAt).toLocaleTimeString('uk-UA', {
       hour: '2-digit',
@@ -155,7 +192,7 @@ ${contactInfo}${lead.message ? `💬 Повідомлення: "${lead.message}"
 📅 ${date}, ${time}`;
   }
 
-  private createLeadsButton(siteId: string) {
+  private createLeadsButton(siteId: string): TelegramReplyMarkup {
     const adminUrl = process.env.ADMIN_PANEL_URL || 'http://localhost:3001';
     const leadsUrl = `${adminUrl}/leads?siteId=${siteId}`;
 
@@ -175,7 +212,7 @@ ${contactInfo}${lead.message ? `💬 Повідомлення: "${lead.message}"
     botToken: string,
     chatId: string,
     text: string,
-    replyMarkup: any
+    replyMarkup: TelegramReplyMarkup
   ) {
     const response = await fetch(
       `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -190,11 +227,20 @@ ${contactInfo}${lead.message ? `💬 Повідомлення: "${lead.message}"
       }
     );
 
+    const responseBody: unknown = await response.json();
+
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Telegram API error: ${JSON.stringify(error)}`);
+      throw new Error(`Telegram API error: ${JSON.stringify(responseBody)}`);
     }
 
-    return response.json();
+    return responseBody;
+  }
+
+  private formatError(error: unknown): string {
+    if (error instanceof Error) {
+      return error.stack ?? error.message;
+    }
+
+    return String(error);
   }
 }

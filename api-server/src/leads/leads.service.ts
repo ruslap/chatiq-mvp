@@ -33,11 +33,25 @@ export class LeadsService {
 		return lead;
 	}
 
-	async getLeadsBySite(siteId: string) {
-		return this.prisma.contactLead.findMany({
+	async getLeadsBySite(
+		siteId: string,
+		options?: { cursor?: string; limit?: number },
+	) {
+		const limit = Math.min(options?.limit ?? 50, 100);
+		const cursor = options?.cursor;
+
+		const leads = await this.prisma.contactLead.findMany({
 			where: { siteId },
 			orderBy: { createdAt: "desc" },
+			take: limit + 1,
+			...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
 		});
+
+		const hasMore = leads.length > limit;
+		const data = hasMore ? leads.slice(0, limit) : leads;
+		const nextCursor = hasMore ? data[data.length - 1].id : undefined;
+
+		return { data, nextCursor };
 	}
 
 	async assertUserLeadAccess(userId: string, leadId: string) {
