@@ -1,4 +1,4 @@
-# Dependencies
+l# Dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -108,7 +108,7 @@ remove_specs.sh
 docs/issuetests.md
 draft.md
 # Local backups (VPS has its own backup system)
-# deploy/
+deploy/
 
 # API server dev files
 
