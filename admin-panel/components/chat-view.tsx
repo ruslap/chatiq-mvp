@@ -122,24 +122,30 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                 }
             })
                 .then(res => res.json())
-                .then(data => {
-                    if (Array.isArray(data)) {
-                        // Parse attachments for each message
-                        const messagesWithParsedAttachments = data.map(msg => {
-                            if (msg.attachment && typeof msg.attachment === 'string') {
-                                try {
-                                    msg.attachment = JSON.parse(msg.attachment);
-                                } catch (e) {
-                                    console.error('Failed to parse attachment:', e);
-                                }
+                .then(payload => {
+                    const rawMessages = Array.isArray(payload)
+                        ? payload
+                        : Array.isArray(payload?.data)
+                            ? payload.data
+                            : [];
+
+                    const messagesWithParsedAttachments = rawMessages.map((msg: Message & { attachment?: unknown }) => {
+                        const normalizedMsg = { ...msg };
+                        if (normalizedMsg.attachment && typeof normalizedMsg.attachment === 'string') {
+                            try {
+                                normalizedMsg.attachment = JSON.parse(normalizedMsg.attachment);
+                            } catch (e) {
+                                console.error('Failed to parse attachment:', e);
                             }
-                            return msg;
-                        });
-                        setMessages(messagesWithParsedAttachments);
-                    } else {
-                        console.error("Messages fetch did not return an array:", data);
-                        setMessages([]);
+                        }
+                        return normalizedMsg as Message;
+                    });
+
+                    if (!Array.isArray(payload) && !Array.isArray(payload?.data)) {
+                        console.error("Messages fetch returned unexpected payload:", payload);
                     }
+
+                    setMessages(messagesWithParsedAttachments);
                 })
                 .catch(err => {
                     console.error("History fetch error:", err);

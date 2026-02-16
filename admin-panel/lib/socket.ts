@@ -22,6 +22,7 @@ export function getSocket(options: SocketOptions): Socket {
         currentAccessToken === accessToken &&
         socketInstance.connected
     ) {
+        socketInstance.emit('admin:join', { siteId });
         connectionCount++;
         return socketInstance;
     }
@@ -71,6 +72,10 @@ export function getSocket(options: SocketOptions): Socket {
         socketInstance.on('connect_error', (error: Error) => {
             console.error('[SocketManager] Connection error:', error.message);
         });
+
+        if (socketInstance.connected) {
+            socketInstance.emit('admin:join', { siteId });
+        }
     }
 
     connectionCount++;
