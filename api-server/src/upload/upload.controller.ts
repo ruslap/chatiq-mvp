@@ -15,6 +15,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { extname, join } from "path";
 import { v4 as uuid } from "uuid";
+import type { Request } from "express";
 import * as fs from "fs";
 
 @Controller("upload")
@@ -70,7 +71,7 @@ export class UploadController {
 			size: number;
 			mimetype: string;
 		},
-		@Req() req: any,
+		@Req() req: Request,
 	) {
 		if (!file) {
 			this.logger.error("Upload failed: No file received");
@@ -135,7 +136,7 @@ export class UploadController {
 				return { success: false, message: "File not found" };
 			}
 		} catch (error) {
-			this.logger.error(`Error deleting file: ${error.message}`);
+			this.logger.error(`Error deleting file: ${error instanceof Error ? error.message : error}`);
 			throw new BadRequestException("Could not delete file");
 		}
 	}
