@@ -20,13 +20,13 @@ See [README-dev.md](./README-dev.md) for development setup instructions.
 
 ChatIQ supports real-time Telegram notifications for new visitor messages. Site operators can receive instant alerts when visitors start a conversation.
 
-**Setup Guide:** [docs/TELEGRAM_SETUP.md](./docs/TELEGRAM_SETUP.md)
-
 **Key Features:**
 - Instant notifications for new leads
 - Multiple operators can subscribe
 - Direct links to open chats in Admin Panel
 - Webhook-based (no polling)
+
+**Setup Guide:** See [docs/TELEGRAM_SETUP.md](./docs/TELEGRAM_SETUP.md) for detailed instructions.
 
 ## Project Structure
 

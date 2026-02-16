@@ -106,7 +106,7 @@ set-org-id.js
 remove_specs.sh
 
 # Local backups (VPS has its own backup system)
-
+deploy/
 
 # API server dev files
 api-server/check-db.ts
