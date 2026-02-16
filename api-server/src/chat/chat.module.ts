@@ -5,10 +5,23 @@ import { ChatController } from "./chat.controller";
 import { ChatPublicController } from "./chat-public.controller";
 import { AutomationModule } from "../automation/automation.module";
 import { TelegramModule } from "../telegram/telegram.module";
+import { JwtModule } from "@nestjs/jwt";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { SiteAccessGuard } from "../auth/site-access.guard";
 
 @Module({
-	imports: [AutomationModule, TelegramModule],
+	imports: [
+		AutomationModule,
+		TelegramModule,
+		JwtModule.registerAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				secret: configService.getOrThrow<string>("JWT_SECRET"),
+			}),
+		}),
+	],
 	controllers: [ChatController, ChatPublicController],
-	providers: [ChatGateway, ChatService],
+	providers: [ChatGateway, ChatService, SiteAccessGuard],
 })
 export class ChatModule {}

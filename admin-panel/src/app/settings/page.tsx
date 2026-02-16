@@ -6,6 +6,7 @@ import { TelegramSettings } from '../../components/telegram-settings';
 
 export default function SettingsPage() {
   const [siteId, setSiteId] = useState('');
+  const [accessToken, setAccessToken] = useState('');
   const [isConfigured, setIsConfigured] = useState(false);
 
   // Simplified config screen for testing
@@ -26,9 +27,16 @@ export default function SettingsPage() {
             onChange={(e) => setSiteId(e.target.value)}
             className="mb-4 w-full rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] px-4 py-2.5 text-[rgb(var(--foreground))] focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none transition-smooth"
           />
+          <input
+            type="password"
+            placeholder="Admin access token"
+            value={accessToken}
+            onChange={(e) => setAccessToken(e.target.value)}
+            className="mb-4 w-full rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] px-4 py-2.5 text-[rgb(var(--foreground))] focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none transition-smooth"
+          />
           <button
             onClick={() => setIsConfigured(true)}
-            disabled={!siteId.trim()}
+            disabled={!siteId.trim() || !accessToken.trim()}
             className="w-full rounded-xl bg-[rgb(var(--primary))] px-4 py-2.5 font-medium text-white transition-smooth hover:bg-[rgb(var(--primary-600))] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Продовжити
@@ -60,7 +68,7 @@ export default function SettingsPage() {
           {/* Channels Settings Content */}
           <div className="animate-fade-in">
             <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6">
-              <TelegramSettings siteId={siteId} accessToken="dummy" />
+              <TelegramSettings siteId={siteId} accessToken={accessToken} />
             </div>
           </div>
 

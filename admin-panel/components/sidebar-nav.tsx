@@ -37,10 +37,10 @@ export function SidebarNav() {
     }, []);
 
     useEffect(() => {
-        if (!session?.user || !siteId) return;
+        if (!session?.user || !siteId || !session.accessToken) return;
 
         // Use shared socket manager
-        const socket = getSocket({ siteId });
+        const socket = getSocket({ siteId, accessToken: session.accessToken });
 
         // Listen for new messages to update unread count
         const updateUnreadCount = () => {

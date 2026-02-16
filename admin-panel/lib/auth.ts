@@ -125,5 +125,5 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
     },
-    debug: process.env.NODE_ENV === 'development' || true, // Тимчасово вмикаємо для дебагу в продакшені
+    debug: process.env.NODE_ENV === 'development',
 };

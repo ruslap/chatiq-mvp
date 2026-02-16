@@ -7,10 +7,12 @@ import {
 	Body,
 	UseGuards,
 	Logger,
+	Req,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { LeadsService } from "./leads.service";
 import { CreateLeadDto } from "./dto";
+import { SiteAccessGuard } from "../auth/site-access.guard";
 
 @Controller("leads")
 export class LeadsController {
@@ -29,7 +31,7 @@ export class LeadsController {
 
 	// Protected endpoints for admin panel
 	@Get("site/:siteId")
-	@UseGuards(AuthGuard("jwt"))
+	@UseGuards(AuthGuard("jwt"), SiteAccessGuard)
 	async getLeads(@Param("siteId") siteId: string) {
 		this.logger.debug(`Fetching leads for site: ${siteId}`);
 		return this.leadsService.getLeadsBySite(siteId);
@@ -37,7 +39,11 @@ export class LeadsController {
 
 	@Delete(":id")
 	@UseGuards(AuthGuard("jwt"))
-	async deleteLead(@Param("id") id: string) {
+	async deleteLead(
+		@Req() request: { user: { userId: string } },
+		@Param("id") id: string,
+	) {
+		await this.leadsService.assertUserLeadAccess(request.user.userId, id);
 		this.logger.debug(`Deleting lead: ${id}`);
 		return this.leadsService.deleteLead(id);
 	}

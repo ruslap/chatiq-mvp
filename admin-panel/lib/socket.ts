@@ -4,23 +4,33 @@ import { getApiUrl } from "./api-config";
 // Singleton socket manager to avoid multiple connections
 let socketInstance: Socket | null = null;
 let currentSiteId: string | null = null;
+let currentAccessToken: string | null = null;
 let connectionCount = 0;
 
 interface SocketOptions {
     siteId: string;
+    accessToken: string;
 }
 
 export function getSocket(options: SocketOptions): Socket {
-    const { siteId } = options;
+    const { siteId, accessToken } = options;
 
     // If we already have a connection for this siteId, reuse it
-    if (socketInstance && currentSiteId === siteId && socketInstance.connected) {
+    if (
+        socketInstance &&
+        currentSiteId === siteId &&
+        currentAccessToken === accessToken &&
+        socketInstance.connected
+    ) {
         connectionCount++;
         return socketInstance;
     }
 
     // If siteId changed, disconnect old socket
-    if (socketInstance && currentSiteId !== siteId) {
+    if (
+        socketInstance &&
+        (currentSiteId !== siteId || currentAccessToken !== accessToken)
+    ) {
         socketInstance.disconnect();
         socketInstance = null;
     }
@@ -32,6 +42,9 @@ export function getSocket(options: SocketOptions): Socket {
         socketInstance = io(apiUrl, {
             // Start with polling, then upgrade to WebSocket (more reliable through Cloudflare)
             transports: ['polling', 'websocket'],
+            auth: {
+                token: accessToken,
+            },
             // Reconnection settings
             reconnection: true,
             reconnectionAttempts: 10,
@@ -44,6 +57,7 @@ export function getSocket(options: SocketOptions): Socket {
         });
 
         currentSiteId = siteId;
+        currentAccessToken = accessToken;
 
         socketInstance.on('connect', () => {
             console.log('[SocketManager] Connected, joining admin room:', siteId);
@@ -78,6 +92,7 @@ export function disconnectSocket(): void {
         socketInstance.disconnect();
         socketInstance = null;
         currentSiteId = null;
+        currentAccessToken = null;
         connectionCount = 0;
     }
 }

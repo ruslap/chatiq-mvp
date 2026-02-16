@@ -75,6 +75,7 @@ function highlightText(text: string, query: string) {
 
 export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDeleteChat, onClearMessages, onRenameVisitor }: ChatViewProps & { onRenameVisitor?: (id: string, name: string) => void }) {
     const { data: session } = useSession();
+    const accessToken = session?.accessToken;
     const { language } = useLanguage();
     const t = useTranslation(language);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -114,10 +115,10 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
 
     // Fetch message history
     useEffect(() => {
-        if (chatId) {
+        if (chatId && accessToken) {
             fetch(`${apiUrl}/chats/${chatId}/history`, {
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken || 'dummy'}`
+                    'Authorization': `Bearer ${accessToken}`
                 }
             })
                 .then(res => res.json())
@@ -149,20 +150,22 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
             if (socket) {
                 socket.emit('admin:mark_read', { chatId });
             }
+        } else if (!accessToken) {
+            setMessages([]);
         }
-    }, [chatId, session, apiUrl, socket]);
+    }, [chatId, accessToken, apiUrl, socket]);
 
     // Load quick templates
     useEffect(() => {
-        if (!siteId) return;
+        if (!siteId || !accessToken) return;
 
         fetch(`${apiUrl}/automation/templates/${siteId}/active`, {
-            headers: { 'Authorization': `Bearer ${(session as any)?.accessToken || 'dummy'}` }
+            headers: { 'Authorization': `Bearer ${accessToken}` }
         })
             .then(res => res.ok ? res.json() : [])
             .then(data => setQuickTemplates(Array.isArray(data) ? data : []))
             .catch(() => setQuickTemplates([]));
-    }, [session, apiUrl, siteId]);
+    }, [accessToken, apiUrl, siteId]);
 
     useEffect(() => {
         if (!socket) return;
@@ -273,6 +276,11 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
 
         // Upload file if present
         if (attachedFile) {
+            if (!accessToken) {
+                alert("Сесія недійсна. Увійдіть ще раз.");
+                return;
+            }
+
             setIsUploading(true);
             try {
                 const formData = new FormData();
@@ -281,7 +289,10 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
 
                 const response = await fetch(`${apiUrl}/upload`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
                 });
 
                 if (!response.ok) throw new Error('Upload failed');
@@ -311,11 +322,16 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
     };
 
     const handleClear = async () => {
+        if (!accessToken) {
+            alert("Сесія недійсна. Увійдіть ще раз.");
+            return;
+        }
+
         try {
             const res = await fetch(`${apiUrl}/chats/${chatId}/clear`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken || 'dummy'}`
+                    'Authorization': `Bearer ${accessToken}`
                 }
             });
             if (res.ok) {
@@ -334,11 +350,16 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
     };
 
     const handleDelete = async () => {
+        if (!accessToken) {
+            alert("Сесія недійсна. Увійдіть ще раз.");
+            return;
+        }
+
         try {
             const res = await fetch(`${apiUrl}/chats/${chatId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${(session as any)?.accessToken || 'dummy'}`
+                    'Authorization': `Bearer ${accessToken}`
                 }
             });
             if (res.ok) {
@@ -361,12 +382,17 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
             return;
         }
 
+        if (!accessToken) {
+            alert("Сесія недійсна. Увійдіть ще раз.");
+            return;
+        }
+
         try {
             const res = await fetch(`${apiUrl}/chats/${chatId}/rename`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(session as any)?.accessToken || 'dummy'}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({ visitorName: newVisitorName.trim() })
             });

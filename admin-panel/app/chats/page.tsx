@@ -40,6 +40,7 @@ function ChatsContent() {
     const { language } = useLanguage();
     const t = useTranslation(language);
     const { data: session, status } = useSession();
+    const accessToken = session?.accessToken;
     const searchParams = useSearchParams();
     const chatIdFromUrl = searchParams.get('id');
     const [selectedChatId, setSelectedChatId] = useState<string | null>(chatIdFromUrl);
@@ -98,7 +99,7 @@ function ChatsContent() {
 
     // Separate effect for fetching chats with search
     useEffect(() => {
-        if (!session?.user || !siteId) return;
+        if (!session?.user || !siteId || !accessToken) return;
 
         const apiUrl = getApiUrl();
 
@@ -110,7 +111,7 @@ function ChatsContent() {
         setIsLoadingChats(true);
         fetch(`${apiUrl}/chats/site/${siteId}?${queryParams.toString()}`, {
             headers: {
-                'Authorization': `Bearer ${(session as any).accessToken}`
+                'Authorization': `Bearer ${accessToken}`
             }
         })
             .then(res => res.json())
@@ -142,13 +143,13 @@ function ChatsContent() {
             .finally(() => {
                 setIsLoadingChats(false);
             });
-    }, [session, siteId, debouncedSearchQuery]);
+    }, [session, siteId, debouncedSearchQuery, accessToken]);
 
     useEffect(() => {
-        if (!session?.user || !siteId) return;
+        if (!session?.user || !siteId || !accessToken) return;
 
         // Use shared socket manager
-        const s = getSocket({ siteId });
+        const s = getSocket({ siteId, accessToken });
         socketRef.current = s;
         setSocket(s);
 
@@ -239,7 +240,7 @@ function ChatsContent() {
             releaseSocket();
             socketRef.current = null;
         };
-    }, [session, siteId]);
+    }, [session, siteId, accessToken]);
 
     // Loading State
     if (status === "loading") return (

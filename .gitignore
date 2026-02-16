@@ -105,8 +105,7 @@ check-avatars.js
 set-org-id.js
 remove_specs.sh
 
-# Local backups (VPS has its own backup system)
-
+docs/auditsecrets.md
 draft.md
 # Local backups (VPS has its own backup system)
 deploy/

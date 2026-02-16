@@ -66,6 +66,7 @@ import { getApiUrl } from "@/lib/api-config";
 export default function SettingsPage() {
     const API_URL = getApiUrl();
     const { data: session, status } = useSession();
+    const accessToken = session?.accessToken;
     const [activeTab, setActiveTab] = useState('channels');
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -90,6 +91,11 @@ export default function SettingsPage() {
     useEffect(() => {
         const initSettings = async () => {
             if (!session) return;
+            if (!session.accessToken) {
+                setSaveError('Сесія недійсна. Увійдіть ще раз.');
+                setIsLoading(false);
+                return;
+            }
 
             try {
                 const org = await getMyOrganization();
@@ -104,7 +110,7 @@ export default function SettingsPage() {
                 // Load settings from API
                 const res = await fetch(`${API_URL}/widget-settings/${id}`, {
                     headers: {
-                        'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
+                        'Authorization': `Bearer ${session.accessToken}`
                     }
                 });
                 if (res.ok) {
@@ -139,6 +145,11 @@ export default function SettingsPage() {
     }, [session, status]);
 
     const handleSave = async () => {
+        if (!accessToken) {
+            setSaveError('Сесія недійсна. Увійдіть ще раз.');
+            return;
+        }
+
         setIsSaving(true);
         try {
             // Use custom hex if color ID is 'custom', otherwise find hex from presets
@@ -152,7 +163,7 @@ export default function SettingsPage() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify({
                     color: colorValue,
@@ -367,6 +378,11 @@ export default function SettingsPage() {
                                                             return;
                                                         }
 
+                                                        if (!accessToken) {
+                                                            alert('Сесія недійсна. Увійдіть ще раз.');
+                                                            return;
+                                                        }
+
                                                         setIsUploadingAvatar(true);
                                                         try {
                                                             const formData = new FormData();
@@ -377,7 +393,7 @@ export default function SettingsPage() {
                                                                 method: 'POST',
                                                                 body: formData,
                                                                 headers: {
-                                                                    'Authorization': `Bearer ${(session as any).accessToken || 'dummy'}`
+                                                                    'Authorization': `Bearer ${accessToken}`
                                                                 }
                                                             });
 
@@ -396,7 +412,7 @@ export default function SettingsPage() {
                                                                     method: 'POST',
                                                                     headers: {
                                                                         'Content-Type': 'application/json',
-                                                                        'Authorization': `Bearer ${(session as any)?.accessToken}`
+                                                                        'Authorization': `Bearer ${accessToken}`
                                                                     },
                                                                     body: JSON.stringify({ url: operatorAvatar })
                                                                 }).catch(e => console.warn('Failed to delete old avatar file', e));
@@ -434,12 +450,16 @@ export default function SettingsPage() {
                                                         onClick={async () => {
                                                             if (confirm('Ви впевнені, що хочете видалити аватар?')) {
                                                                 try {
-                                                                    const token = (session as any)?.accessToken;
+                                                                    if (!accessToken) {
+                                                                        alert('Сесія недійсна. Увійдіть ще раз.');
+                                                                        return;
+                                                                    }
+
                                                                     await fetch(`${API_URL}/upload/delete`, {
                                                                         method: 'POST',
                                                                         headers: {
                                                                             'Content-Type': 'application/json',
-                                                                            'Authorization': `Bearer ${token}`
+                                                                            'Authorization': `Bearer ${accessToken}`
                                                                         },
                                                                         body: JSON.stringify({ url: operatorAvatar })
                                                                     });
@@ -696,30 +716,42 @@ export default function SettingsPage() {
                     {/* Automation Tab */}
                     {activeTab === 'automation' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
-                            <AutomationSettings
-                                siteId={siteId || orgId}
-                                accessToken={(session as any)?.accessToken || 'dummy'}
-                            />
+                            {accessToken ? (
+                                <AutomationSettings
+                                    siteId={siteId || orgId}
+                                    accessToken={accessToken}
+                                />
+                            ) : (
+                                <p className="text-sm text-[rgb(var(--destructive))]">Сесія недійсна. Увійдіть ще раз.</p>
+                            )}
                         </div>
                     )}
 
                     {/* Templates Tab */}
                     {activeTab === 'templates' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
-                            <TemplatesSettings
-                                siteId={siteId || orgId}
-                                accessToken={(session as any)?.accessToken || 'dummy'}
-                            />
+                            {accessToken ? (
+                                <TemplatesSettings
+                                    siteId={siteId || orgId}
+                                    accessToken={accessToken}
+                                />
+                            ) : (
+                                <p className="text-sm text-[rgb(var(--destructive))]">Сесія недійсна. Увійдіть ще раз.</p>
+                            )}
                         </div>
                     )}
 
                     {/* Business Hours Tab */}
                     {activeTab === 'hours' && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
-                            <BusinessHoursSettings
-                                siteId={siteId || orgId}
-                                accessToken={(session as any)?.accessToken || 'dummy'}
-                            />
+                            {accessToken ? (
+                                <BusinessHoursSettings
+                                    siteId={siteId || orgId}
+                                    accessToken={accessToken}
+                                />
+                            ) : (
+                                <p className="text-sm text-[rgb(var(--destructive))]">Сесія недійсна. Увійдіть ще раз.</p>
+                            )}
                         </div>
                     )}
 

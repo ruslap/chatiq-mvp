@@ -1,4 +1,4 @@
-import { Injectable, Logger, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException, ForbiddenException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { AutomationService } from "../automation/automation.service";
 
@@ -20,28 +20,55 @@ export class ChatService {
 		});
 	}
 
-	async saveVisitorMessage(siteId: string, visitorId: string, text: string, attachment?: string) {
-		// 1. Ensure the site exists (SaaS logic: sites should be pre-registered,
-		// but for demo/testing we'll ensure it exists to avoid FK errors)
-		let site = await this.prisma.site.findUnique({ where: { id: siteId } });
+	async assertUserSiteAccess(userId: string, siteId: string) {
+		const site = await this.prisma.site.findFirst({
+			where: {
+				id: siteId,
+				OR: [
+					{ ownerId: userId },
+					{ operators: { some: { userId } } },
+				],
+			},
+			select: { id: true },
+		});
 
 		if (!site) {
-			this.logger.log(`Site ${siteId} not found, creating a default one for testing`);
-			// Find any owner or create a dummy one if needed.
-			// For now, let's assume there is at least one user or we'll get another error.
-			const user = await this.prisma.user.findFirst();
-			if (user) {
-				site = await this.prisma.site.create({
-					data: {
-						id: siteId,
-						name: "Auto-created Test Site",
-						domain: "localhost",
-						ownerId: user.id,
-					},
-				});
-			} else {
-				throw new InternalServerErrorException("No users found in database to assign the new site to");
-			}
+			throw new ForbiddenException("You do not have access to this site");
+		}
+	}
+
+	async assertUserChatAccess(userId: string, chatId: string) {
+		const chat = await this.prisma.chat.findUnique({
+			where: { id: chatId },
+			select: { siteId: true },
+		});
+
+		if (!chat) {
+			throw new NotFoundException("Chat not found");
+		}
+
+		await this.assertUserSiteAccess(userId, chat.siteId);
+	}
+
+	async assertUserMessageAccess(userId: string, messageId: string) {
+		const message = await this.prisma.message.findUnique({
+			where: { id: messageId },
+			select: { chatId: true },
+		});
+
+		if (!message) {
+			throw new NotFoundException("Message not found");
+		}
+
+		await this.assertUserChatAccess(userId, message.chatId);
+	}
+
+	async saveVisitorMessage(siteId: string, visitorId: string, text: string, attachment?: string) {
+		const site = await this.prisma.site.findUnique({ where: { id: siteId } });
+
+		if (!site) {
+			this.logger.warn(`Rejected visitor message for unknown site: ${siteId}`);
+			throw new NotFoundException(`Site ${siteId} not found`);
 		}
 
 		// 2. Find or create chat

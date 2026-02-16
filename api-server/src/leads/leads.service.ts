@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, ForbiddenException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { TelegramNotificationService } from "../telegram/telegram-notification.service";
 
@@ -38,6 +38,32 @@ export class LeadsService {
 			where: { siteId },
 			orderBy: { createdAt: "desc" },
 		});
+	}
+
+	async assertUserLeadAccess(userId: string, leadId: string) {
+		const lead = await this.prisma.contactLead.findUnique({
+			where: { id: leadId },
+			select: { id: true, siteId: true },
+		});
+
+		if (!lead) {
+			throw new NotFoundException("Lead not found");
+		}
+
+		const site = await this.prisma.site.findFirst({
+			where: {
+				id: lead.siteId,
+				OR: [
+					{ ownerId: userId },
+					{ operators: { some: { userId } } },
+				],
+			},
+			select: { id: true },
+		});
+
+		if (!site) {
+			throw new ForbiddenException("You do not have access to this lead");
+		}
 	}
 
 	async deleteLead(id: string) {

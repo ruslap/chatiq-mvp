@@ -6,18 +6,27 @@ import {
 	WebSocketServer,
 	OnGatewayConnection,
 	OnGatewayDisconnect,
+	WsException,
 } from "@nestjs/websockets";
 import { Logger } from "@nestjs/common";
 import { Server, Socket } from "socket.io";
 import { ChatService } from "./chat.service";
 import { OnEvent } from "@nestjs/event-emitter";
 import { TelegramNotificationService } from "../telegram/telegram-notification.service";
+import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "../prisma/prisma.service";
 
 interface MessageData {
 	text: string;
 	createdAt: Date;
 	from?: string;
 	attachment?: string | null;
+}
+
+interface SocketJwtPayload {
+	sub: string;
+	email: string;
+	role: string;
 }
 
 @WebSocketGateway({
@@ -43,7 +52,65 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	constructor(
 		private readonly chatService: ChatService,
 		private readonly telegramNotificationService: TelegramNotificationService,
+		private readonly jwtService: JwtService,
+		private readonly prisma: PrismaService,
 	) {}
+
+	private getSocketToken(client: Socket): string | null {
+		const authToken = client.handshake.auth?.token;
+		if (typeof authToken === "string" && authToken.trim()) {
+			return authToken.trim();
+		}
+
+		const authHeader = client.handshake.headers?.authorization;
+		if (
+			typeof authHeader === "string" &&
+			authHeader.toLowerCase().startsWith("bearer ")
+		) {
+			return authHeader.slice(7).trim();
+		}
+
+		return null;
+	}
+
+	private async authenticateAdminClient(client: Socket): Promise<SocketJwtPayload> {
+		const cachedPayload = client.data?.adminPayload as SocketJwtPayload | undefined;
+		if (cachedPayload?.sub) {
+			return cachedPayload;
+		}
+
+		const token = this.getSocketToken(client);
+		if (!token) {
+			throw new WsException("Unauthorized: missing auth token");
+		}
+
+		try {
+			const payload = await this.jwtService.verifyAsync<SocketJwtPayload>(token);
+			client.data.adminPayload = payload;
+			return payload;
+		} catch {
+			throw new WsException("Unauthorized: invalid auth token");
+		}
+	}
+
+	private async assertAdminSiteAccess(client: Socket, siteId: string): Promise<void> {
+		const payload = await this.authenticateAdminClient(client);
+
+		const site = await this.prisma.site.findFirst({
+			where: {
+				id: siteId,
+				OR: [
+					{ ownerId: payload.sub },
+					{ operators: { some: { userId: payload.sub } } },
+				],
+			},
+			select: { id: true },
+		});
+
+		if (!site) {
+			throw new WsException("Forbidden: no access to requested site");
+		}
+	}
 
 	@OnEvent("auto-reply.sent")
 	handleAutoReplySent(payload: {
@@ -222,11 +289,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	}
 
 	@SubscribeMessage("admin:join")
-	handleAdminJoin(
+	async handleAdminJoin(
 		@ConnectedSocket() client: Socket,
 		@MessageBody() payload: { siteId: string },
 	) {
 		const { siteId } = payload;
+		await this.assertAdminSiteAccess(client, siteId);
+
 		const adminRoom = `admin:${siteId}`;
 		client.join(adminRoom);
 		this.logger.log(`Admin joined room ${adminRoom}`);
@@ -260,7 +329,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			attachment?: string;
 		},
 	) {
-		const { chatId, text, siteId, attachment } = payload;
+		const { chatId, text, attachment } = payload;
+
+		const chat = await this.chatService.getChatById(chatId);
+		if (!chat) return { error: "Chat not found" };
+
+		await this.assertAdminSiteAccess(client, chat.siteId);
 
 		// Persist message
 		const message = await this.chatService.saveAdminMessage(
@@ -269,23 +343,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			attachment,
 		);
 
-		// Get chat to find visitorId
-		const chat = await this.chatService.getChatById(chatId);
-		if (chat) {
-			const visitorRoom = `chat:${siteId}:${chat.visitorId}`;
+		const visitorRoom = `chat:${chat.siteId}:${chat.visitorId}`;
 
-			// Notify visitor
-			this.server.to(visitorRoom).emit("admin:message", {
-				messageId: message.id,
-				text: message.text,
-				createdAt: message.createdAt,
-				attachment: message.attachment,
-			});
+		// Notify visitor
+		this.server.to(visitorRoom).emit("admin:message", {
+			messageId: message.id,
+			text: message.text,
+			createdAt: message.createdAt,
+			attachment: message.attachment,
+		});
 
-			// Sync other admins
-			const adminRoom = `admin:${siteId}`;
-			this.server.to(adminRoom).emit("chat:message", message);
-		}
+		// Sync other admins
+		const adminRoom = `admin:${chat.siteId}`;
+		this.server.to(adminRoom).emit("chat:message", message);
 
 		return message;
 	}
@@ -300,31 +370,33 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			siteId: string;
 		},
 	) {
-		const { messageId, text, siteId } = payload;
+		const { messageId, text } = payload;
 
 		const message = await this.chatService.getMessageById(messageId);
 		if (!message) return { error: "Message not found" };
 
+		const chat = await this.chatService.getChatById(message.chatId);
+		if (!chat) return { error: "Chat not found" };
+
+		await this.assertAdminSiteAccess(client, chat.siteId);
+
 		const updated = await this.chatService.editMessage(messageId, text);
 
-		const chat = await this.chatService.getChatById(message.chatId);
-		if (chat) {
-			const visitorRoom = `chat:${siteId}:${chat.visitorId}`;
-			const adminRoom = `admin:${siteId}`;
+		const visitorRoom = `chat:${chat.siteId}:${chat.visitorId}`;
+		const adminRoom = `admin:${chat.siteId}`;
 
-			this.server.to(visitorRoom).emit("message:edited", {
-				messageId: updated.id,
-				text: updated.text,
-				editedAt: updated.editedAt,
-			});
+		this.server.to(visitorRoom).emit("message:edited", {
+			messageId: updated.id,
+			text: updated.text,
+			editedAt: updated.editedAt,
+		});
 
-			this.server.to(adminRoom).emit("message:edited", {
-				messageId: updated.id,
-				chatId: updated.chatId,
-				text: updated.text,
-				editedAt: updated.editedAt,
-			});
-		}
+		this.server.to(adminRoom).emit("message:edited", {
+			messageId: updated.id,
+			chatId: updated.chatId,
+			text: updated.text,
+			editedAt: updated.editedAt,
+		});
 
 		return updated;
 	}
@@ -338,28 +410,30 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 			siteId: string;
 		},
 	) {
-		const { messageId, siteId } = payload;
+		const { messageId } = payload;
 
 		const message = await this.chatService.getMessageById(messageId);
 		if (!message) return { error: "Message not found" };
 
 		const chatId = message.chatId;
+		const chat = await this.chatService.getChatById(chatId);
+		if (!chat) return { error: "Chat not found" };
+
+		await this.assertAdminSiteAccess(client, chat.siteId);
+
 		await this.chatService.deleteMessage(messageId);
 
-		const chat = await this.chatService.getChatById(chatId);
-		if (chat) {
-			const visitorRoom = `chat:${siteId}:${chat.visitorId}`;
-			const adminRoom = `admin:${siteId}`;
+		const visitorRoom = `chat:${chat.siteId}:${chat.visitorId}`;
+		const adminRoom = `admin:${chat.siteId}`;
 
-			this.server.to(visitorRoom).emit("message:deleted", {
-				messageId,
-			});
+		this.server.to(visitorRoom).emit("message:deleted", {
+			messageId,
+		});
 
-			this.server.to(adminRoom).emit("message:deleted", {
-				messageId,
-				chatId,
-			});
-		}
+		this.server.to(adminRoom).emit("message:deleted", {
+			messageId,
+			chatId,
+		});
 
 		return { status: "ok" };
 	}
@@ -370,6 +444,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@MessageBody() payload: { siteId: string },
 	) {
 		const { siteId } = payload;
+		await this.assertAdminSiteAccess(client, siteId);
+
 		const unreadCount = await this.chatService.getUnreadCount(siteId);
 		client.emit("unread_count_update", unreadCount);
 		return unreadCount;
@@ -381,15 +457,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		@MessageBody() payload: { chatId: string },
 	) {
 		const { chatId } = payload;
+		const chat = await this.chatService.getChatById(chatId);
+		if (!chat) return { error: "Chat not found" };
+
+		await this.assertAdminSiteAccess(client, chat.siteId);
+
 		await this.chatService.markMessagesAsRead(chatId);
 
 		// Update unread count for all admins
-		const chat = await this.chatService.getChatById(chatId);
-		if (chat) {
-			const adminRoom = `admin:${chat.siteId}`;
-			const unreadCount = await this.chatService.getUnreadCount(chat.siteId);
-			this.server.to(adminRoom).emit("unread_count_update", unreadCount);
-		}
+		const adminRoom = `admin:${chat.siteId}`;
+		const unreadCount = await this.chatService.getUnreadCount(chat.siteId);
+		this.server.to(adminRoom).emit("unread_count_update", unreadCount);
 
 		return { status: "ok" };
 	}

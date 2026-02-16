@@ -20,6 +20,7 @@ interface ContactLead {
 
 export default function LeadsPage() {
     const { data: session, status } = useSession();
+    const accessToken = session?.accessToken;
     const [leads, setLeads] = useState<ContactLead[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [siteId, setSiteId] = useState<string>("");
@@ -40,12 +41,12 @@ export default function LeadsPage() {
 
     useEffect(() => {
         const fetchLeads = async () => {
-            if (!siteId || !session) return;
+            if (!siteId || !accessToken) return;
 
             try {
                 const response = await fetch(`${API_URL}/leads/site/${siteId}`, {
                     headers: {
-                        Authorization: `Bearer ${(session as any).accessToken}`,
+                        Authorization: `Bearer ${accessToken}`,
                     },
                 });
 
@@ -61,16 +62,20 @@ export default function LeadsPage() {
         };
 
         fetchLeads();
-    }, [siteId, session, API_URL]);
+    }, [siteId, accessToken, API_URL]);
 
     const handleDelete = async (id: string) => {
         if (!confirm(t.leads.deleteConfirm)) return;
+
+        if (!accessToken) {
+            return;
+        }
 
         try {
             const response = await fetch(`${API_URL}/leads/${id}`, {
                 method: "DELETE",
                 headers: {
-                    Authorization: `Bearer ${(session as any).accessToken}`,
+                    Authorization: `Bearer ${accessToken}`,
                 },
             });
 

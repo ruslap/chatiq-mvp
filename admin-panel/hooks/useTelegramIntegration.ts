@@ -13,7 +13,7 @@ export function useTelegramIntegration(siteId: string) {
   const [status, setStatus] = useState<TelegramStatus | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const accessToken = (session as any)?.accessToken;
+  const accessToken = session?.accessToken;
 
   useEffect(() => {
     if (siteId && accessToken) {
