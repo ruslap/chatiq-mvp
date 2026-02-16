@@ -109,7 +109,7 @@ docs/issuetests.md
 draft.md
 # Local backups (VPS has its own backup system)
 deploy/
-
+.env
 # API server dev files
 
 # API server dev files

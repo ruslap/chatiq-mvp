@@ -22,6 +22,7 @@ export default function LeadsPage() {
     const { data: session, status } = useSession();
     const accessToken = session?.accessToken;
     const [leads, setLeads] = useState<ContactLead[]>([]);
+    const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [siteId, setSiteId] = useState<string>("");
     const API_URL = getApiUrl();
@@ -51,8 +52,14 @@ export default function LeadsPage() {
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    setLeads(data);
+                    const result = await response.json();
+                    // Handle both old array format and new object with data field
+                    if (Array.isArray(result)) {
+                        setLeads(result);
+                    } else if (result && Array.isArray(result.data)) {
+                        setLeads(result.data);
+                        setNextCursor(result.nextCursor || null);
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch leads:", error);

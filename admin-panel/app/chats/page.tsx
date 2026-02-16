@@ -45,6 +45,7 @@ function ChatsContent() {
     const chatIdFromUrl = searchParams.get('id');
     const [selectedChatId, setSelectedChatId] = useState<string | null>(chatIdFromUrl);
     const [chats, setChats] = useState<any[]>([]);
+    const [nextCursor, setNextCursor] = useState<string | null>(null);
     const [socket, setSocket] = useState<any>(null);
     const [siteId, setSiteId] = useState<string>('');
     const [searchQuery, setSearchQuery] = useState("");
@@ -115,11 +116,20 @@ function ChatsContent() {
             }
         })
             .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data)) {
+            .then(result => {
+                let chatsData: any[] = [];
+
+                if (Array.isArray(result)) {
+                    chatsData = result;
+                } else if (result && Array.isArray(result.data)) {
+                    chatsData = result.data;
+                    setNextCursor(result.nextCursor || null);
+                }
+
+                if (chatsData.length >= 0) {
                     setChats(prev => {
                         // Map API data to internal format
-                        return data.map((c: any) => {
+                        return chatsData.map((c: any) => {
                             const existing = prev.find(p => p.id === c.id);
                             return {
                                 id: c.id,
