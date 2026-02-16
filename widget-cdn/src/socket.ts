@@ -87,7 +87,7 @@ export function sendVisitorMessage(
   visitorId: string,
   text: string,
   visitorName: string,
-  attachment?: string,
+  attachment?: any,
 ): void {
   if (!socket?.connected) {
     console.warn("[Chtq] Socket not connected, cannot send message");

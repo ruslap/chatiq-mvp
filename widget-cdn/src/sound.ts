@@ -48,4 +48,6 @@ export const sounds = {
   send: (): void => playTone(800, 0.1, "sine"),
   receive: (): void => playTone(600, 0.15, "sine"),
   notification: (): void => playTone([600, 800], 0.1, "sine"),
+  click: (): void => playTone(400, 0.05, "sine"),
+  close: (): void => playTone(300, 0.1, "sine"),
 };

@@ -32,6 +32,26 @@ import {
   sendVisitorMessage,
   emitDisconnect,
 } from "./socket";
+import { getStyles } from "./ui/styles";
+import { getTemplate } from "./ui/template";
+import { isSoundEnabled } from "./sound";
+import {
+  initLauncher,
+  updateLauncherState,
+  setUnreadBadge,
+} from "./ui/launcher";
+import { initPanel, togglePanel } from "./ui/panel";
+import {
+  addMessageToUI,
+  showTypingIndicator as showTypingUI,
+  hideTypingIndicator as hideTypingUI,
+  scrollToBottom,
+} from "./ui/messages";
+
+import { initComposer } from "./ui/composer";
+import { initEmojiPicker } from "./ui/emoji";
+import { initFileUpload, clearUploadUI } from "./ui/file-upload";
+import { uploadFile } from "./api";
 import type { BusinessStatus, WidgetSettings } from "./types";
 
 (function () {
@@ -93,6 +113,7 @@ import type { BusinessStatus, WidgetSettings } from "./types";
         showTypingIndicator();
         setTimeout(() => {
           addMessage(data.text, "bot", data.attachment, data.messageId);
+          if (isOpen) sounds.receive();
           hideTypingIndicator();
         }, 800);
       },
@@ -154,11 +175,6 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     }
   }
 
-  // --- DOM construction (placeholder — full HTML/CSS from original widget.js) ---
-  // NOTE: The full 2000-line CSS and HTML template from the original widget.js
-  // should be migrated here incrementally. For now, this creates the minimal
-  // Shadow DOM structure. The existing public/widget.js remains the production
-  // version until this TypeScript source reaches feature parity.
 
   function mountWidget(): void {
     widgetContainer = document.createElement("div");
@@ -178,20 +194,93 @@ import type { BusinessStatus, WidgetSettings } from "./types";
 
     // Apply accent color CSS variables
     const hsl = hexToHSL(accentColor);
-    widgetContainer.style.setProperty("--accent-h", String(hsl.h));
-    widgetContainer.style.setProperty("--accent-s", hsl.s + "%");
-    widgetContainer.style.setProperty("--accent-l", hsl.l + "%");
-    widgetContainer.style.setProperty("--accent-primary", accentColor);
-    widgetContainer.style.setProperty("--accent-secondary", secondaryColorValue);
+    
+    // Generate UI
+    const styles = getStyles(accentColor, secondaryColorValue, hsl);
+    const html = getTemplate(
+      styles,
+      agentName,
+      agentAvatar,
+      welcomeMessage,
+      isSoundEnabled(),
+      config.position
+    );
 
-    // TODO: Migrate full HTML/CSS template from original widget.js
-    // For now, this is a structural placeholder.
-    shadow.innerHTML = `
-      <style>/* CSS will be migrated from original widget.js */</style>
-      <div class="widget-root">
-        <!-- Launcher, Panel, Messages, Composer will be built here -->
-      </div>
-    `;
+    shadow.innerHTML = html;
+    
+    // Initialize interactive elements
+    initLauncher(shadow, () => toggleWidget());
+    initPanel(shadow, () => toggleWidget());
+    // Initialize interactive elements
+    initLauncher(shadow, () => toggleWidget());
+    initPanel(shadow, () => toggleWidget());
+    
+    let currentFile: File | null = null;
+    
+    initFileUpload(shadow, (file) => {
+        currentFile = file;
+        composerControls?.setSendDisabled(!file && !((shadow?.getElementById("input") as HTMLInputElement)?.value.trim()));
+    });
+
+    const composerControls = initComposer(shadow, async (text) => {
+        if (!text && !currentFile) return;
+        
+        let attachment = null;
+        if (currentFile && resolvedSiteId) {
+            composerControls?.setLoading(true);
+            const result = await uploadFile(resolvedSiteId, currentFile);
+            if (result) {
+                attachment = result;
+            } else {
+                // Upload failed
+                composerControls?.setLoading(false);
+                return; // Stop sending
+            }
+        }
+        
+        const msgText = text || (attachment ? (attachment as any).name : ""); // Fallback text?
+        
+        // Optimistic UI update
+        addMessage(text, "user", attachment as any); // Type cast for now as formatting differs?
+        sounds.send();
+        
+        if (resolvedSiteId) {
+            // Need visitorName? define it or get it
+            const visitorName = localStorage.getItem("chatiq_visitor_name") || "Guest"; 
+            sendVisitorMessage(
+                resolvedSiteId, 
+                visitorId, 
+                text, 
+                visitorName, 
+                attachment ? JSON.stringify(attachment) : undefined // Socket expects string? Or object? 
+            );
+        }
+        
+        if (currentFile) {
+            clearUploadUI(shadow!);
+            currentFile = null;
+        }
+        
+        composerControls?.clear();
+        composerControls?.setLoading(false);
+    });
+    
+    initEmojiPicker(shadow);
+  }
+
+  function toggleWidget(): void {
+    isOpen = !isOpen;
+    if (!shadow) return;
+    
+    updateLauncherState(shadow, isOpen);
+    togglePanel(shadow, isOpen);
+    
+    if (isOpen) {
+      unreadCount = 0;
+      setUnreadBadge(shadow, 0);
+      const messages = shadow.getElementById("messages");
+      if (messages) scrollToBottom(messages);
+    }
   }
 
   function updatePresenceUI(): void {
@@ -205,24 +294,34 @@ import type { BusinessStatus, WidgetSettings } from "./types";
   }
 
   function showTypingIndicator(): void {
-    // TODO: implement typing indicator in shadow DOM
+    if (!shadow) return;
+    showTypingUI(shadow, agentName, agentAvatar);
   }
 
   function hideTypingIndicator(): void {
-    // TODO: implement typing indicator in shadow DOM
+    if (!shadow) return;
+    hideTypingUI(shadow);
   }
 
   function addMessage(
     text: string,
     from: string,
-    attachment?: string | null,
+    attachment: any = null,
     messageId?: string,
   ): void {
     if (!shadow) return;
-    // TODO: implement full message rendering in shadow DOM
-    console.log(`[Chtq] Message (${from}): ${text}`);
+    
+    addMessageToUI(shadow, {
+        text,
+        from: from as "bot" | "user",
+        attachment,
+        messageId,
+        agentAvatar
+    });
+
     if (from === "bot" && !isOpen) {
       unreadCount++;
+      setUnreadBadge(shadow, unreadCount);
       sounds.notification();
     }
   }
@@ -230,13 +329,16 @@ import type { BusinessStatus, WidgetSettings } from "./types";
   async function restoreHistory(): Promise<void> {
     if (!resolvedSiteId) return;
     const result = await fetchVisitorHistory(resolvedSiteId, visitorId);
+    if (!shadow) return;
+    
     for (const msg of result.data) {
-      addMessage(
-        msg.text as string,
-        msg.from === "visitor" ? "user" : "bot",
-        msg.attachment as string | null,
-        msg.id as string,
-      );
+      addMessageToUI(shadow, {
+        text: msg.text as string,
+        from: msg.from === "visitor" ? "user" : "bot",
+        attachment: msg.attachment as string | null,
+        messageId: msg.id as string,
+        agentAvatar
+      });
     }
   }
 

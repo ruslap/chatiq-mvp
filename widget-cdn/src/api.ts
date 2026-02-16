@@ -88,3 +88,32 @@ export async function fetchVisitorHistory(
   }
   return { data: [] };
 }
+
+export interface UploadResult {
+    url: string;
+    name: string;
+    type: string;
+    size: number;
+}
+
+export async function uploadFile(
+    siteId: string,
+    file: File
+): Promise<UploadResult | null> {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("siteId", siteId);
+
+    try {
+        const res = await fetch(`${API_URL}/upload`, {
+            method: "POST",
+            body: formData,
+        });
+        if (res.ok) {
+            return (await res.json()) as UploadResult;
+        }
+    } catch (error) {
+        console.warn("[Chtq] Upload failed:", error);
+    }
+    return null;
+}

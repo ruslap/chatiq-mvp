@@ -23,11 +23,18 @@ export interface HSL {
   l: number;
 }
 
+export interface MessageAttachment {
+    url: string;
+    name: string;
+    type: string;
+    size: number;
+}
+
 export interface MessageData {
   id?: string;
   text: string;
   from: "user" | "bot" | "system";
-  attachment?: string | null;
+  attachment?: MessageAttachment | string | null;
   createdAt?: string;
   messageId?: string;
 }
