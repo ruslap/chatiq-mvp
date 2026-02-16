@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Widget Test</title>
+</head>
+
+<body>
+    <h1>Local Widget Test</h1>
+    <p>This page tests the local build of widget.js against the production API.</p>
+
+    <script>
+        window.chtq = {
+            organizationId: "32122e0b-79f1-45fc-b5e7-5ccc0eed096b",
+            // apiUrl: removed to test default
+            language: "uk",
+            color: "#10B981",
+            position: "left",
+            size: "standard"
+        };
+    </script>
+    <script async src="/widget.js"></script>
+</body>
+
+</html>

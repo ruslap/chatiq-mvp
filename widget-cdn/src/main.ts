@@ -198,7 +198,7 @@ import type { BusinessStatus, WidgetSettings } from "./types";
     const hsl = hexToHSL(accentColor);
     
     // Generate UI
-    const styles = getStyles(accentColor, secondaryColorValue, hsl);
+    const styles = getStyles(accentColor, secondaryColorValue, hsl, config.position);
     const html = getTemplate(
       styles,
       agentName,

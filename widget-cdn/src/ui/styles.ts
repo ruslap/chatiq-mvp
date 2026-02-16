@@ -1,6 +1,6 @@
 import type { HSL } from "../types";
 
-export function getStyles(accentColor: string, secondaryColorValue: string, accentHSL: HSL): string {
+export function getStyles(accentColor: string, secondaryColorValue: string, accentHSL: HSL, position: 'left' | 'right'): string {
   return `
     /* ===== FONTS ===== */
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
