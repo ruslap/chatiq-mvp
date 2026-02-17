@@ -9,6 +9,7 @@ import { RedisIoAdapter } from "./redis/redis-io.adapter";
 import { StructuredLogger } from "./common/structured-logger.service";
 import { CorrelationIdMiddleware } from "./common/correlation-id.middleware";
 import { RequestMetricsInterceptor } from "./common/request-metrics.interceptor";
+import { LicenseService } from "./license/license.service";
 
 async function bootstrap() {
 	const logger = new StructuredLogger();
@@ -69,6 +70,42 @@ async function bootstrap() {
 	app.useStaticAssets(join(__dirname, "..", "..", "uploads"), {
 		prefix: "/uploads/",
 	});
+
+	// ─── License verification ───────────────────────────────
+	const licenseService = app.get(LicenseService);
+	const license = licenseService.validateLicense();
+
+	if (!license.valid) {
+		logger.error(
+			`╔══════════════════════════════════════════════════╗`,
+			"License",
+		);
+		logger.error(
+			`║  LICENSE ERROR: ${license.error}`,
+			"License",
+		);
+		logger.error(
+			`║  Please provide a valid LICENSE_KEY in .env     ║`,
+			"License",
+		);
+		logger.error(
+			`╚══════════════════════════════════════════════════╝`,
+			"License",
+		);
+		process.exit(1);
+	}
+
+	logger.log(
+		`License OK — ${license.licensee} (${license.plan}) · expires ${license.expiresAt} (${license.daysRemaining}d left)`,
+		"License",
+	);
+
+	if (license.daysRemaining !== undefined && license.daysRemaining <= 30) {
+		logger.warn(
+			`⚠️  License expires in ${license.daysRemaining} days! Contact your provider to renew.`,
+			"License",
+		);
+	}
 
 	await app.listen(process.env.PORT ?? 3000);
 }

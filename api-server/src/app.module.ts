@@ -15,6 +15,7 @@ import { LeadsModule } from "./leads/leads.module";
 import { UploadModule } from "./upload/upload.module";
 import { RedisModule } from "./redis/redis.module";
 import { TelegramModule } from "./telegram/telegram.module";
+import { LicenseModule } from "./license/license.module";
 
 @Module({
 	imports: [
@@ -40,6 +41,7 @@ import { TelegramModule } from "./telegram/telegram.module";
 		AutomationModule,
 		LeadsModule,
 		TelegramModule,
+		LicenseModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
