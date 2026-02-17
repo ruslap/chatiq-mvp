@@ -121,7 +121,13 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                     'Authorization': `Bearer ${accessToken}`
                 }
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        console.error(`History fetch failed: ${res.status} ${res.statusText}`);
+                        return { data: [] };
+                    }
+                    return res.json();
+                })
                 .then(payload => {
                     const rawMessages = Array.isArray(payload)
                         ? payload
@@ -141,25 +147,23 @@ export function ChatView({ chat, socket, siteId, searchQuery = "", onBack, onDel
                         return normalizedMsg as Message;
                     });
 
-                    if (!Array.isArray(payload) && !Array.isArray(payload?.data)) {
-                        console.error("Messages fetch returned unexpected payload:", payload);
-                    }
-
                     setMessages(messagesWithParsedAttachments);
                 })
                 .catch(err => {
                     console.error("History fetch error:", err);
                     setMessages([]);
                 });
-
-            // Mark messages as read
-            if (socket) {
-                socket.emit('admin:mark_read', { chatId });
-            }
         } else if (!accessToken) {
             setMessages([]);
         }
-    }, [chatId, accessToken, apiUrl, socket]);
+    }, [chatId, accessToken, apiUrl]);
+
+    // Mark messages as read (separate effect to avoid re-fetching history when socket changes)
+    useEffect(() => {
+        if (chatId && socket) {
+            socket.emit('admin:mark_read', { chatId });
+        }
+    }, [chatId, socket]);
 
     // Load quick templates
     useEffect(() => {

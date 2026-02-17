@@ -18,7 +18,9 @@ import { PrismaService } from "../prisma/prisma.service";
 import { RedisService } from "../redis/redis.service";
 
 interface MessageData {
+	id: string;
 	text: string;
+	chatId: string;
 	createdAt: Date;
 	from?: string;
 	attachment?: string | null;
@@ -154,22 +156,32 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 		visitorId: string;
 		message: MessageData;
 	}) {
-		const { siteId, visitorId, message } = payload;
+		const { siteId, chatId, visitorId, message } = payload;
 
-		// Send to visitor's room
+		// Send to visitor's room (widget expects admin:message with messageId)
 		const visitorRoom = `chat:${siteId}:${visitorId}`;
 		this.server.to(visitorRoom).emit("admin:message", {
+			messageId: message.id,
 			text: message.text,
 			createdAt: message.createdAt,
 			from: "admin",
 		});
 
-		// Also notify admin room
+		// Normalize from "system" to "admin" for admin panel display
+		const adminMessage = { ...message, from: "admin" };
+
+		// Notify admin room with chat:message (for open ChatView)
 		const adminRoom = `admin:${siteId}`;
-		this.server.to(adminRoom).emit("chat:message", message);
+		this.server.to(adminRoom).emit("chat:message", adminMessage);
+
+		// Also emit chat:new_message so the chat list sidebar updates
+		this.server.to(adminRoom).emit("chat:new_message", {
+			...adminMessage,
+			visitorId,
+		});
 
 		this.logger.log(
-			`Auto-reply delivered via WebSocket to room ${visitorRoom}`,
+			`Auto-reply delivered via WebSocket to room ${visitorRoom} and ${adminRoom}`,
 		);
 	}
 

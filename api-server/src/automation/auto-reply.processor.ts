@@ -32,7 +32,7 @@ export class AutoReplyProcessor extends WorkerHost {
 		// Idempotency: check chat still exists and is open
 		const chat = await this.prisma.chat.findUnique({
 			where: { id: chatId },
-			select: { id: true, status: true, siteId: true },
+			select: { id: true, status: true, siteId: true, visitorId: true },
 		});
 
 		if (!chat) {
@@ -72,6 +72,7 @@ export class AutoReplyProcessor extends WorkerHost {
 		this.eventEmitter.emit("auto-reply.sent", {
 			siteId,
 			chatId,
+			visitorId: chat.visitorId,
 			message: savedMessage,
 		});
 
