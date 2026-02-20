@@ -41,22 +41,34 @@ export class EmailFallbackProcessor extends WorkerHost {
             return;
         }
 
-        const operators = await this.prisma.siteUser.findMany({
-            where: { siteId },
-            include: { user: true },
-        });
-        const owner = await this.prisma.user.findUnique({
-            where: { id: chat.site.ownerId },
-        });
-
         const emails = new Set<string>();
-        if (owner?.email) emails.add(owner.email);
-        for (const op of operators) {
-            if (op.user?.email) emails.add(op.user.email);
+
+        // Priority 1: Use configured notification email addresses from Site settings
+        if (chat.site.emailFallbackAddress) {
+            emails.add(chat.site.emailFallbackAddress);
+        }
+        if (chat.site.notificationEmail) {
+            emails.add(chat.site.notificationEmail);
+        }
+
+        // Priority 2: Fall back to owner and operator emails if no specific addresses configured
+        if (emails.size === 0) {
+            const operators = await this.prisma.siteUser.findMany({
+                where: { siteId },
+                include: { user: true },
+            });
+            const owner = await this.prisma.user.findUnique({
+                where: { id: chat.site.ownerId },
+            });
+
+            if (owner?.email) emails.add(owner.email);
+            for (const op of operators) {
+                if (op.user?.email) emails.add(op.user.email);
+            }
         }
 
         if (emails.size === 0) {
-            this.logger.warn(`No operator emails found for site ${siteId}`);
+            this.logger.warn(`No notification emails found for site ${siteId}`);
             return;
         }
 
