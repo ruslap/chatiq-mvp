@@ -42,6 +42,7 @@ model Site {
   emailFallbackEnabled Boolean @default(true)
   emailFallbackTimeout Int     @default(5) // in minutes
   emailFallbackAddress String?
+  notificationEmail    String?
 }
 
 model SiteUser {

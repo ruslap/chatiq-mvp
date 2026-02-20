@@ -59,7 +59,7 @@ export function addMessageToUI(shadow: ShadowRoot, options: MessageOptions): voi
                 </div>`;
           }
       } else {
-          if (attachment.type.startsWith("image/")) {
+          if (attachment.type.startsWith("image")) {
               contentHTML += `
                 <div class="message-attachment">
                     <a href="${attachment.url}" target="_blank" rel="noopener">

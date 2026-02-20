@@ -17,6 +17,7 @@ import { AutomationSettings } from "@/components/automation-settings";
 import { TemplatesSettings } from "@/components/templates-settings";
 import { BusinessHoursSettings } from "@/components/business-hours-settings";
 import { ChannelsSettings } from "@/components/channels/ChannelsSettings";
+import { NotificationsSettings } from "@/components/NotificationsSettings";
 import { MobileHeader, MobileBottomNav } from "@/components/mobile-nav";
 
 import { getMyOrganization } from "@/lib/organization";
@@ -762,8 +763,22 @@ export default function SettingsPage() {
                         </div>
                     )}
 
+                    {/* Notifications Tab */}
+                    {activeTab === 'notifications' && (
+                        <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-6 animate-fade-in">
+                            {accessToken ? (
+                                <NotificationsSettings
+                                    siteId={siteId || orgId}
+                                    accessToken={accessToken}
+                                />
+                            ) : (
+                                <p className="text-sm text-[rgb(var(--destructive))]">Сесія недійсна. Увійдіть ще раз.</p>
+                            )}
+                        </div>
+                    )}
+
                     {/* Other tabs placeholder */}
-                    {!['widget', 'automation', 'templates', 'hours', 'channels'].includes(activeTab) && (
+                    {!['widget', 'automation', 'templates', 'hours', 'channels', 'notifications'].includes(activeTab) && (
                         <div className="bg-[rgb(var(--surface))] rounded-xl border border-[rgb(var(--border))] shadow-sm p-12 text-center animate-fade-in">
                             <div className="w-16 h-16 bg-[rgb(var(--accent))] rounded-2xl flex items-center justify-center mx-auto mb-4">
                                 <Palette className="w-7 h-7 text-[rgb(var(--primary))]" />

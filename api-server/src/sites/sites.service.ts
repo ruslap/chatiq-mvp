@@ -86,4 +86,53 @@ export class SitesService {
 			select: { id: true, name: true, domain: true },
 		});
 	}
+
+	async getNotifications(userId: string, siteId: string) {
+		const site = await this.prisma.site.findFirst({
+			where: {
+				id: siteId,
+				OR: [{ ownerId: userId }, { operators: { some: { userId } } }],
+			},
+			select: {
+				notificationEmail: true,
+				emailFallbackEnabled: true,
+				emailFallbackAddress: true,
+				emailFallbackTimeout: true,
+			},
+		});
+
+		if (!site) throw new ForbiddenException("Not authorized");
+		return site;
+	}
+
+	async updateNotifications(
+		userId: string,
+		siteId: string,
+		data: {
+			notificationEmail?: string;
+			emailFallbackEnabled?: boolean;
+			emailFallbackAddress?: string;
+			emailFallbackTimeout?: number;
+		},
+	) {
+		const site = await this.prisma.site.findFirst({
+			where: {
+				id: siteId,
+				OR: [{ ownerId: userId }, { operators: { some: { userId } } }],
+			},
+		});
+
+		if (!site) throw new ForbiddenException("Not authorized to update this site");
+
+		return this.prisma.site.update({
+			where: { id: siteId },
+			data,
+			select: {
+				notificationEmail: true,
+				emailFallbackEnabled: true,
+				emailFallbackAddress: true,
+				emailFallbackTimeout: true,
+			},
+		});
+	}
 }

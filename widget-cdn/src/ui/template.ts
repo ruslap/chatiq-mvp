@@ -43,12 +43,15 @@ export function getTemplate(
       <!-- Header -->
       <div class="header">
         <div class="header-avatar" id="header-avatar">
-          <svg viewBox="0 0 24 24" aria-hidden="true" class="avatar-icon-online">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
-          <svg viewBox="0 0 24 24" aria-hidden="true" class="avatar-icon-offline" style="display: none;">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-1.85.63-3.55 1.69-4.9l10.21 10.21C14.55 19.37 13.35 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.41 0 8 3.59 8 8 0 1.85-.63 3.55-1.69 4.9z"/>
-          </svg>
+          ${agentAvatar
+            ? `<img src="${agentAvatar}" alt="${agentName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`
+            : `<svg viewBox="0 0 24 24" aria-hidden="true" class="avatar-icon-online">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true" class="avatar-icon-offline" style="display: none;">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-1.85.63-3.55 1.69-4.9l10.21 10.21C14.55 19.37 13.35 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.41 0 8 3.59 8 8 0 1.85-.63 3.55-1.69 4.9z"/>
+              </svg>`
+          }
         </div>
         <div class="header-content">
           <div class="header-title" id="chat-title">${agentName}</div>
