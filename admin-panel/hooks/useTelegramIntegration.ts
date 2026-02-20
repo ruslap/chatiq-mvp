@@ -6,6 +6,7 @@ interface TelegramStatus {
   botUsername?: string;
   connectCode?: string;
   subscribersCount?: number;
+  notificationEmail?: string;
 }
 
 export function useTelegramIntegration(siteId: string) {
@@ -35,7 +36,7 @@ export function useTelegramIntegration(siteId: string) {
     }
   }
 
-  async function setup(botToken: string) {
+  async function setup(botToken: string, notificationEmail?: string) {
     setLoading(true);
     console.log('[Telegram] Setup called, accessToken:', accessToken ? 'present' : 'missing');
     try {
@@ -45,7 +46,7 @@ export function useTelegramIntegration(siteId: string) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ siteId, botToken }),
+        body: JSON.stringify({ siteId, botToken, notificationEmail }),
       });
 
       console.log('[Telegram] Setup response status:', response.status);
@@ -57,6 +58,7 @@ export function useTelegramIntegration(siteId: string) {
           enabled: true,
           botUsername: data.data.botUsername,
           connectCode: data.data.connectCode,
+          notificationEmail: data.data.notificationEmail,
           subscribersCount: 0,
         });
         return { success: true, data: data.data };

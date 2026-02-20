@@ -17,6 +17,8 @@ import { RedisModule } from "./redis/redis.module";
 import { TelegramModule } from "./telegram/telegram.module";
 import { LicenseModule } from "./license/license.module";
 
+import { EmailFallbackModule } from "./email-fallback/email-fallback.module";
+
 @Module({
 	imports: [
 		ConfigModule.forRoot({ isGlobal: true }),
@@ -42,8 +44,9 @@ import { LicenseModule } from "./license/license.module";
 		LeadsModule,
 		TelegramModule,
 		LicenseModule,
+		EmailFallbackModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

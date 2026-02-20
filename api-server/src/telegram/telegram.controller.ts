@@ -15,12 +15,12 @@ import { SiteAccessGuard } from '../auth/site-access.guard';
 @Controller('telegram')
 @UseGuards(JwtAuthGuard)
 export class TelegramController {
-  constructor(private telegramService: TelegramService) {}
+  constructor(private telegramService: TelegramService) { }
 
   @Post('setup')
   @UseGuards(SiteAccessGuard)
   async setup(@Body() dto: SetupTelegramDto) {
-    const result = await this.telegramService.setup(dto.siteId, dto.botToken);
+    const result = await this.telegramService.setup(dto.siteId, dto.botToken, dto.notificationEmail);
     return {
       success: true,
       data: result,

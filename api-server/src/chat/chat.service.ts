@@ -12,7 +12,7 @@ export class ChatService {
 		private prisma: PrismaService,
 		private automationService: AutomationService,
 		private eventEmitter: EventEmitter2,
-	) {}
+	) { }
 
 	async getChatById(chatId: string) {
 		return this.prisma.chat.findUnique({
@@ -115,6 +115,12 @@ export class ChatService {
 			.executeAutoReply(siteId, chat.id, text, "visitor")
 			.catch(error => this.logger.error("Auto-reply execution failed", error.stack));
 
+		// Schedule email fallback
+		this.eventEmitter.emit("chat.visitor_message", {
+			siteId,
+			chatId: chat.id,
+		});
+
 		return message;
 	}
 
@@ -150,15 +156,15 @@ export class ChatService {
 				siteId,
 				...(search
 					? {
-							OR: [
-								{ visitorName: { contains: search, mode: "insensitive" } },
-								{
-									messages: {
-										some: { text: { contains: search, mode: "insensitive" } },
-									},
+						OR: [
+							{ visitorName: { contains: search, mode: "insensitive" } },
+							{
+								messages: {
+									some: { text: { contains: search, mode: "insensitive" } },
 								},
-							],
-						}
+							},
+						],
+					}
 					: {}),
 			},
 			orderBy: { createdAt: "desc" },
@@ -180,14 +186,14 @@ export class ChatService {
 		const chatIds = items.map(c => c.id);
 		const unreadGroups = chatIds.length > 0
 			? await this.prisma.message.groupBy({
-					by: ["chatId"],
-					where: {
-						chatId: { in: chatIds },
-						from: "visitor",
-						read: false,
-					},
-					_count: { id: true },
-				})
+				by: ["chatId"],
+				where: {
+					chatId: { in: chatIds },
+					from: "visitor",
+					read: false,
+				},
+				_count: { id: true },
+			})
 			: [];
 
 		const unreadMap = new Map(unreadGroups.map(g => [g.chatId, g._count.id]));

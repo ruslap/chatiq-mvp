@@ -12,6 +12,7 @@ interface TelegramChannelCardProps {
 export function TelegramChannelCard({ siteId }: TelegramChannelCardProps) {
   const { status, loading, setup, disconnect } = useTelegramIntegration(siteId);
   const [botToken, setBotToken] = useState('');
+  const [notificationEmail, setNotificationEmail] = useState('');
   const [error, setError] = useState('');
 
   const enabled = status?.enabled || false;
@@ -30,12 +31,13 @@ export function TelegramChannelCard({ siteId }: TelegramChannelCardProps) {
       return;
     }
 
-    const result = await setup(botToken);
+    const result = await setup(botToken, notificationEmail);
 
     if (!result.success) {
       setError(result.error || 'Не вдалося підключити бота');
     } else {
       setBotToken('');
+      setNotificationEmail('');
     }
   };
 
@@ -63,15 +65,27 @@ export function TelegramChannelCard({ siteId }: TelegramChannelCardProps) {
             та скопіюйте token
           </p>
 
-          <div className="relative">
-            <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgb(var(--foreground-secondary))]" />
-            <input
-              type="password"
-              placeholder="Paste Telegram Bot Token"
-              value={botToken}
-              onChange={(e) => setBotToken(e.target.value)}
-              className="w-full h-11 pl-10 pr-4 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-sm text-[rgb(var(--foreground))] placeholder:text-[rgb(var(--foreground-secondary))] focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none"
-            />
+          <div className="space-y-3">
+            <div className="relative">
+              <Key className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[rgb(var(--foreground-secondary))]" />
+              <input
+                type="password"
+                placeholder="Paste Telegram Bot Token"
+                value={botToken}
+                onChange={(e) => setBotToken(e.target.value)}
+                className="w-full h-11 pl-10 pr-4 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-sm text-[rgb(var(--foreground))] placeholder:text-[rgb(var(--foreground-secondary))] focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none"
+              />
+            </div>
+
+            <div className="relative">
+              <input
+                type="email"
+                placeholder="Email для сповіщень (опціонально)"
+                value={notificationEmail}
+                onChange={(e) => setNotificationEmail(e.target.value)}
+                className="w-full h-11 px-4 rounded-xl border border-[rgb(var(--border))] bg-[rgb(var(--surface))] text-sm text-[rgb(var(--foreground))] placeholder:text-[rgb(var(--foreground-secondary))] focus:ring-2 focus:ring-[rgb(var(--primary))]/20 focus:border-[rgb(var(--primary))]/50 outline-none"
+              />
+            </div>
           </div>
 
           {error && (
@@ -111,6 +125,13 @@ export function TelegramChannelCard({ siteId }: TelegramChannelCardProps) {
                 Підписано операторів:{' '}
                 <strong className="text-[rgb(var(--foreground))]">{status.subscribersCount || 0}</strong>
               </p>
+
+              {status.notificationEmail && (
+                <p className="text-sm text-[rgb(var(--foreground-secondary))]">
+                  Email для сповіщень:{' '}
+                  <strong className="text-[rgb(var(--foreground))]">{status.notificationEmail}</strong>
+                </p>
+              )}
 
               <button
                 onClick={() => disconnect()}

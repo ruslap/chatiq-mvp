@@ -1,4 +1,4 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsString, MinLength, IsOptional, IsEmail } from 'class-validator';
 
 export class SetupTelegramDto {
   @IsString()
@@ -8,4 +8,8 @@ export class SetupTelegramDto {
   @IsString()
   @MinLength(30)
   botToken: string;
+
+  @IsOptional()
+  @IsEmail()
+  notificationEmail?: string;
 }

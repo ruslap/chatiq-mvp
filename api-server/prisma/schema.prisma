@@ -38,6 +38,10 @@ model Site {
   telegramIntegration TelegramIntegration?
   owner               User                 @relation("SiteOwner", fields: [ownerId], references: [id])
   operators           SiteUser[]
+  
+  emailFallbackEnabled Boolean @default(true)
+  emailFallbackTimeout Int     @default(5) // in minutes
+  emailFallbackAddress String?
 }
 
 model SiteUser {
@@ -160,17 +164,18 @@ model ContactLead {
 }
 
 model TelegramIntegration {
-  id            String                 @id @default(cuid())
-  siteId        String                 @unique
-  botToken      String
-  botUsername   String?
-  webhookUrl    String?
-  enabled       Boolean                @default(true)
-  connectCode   String                 @unique
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
-  site          Site                   @relation(fields: [siteId], references: [id], onDelete: Cascade)
-  subscriptions TelegramSubscription[]
+  id                String                 @id @default(cuid())
+  siteId            String                 @unique
+  botToken          String
+  botUsername       String?
+  webhookUrl        String?
+  enabled           Boolean                @default(true)
+  connectCode       String                 @unique
+  notificationEmail String?
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+  site              Site                   @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  subscriptions     TelegramSubscription[]
 
   @@index([siteId])
   @@map("telegram_integrations")

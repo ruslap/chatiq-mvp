@@ -5,9 +5,9 @@ import { PrismaService } from '../prisma/prisma.service';
 export class TelegramService {
   private readonly logger = new Logger(TelegramService.name);
 
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
-  async setup(siteId: string, botToken: string) {
+  async setup(siteId: string, botToken: string, notificationEmail?: string) {
     this.logger.log(`Setting up Telegram for site: ${siteId}`);
 
     const botInfo = await this.validateBotToken(botToken);
@@ -21,6 +21,7 @@ export class TelegramService {
         botUsername: botInfo.username,
         enabled: true,
         connectCode,
+        notificationEmail,
       },
       create: {
         siteId,
@@ -28,6 +29,7 @@ export class TelegramService {
         botUsername: botInfo.username,
         connectCode,
         enabled: true,
+        notificationEmail,
       },
     });
 
@@ -36,6 +38,7 @@ export class TelegramService {
     return {
       connectCode,
       botUsername: botInfo.username,
+      notificationEmail: integration.notificationEmail,
     };
   }
 
