@@ -25,8 +25,37 @@ export class MailService {
         }
 
         try {
+            // Use Resend REST API instead of SMTP directly if host matches smtp.resend.com
+            // This bypasses common VPS outbound port 465/587 blocks
+            if (process.env.SMTP_HOST?.includes('resend.com')) {
+                const res = await fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${process.env.SMTP_PASS}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        from: process.env.SMTP_FROM,
+                        to,
+                        subject,
+                        html,
+                        reply_to: replyTo
+                    })
+                });
+
+                if (!res.ok) {
+                    const errText = await res.text();
+                    throw new Error(`Resend API HTTP ${res.status}: ${errText}`);
+                }
+                
+                const data = await res.json();
+                this.logger.log(`Email sent via Resend API: ${data.id}`);
+                return;
+            }
+
+            // Fallback for other providers
             const info = await this.transporter.sendMail({
-                from: `"ChatIQ" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+                from: process.env.SMTP_FROM || process.env.SMTP_USER,
                 to: to.join(', '),
                 replyTo,
                 subject,
